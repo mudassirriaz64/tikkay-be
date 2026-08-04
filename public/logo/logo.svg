@@ -1,6 +1,6 @@
 <svg width="1728" height="1728" viewBox="0 0 1728 1728" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <g clip-path="url(#clip0_9_2)">
-<rect width="1728" height="1728" fill="black"/>
+<rect width="1728" height="1728" fill="none"/>
 <g clip-path="url(#clip1_9_2)">
 <mask id="mask0_9_2" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="1728" height="1728">
 <path fill-rule="evenodd" clip-rule="evenodd" d="M0 0H1728V1728H0V0Z" fill="white"/>

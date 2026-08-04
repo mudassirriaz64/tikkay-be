@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Bell } from "lucide-react";
 import { siteConfig } from "@/config/site";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils/cn";
@@ -29,43 +28,42 @@ export function Navbar() {
           : "border-transparent bg-[rgba(32,31,31,0.45)]",
       )}
     >
-      <div className="mx-auto flex h-full max-w-[1280px] items-center justify-between gap-6 px-4 lg:px-[64px]">
-        <Link href="/" className="shrink-0">
-          <span className="font-[family:var(--font-serif)] text-[22px] font-bold uppercase leading-[0.95] tracking-[0.08em] text-[var(--text-primary)]">
-            Tikkay
-            <br />
-            <span className="text-[var(--accent-orange)]">Shikkay</span>
-          </span>
+      <div className="relative mx-auto flex h-full max-w-[1280px] items-center justify-between gap-6 px-4 lg:px-[64px]">
+        <Link href="/" className="shrink-0 flex items-center">
+          <div className="relative h-11 w-11 overflow-hidden">
+            <Image
+              src="/logo/logo_transparent.png"
+              alt="Tikkay Shikkay Logo"
+              fill
+              sizes="44px"
+              className="object-contain"
+            />
+          </div>
         </Link>
 
-        <nav className="hidden items-center justify-center gap-7 xl:flex">
-          {siteConfig.nav.map((item) => {
-            const isActive = pathname === item.href;
-            return (
-              <Link
-                key={item.title}
-                href={item.href}
-                className={cn(
-                  "relative pb-1.5 font-[family:var(--font-serif)] text-[13px] font-bold uppercase tracking-[0.14em] transition-colors after:absolute after:inset-x-0 after:bottom-0 after:h-px after:origin-left after:bg-[var(--accent-peach)] after:transition-transform after:duration-500 after:ease-[var(--ease-out-soft)]",
-                  isActive
-                    ? "text-[var(--accent-peach)] after:scale-x-100"
-                    : "text-[var(--text-primary)] after:scale-x-0 hover:text-[var(--accent-peach)] hover:after:scale-x-100",
-                )}
-              >
-                {item.title}
-              </Link>
-            );
-          })}
+        <nav className="hidden items-center justify-center gap-7 xl:flex absolute left-1/2 transform -translate-x-1/2">
+          {siteConfig.nav
+            .filter((item) => !["Home", "Catering", "Careers"].includes(item.title))
+            .map((item) => {
+              const isActive = pathname === item.href;
+              return (
+                <Link
+                  key={item.title}
+                  href={item.href}
+                  className={cn(
+                    "relative pb-1.5 font-[family:var(--font-serif)] text-[13px] font-bold uppercase tracking-[0.14em] transition-colors whitespace-nowrap after:absolute after:inset-x-0 after:bottom-0 after:h-px after:origin-left after:bg-[var(--accent-peach)] after:transition-transform after:duration-500 after:ease-[var(--ease-out-soft)]",
+                    isActive
+                      ? "text-[var(--accent-peach)] after:scale-x-100"
+                      : "text-[var(--text-primary)] after:scale-x-0 hover:text-[var(--accent-peach)] hover:after:scale-x-100",
+                  )}
+                >
+                  {item.title}
+                </Link>
+              );
+            })}
         </nav>
 
-        <div className="flex shrink-0 items-center gap-3">
-          <Button
-            variant="outline"
-            size="sm"
-            className="hidden h-10 rounded-xl px-5 lg:inline-flex"
-          >
-            Call Now
-          </Button>
+        <div className="flex shrink-0 items-center">
           <Button
             variant="primary"
             size="sm"
@@ -73,15 +71,6 @@ export function Navbar() {
           >
             Order on WhatsApp
           </Button>
-          <div className="relative h-10 w-10 overflow-hidden rounded-full border border-[var(--border-warm)] bg-[var(--bg-surface-alt)]">
-            <Image
-              src="/logo/logo.svg"
-              alt="Order status avatar"
-              fill
-              sizes="40px"
-              className="object-cover"
-            />
-          </div>
         </div>
       </div>
     </header>

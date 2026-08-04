@@ -4,17 +4,56 @@ import Link from "next/link";
 export function Footer() {
   return (
     <footer className="bg-[var(--bg-deep)] border-t border-[var(--border-warm)]">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-8 py-12 w-full max-w-7xl mx-auto px-6">
-        <div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12 py-12 w-full max-w-7xl mx-auto px-6">
+        <div className="md:col-span-2 lg:col-span-2 flex flex-col gap-4">
           <Link href="/" className="inline-block">
-            <span className="font-[family:var(--font-serif)] text-3xl font-bold uppercase tracking-[0.16em] text-[var(--text-primary)]">
+            <span className="font-[family:var(--font-serif)] text-2xl lg:text-3xl font-bold uppercase tracking-[0.16em] text-[var(--text-primary)]">
               Tikkay
               <span className="text-[var(--accent-orange)]">Shikkay</span>
             </span>
           </Link>
-          <p className="text-xs text-stone-400 max-w-[280px] leading-relaxed mt-4">
+          <p className="text-xs text-stone-400 max-w-[320px] leading-relaxed mt-2">
             {siteConfig.footer.tagline}
           </p>
+          
+          {/* Social Links Row */}
+          <div className="flex items-center gap-4 mt-2">
+            <a
+              href={siteConfig.socials.instagram}
+              target="_blank"
+              rel="noreferrer"
+              className="w-9 h-9 rounded-full bg-[var(--bg-surface-raised)] border border-[var(--border-warm)]/60 flex items-center justify-center text-[var(--accent-peach)] hover:bg-[var(--accent-orange)] hover:text-black transition-all duration-300 hover:-translate-y-0.5 shadow-sm"
+              aria-label="Instagram"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
+                <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
+              </svg>
+            </a>
+            <a
+              href={siteConfig.socials.facebook}
+              target="_blank"
+              rel="noreferrer"
+              className="w-9 h-9 rounded-full bg-[var(--bg-surface-raised)] border border-[var(--border-warm)]/60 flex items-center justify-center text-[var(--accent-peach)] hover:bg-[var(--accent-orange)] hover:text-black transition-all duration-300 hover:-translate-y-0.5 shadow-sm"
+              aria-label="Facebook"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+              </svg>
+            </a>
+            <a
+              href={siteConfig.socials.tiktok}
+              target="_blank"
+              rel="noreferrer"
+              className="w-9 h-9 rounded-full bg-[var(--bg-surface-raised)] border border-[var(--border-warm)]/60 flex items-center justify-center text-[var(--accent-peach)] hover:bg-[var(--accent-orange)] hover:text-black transition-all duration-300 hover:-translate-y-0.5 shadow-sm"
+              aria-label="TikTok"
+            >
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.02 1.63 4.18 1.02.99 2.44 1.55 3.84 1.64v3.91c-1.39-.02-2.78-.45-3.91-1.29-.22-.16-.43-.34-.63-.54-.05 1.66-.02 3.32-.03 4.98-.05 2.12-.57 4.29-1.92 5.95-1.57 2.01-4.14 3.19-6.66 3.08-2.67-.02-5.26-1.51-6.56-3.84-1.42-2.48-1.18-5.78.58-8.02 1.48-1.93 3.99-3.04 6.42-2.82.02 1.29-.01 2.58-.02 3.87-1.14-.15-2.35.25-3.08 1.13-.77.87-.85 2.19-.24 3.09.58.91 1.7 1.46 2.76 1.34 1.09-.05 2.04-.84 2.24-1.92.09-1.27.03-2.55.05-3.82.02-3.14.01-6.28.02-9.42z"/>
+              </svg>
+            </a>
+          </div>
         </div>
 
         <div>
