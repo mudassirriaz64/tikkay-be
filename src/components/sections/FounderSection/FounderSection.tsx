@@ -9,8 +9,8 @@ export function FounderSection({ details }: { details: FounderDetails }) {
     <section className="bg-[var(--bg-base)] py-[80px]">
       <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-[64px] px-4 md:grid-cols-2 lg:px-[64px]">
         {/* Left Column: Portrait & Overlapping Card */}
-        <Reveal className="relative flex flex-col justify-self-center md:justify-self-start">
-          <div className="relative aspect-[4/5] w-full max-w-[480px] overflow-hidden bg-[var(--bg-surface)] rounded-2xl shadow-xl">
+        <Reveal className="relative w-full max-w-[480px] justify-self-center md:justify-self-start">
+          <div className="relative aspect-[4/5] w-full overflow-hidden bg-[var(--bg-surface)] rounded-2xl shadow-xl">
             <Image
               src={details.portraitUrl}
               alt="Founder Ahmed Raza portrait at the grill"
