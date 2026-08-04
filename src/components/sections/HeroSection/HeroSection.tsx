@@ -150,7 +150,7 @@ export function HeroSection({ settings }: { settings: SiteSettings }) {
           </div>
         </div>
 
-        <div className="hero-widget mt-auto flex max-w-[380px] items-center gap-4 rounded-2xl border border-white/10 bg-black/40 p-4 backdrop-blur-md">
+        <div className="hero-widget mt-auto flex w-full max-w-[380px] items-center gap-4 rounded-2xl border border-white/10 bg-black/40 p-4 backdrop-blur-md">
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[var(--accent-ember)]/15 text-[var(--accent-ember)]">
             <Counter
               target={settings.fresh_batch_count}

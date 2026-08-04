@@ -1,12 +1,17 @@
+"use client";
+
 import { siteConfig } from "@/config/site";
 import { Button } from "@/components/ui/Button";
 import { MessageCircle, ShoppingCart } from "lucide-react";
 import { formatCurrency } from "@/lib/utils/formatCurrency";
+import { useCart } from "@/context/CartContext";
 
 export function StickyOrderBar() {
-  // Hardcoded for Phase 1 visual demo
-  const cartItemCount = 2;
-  const cartTotal = 1100;
+  const { cartItemCount, cartTotal } = useCart();
+
+  if (cartItemCount === 0) {
+    return null;
+  }
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 flex h-[89px] items-center justify-between border-t border-[var(--border-warm)] bg-[rgba(32,31,31,0.95)] px-4 shadow-[0_-10px_30px_rgba(0,0,0,0.45)] backdrop-blur-[12px] md:hidden pb-safe">
@@ -16,7 +21,7 @@ export function StickyOrderBar() {
         </span>
         <div className="mt-1 flex items-center gap-2">
           <span className="rounded-full border border-[var(--border-warm)] bg-[var(--bg-surface-alt)] px-2 py-0.5 text-xs text-[var(--text-muted)]">
-            {cartItemCount} items
+            {cartItemCount} {cartItemCount === 1 ? "item" : "items"}
           </span>
           <span className="font-[family:var(--font-serif)] text-sm font-bold text-[var(--text-primary)]">
             {formatCurrency(cartTotal)}

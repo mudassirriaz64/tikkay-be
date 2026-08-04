@@ -12,7 +12,7 @@ const founderStats = [
 
 export function StorySection() {
   return (
-    <section className="bg-[var(--bg-base)] py-[80px]">
+    <section className="bg-[var(--bg-base)] py-[80px] overflow-hidden">
       <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-[48px] px-4 lg:grid-cols-[minmax(0,520px)_1fr] lg:px-[64px]">
         <Reveal className="relative">
           <div
@@ -24,7 +24,7 @@ export function StorySection() {
             className="absolute -right-12 bottom-0 h-64 w-64 rounded-full bg-[var(--accent-gold)]/20 blur-[90px]"
           />
 
-          <Reveal delay={0.25} y={16} className="absolute -left-4 top-8 z-20 max-w-[280px] border border-[var(--border-warm)] bg-[var(--bg-surface-alt)] px-5 py-4 shadow-[0_12px_24px_rgba(0,0,0,0.2)]">
+          <Reveal delay={0.25} y={16} className="absolute left-0 lg:-left-6 top-8 z-20 max-w-[280px] border border-[var(--border-warm)] bg-[var(--bg-surface-alt)] px-5 py-4 shadow-[0_12px_24px_rgba(0,0,0,0.2)]">
             <p className="text-sm italic leading-[1.5] text-[var(--text-primary)]">
               The grill doesn&rsquo;t lie. It reveals a tradition.
             </p>

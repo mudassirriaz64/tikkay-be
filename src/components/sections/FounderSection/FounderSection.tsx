@@ -6,7 +6,7 @@ import { Reveal } from "@/components/motion/Reveal";
 
 export function FounderSection({ details }: { details: FounderDetails }) {
   return (
-    <section className="bg-[var(--bg-base)] py-[80px]">
+    <section className="bg-[var(--bg-base)] py-[80px] overflow-hidden">
       <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-[64px] px-4 md:grid-cols-2 lg:px-[64px]">
         {/* Left Column: Portrait & Overlapping Card */}
         <Reveal className="relative w-full max-w-[480px] justify-self-center md:justify-self-start">
@@ -23,7 +23,7 @@ export function FounderSection({ details }: { details: FounderDetails }) {
           {/* Peach Quote Card overlapping bottom right */}
           <Reveal
             delay={0.2}
-            className="absolute -right-4 bottom-8 z-20 max-w-[280px] bg-[var(--accent-peach)] p-6 rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.3)] md:-right-8"
+            className="absolute right-0 bottom-8 z-20 max-w-[280px] bg-[var(--accent-peach)] p-6 rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.3)] md:-right-8"
           >
             <p className="font-[family:var(--font-serif)] text-sm italic leading-relaxed text-[#611200]">
               "{details.quote}"

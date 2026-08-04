@@ -1,11 +1,17 @@
+"use client";
+
 import Image from "next/image";
 import { Card } from "../Card";
 import { FlameRating } from "../FlameRating";
+import { Button } from "../Button";
 import { formatCurrency } from "@/lib/utils/formatCurrency";
 import { MenuItemCardProps } from "./MenuItemCard.types";
 import { cn } from "@/lib/utils/cn";
+import { useCart } from "@/context/CartContext";
 
 export function MenuItemCard({ item, category, className, ...props }: MenuItemCardProps) {
+  const { addToCart } = useCart();
+
   return (
     <Card
       className={cn(
@@ -47,6 +53,14 @@ export function MenuItemCard({ item, category, className, ...props }: MenuItemCa
 
         <div className="flex items-center justify-between border-t border-white/10 pt-3">
           <FlameRating level={item.spice_level} className="min-w-0" />
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-8 rounded-lg px-3.5 text-[11px] font-bold uppercase tracking-wider text-[var(--accent-orange)] border-[var(--accent-orange)]/30 hover:bg-[var(--accent-orange)] hover:text-[var(--text-on-orange)] hover:border-transparent active:scale-95 transition-all"
+            onClick={() => addToCart(item)}
+          >
+            Add to Order
+          </Button>
         </div>
       </div>
     </Card>

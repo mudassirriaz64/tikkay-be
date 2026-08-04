@@ -58,8 +58,8 @@ export function TimelineVertical({ posts }: { posts: JourneyPost[] }) {
                     {/* Faded year background */}
                     <div
                       className={cn(
-                        "absolute -top-12 text-[72px] font-bold font-[family:var(--font-serif)] text-white/5 select-none leading-none z-0 select-none uppercase tracking-wider pointer-events-none md:-top-16 md:text-[96px]",
-                        isEven ? "md:right-0" : "md:left-0"
+                        "absolute -top-12 text-[72px] font-bold font-[family:var(--font-serif)] text-white/5 select-none leading-none z-0 uppercase tracking-wider pointer-events-none md:-top-16 md:text-[96px]",
+                        isEven ? "left-0 md:left-auto md:right-0" : "left-0"
                       )}
                     >
                       {yearLabel}

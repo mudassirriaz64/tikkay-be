@@ -2,6 +2,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { StickyOrderBar } from "@/components/sections/StickyOrderBar";
 import { MotionProvider } from "@/providers/MotionProvider";
+import { CartProvider } from "@/context/CartContext";
 import "./globals.css";
 import { Metadata } from "next";
 import { siteConfig } from "@/config/site";
@@ -23,10 +24,12 @@ export default function RootLayout({
         className="antialiased selection:bg-[var(--accent-peach)] selection:text-[var(--text-on-peach)] pb-[89px] md:pb-0"
       >
         <MotionProvider>
-          <Navbar />
-          <main>{children}</main>
-          <Footer />
-          <StickyOrderBar />
+          <CartProvider>
+            <Navbar />
+            <main>{children}</main>
+            <Footer />
+            <StickyOrderBar />
+          </CartProvider>
         </MotionProvider>
       </body>
     </html>
