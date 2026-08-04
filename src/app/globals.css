@@ -1,0 +1,28 @@
+@import "../styles/tokens.css";
+
+.hero-title {
+  font-family: var(--font-serif);
+  font-weight: 400;
+}
+
+.hero-title .hero-accent {
+  color: var(--accent-coral);
+}
+
+.image-render-crisp {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+html,
+body {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
