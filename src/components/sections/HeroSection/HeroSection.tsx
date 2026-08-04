@@ -107,9 +107,9 @@ export function HeroSection({ settings }: { settings: SiteSettings }) {
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[var(--bg-base)]/85" />
       </div>
 
-      <div className="relative mx-auto flex min-h-[760px] max-w-[1280px] flex-col px-4 pt-16 pb-20 lg:px-[64px]">
-        <div className="flex flex-1 flex-col justify-center">
-          <div className="max-w-4xl space-y-8">
+      <div className="relative mx-auto flex min-h-[660px] md:min-h-[700px] max-w-[1280px] flex-col px-4 pt-10 pb-16 lg:px-[64px]">
+        <div className="flex flex-1 flex-col justify-start pt-12 lg:pt-16">
+          <div className="max-w-4xl space-y-6">
             <div className="hero-eyebrow">
               <EyebrowBadge label="Pakistan's First BBQ Brand" color="gold" />
             </div>
