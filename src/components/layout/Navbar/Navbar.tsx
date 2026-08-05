@@ -49,7 +49,7 @@ export function Navbar() {
         )}
       >
         <div className="relative mx-auto flex h-full max-w-[1280px] items-center justify-between gap-6 px-4 lg:px-[64px]">
-          <Link href="/" className="shrink-0 flex items-center">
+          <Link href="/" className="flex shrink-0 items-center gap-3">
             <div className={cn(
               "relative overflow-hidden transition-all duration-300 ease-in-out",
               scrolled ? "h-9 w-9" : "h-11 w-11"
@@ -62,6 +62,13 @@ export function Navbar() {
                 className="object-contain"
               />
             </div>
+            <span className={cn(
+              "hidden font-[family:var(--font-serif)] font-bold uppercase tracking-[0.16em] text-[var(--text-primary)] transition-all duration-300 ease-in-out min-[420px]:inline-block",
+              scrolled ? "text-base" : "text-lg"
+            )}>
+              Tikkay
+              <span className="text-[var(--accent-orange)]">Shikkay</span>
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
