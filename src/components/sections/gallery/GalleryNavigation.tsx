@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { motion, useScroll } from "framer-motion";
 import { Camera, ChefHat, Flame, Users } from "lucide-react";
 import { GalleryTab } from "@/components/ui/gallery/GalleryTab";
@@ -16,45 +15,16 @@ const ICONS: Record<GalleryTabIcon, typeof Users> = {
 
 interface GalleryNavigationProps {
   tabs: GalleryTabType[];
+  activeId: string;
+  onChange: (id: string) => void;
 }
 
-export function GalleryNavigation({ tabs }: GalleryNavigationProps) {
-  const [activeId, setActiveId] = useState(tabs[0]?.sectionId ?? "");
+export function GalleryNavigation({
+  tabs,
+  activeId,
+  onChange,
+}: GalleryNavigationProps) {
   const { scrollYProgress } = useScroll();
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const pos = window.scrollY + 180;
-      let current = tabs[0]?.sectionId ?? "";
-      let currentTop = -Infinity;
-
-      for (const tab of tabs) {
-        const el = document.getElementById(tab.sectionId);
-        if (!el) continue;
-        const top = el.getBoundingClientRect().top + window.scrollY;
-        if (top <= pos && top > currentTop) {
-          currentTop = top;
-          current = tab.sectionId;
-        }
-      }
-
-      setActiveId(current);
-    };
-
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("resize", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("resize", handleScroll);
-    };
-  }, [tabs]);
-
-  const scrollToSection = (sectionId: string) => {
-    const el = document.getElementById(sectionId);
-    if (!el) return;
-    el.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
 
   return (
     <>
@@ -64,12 +34,13 @@ export function GalleryNavigation({ tabs }: GalleryNavigationProps) {
       >
         <div className="mx-auto max-w-[1280px] px-4 pb-4 lg:px-[64px]">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {tabs.map((tab) => (
+            {tabs.map((tab, index) => (
               <GalleryTab
                 key={tab.id}
                 tab={tab}
+                index={index}
                 active={activeId === tab.sectionId}
-                onClick={() => scrollToSection(tab.sectionId)}
+                onClick={() => onChange(tab.sectionId)}
               />
             ))}
           </div>
@@ -90,7 +61,7 @@ export function GalleryNavigation({ tabs }: GalleryNavigationProps) {
                   key={tab.id}
                   type="button"
                   aria-pressed={active}
-                  onClick={() => scrollToSection(tab.sectionId)}
+                  onClick={() => onChange(tab.sectionId)}
                   className={cn(
                     "relative inline-flex items-center gap-2 whitespace-nowrap rounded-full px-4 py-2 text-sm font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-peach)]/60",
                     active

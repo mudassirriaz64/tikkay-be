@@ -1,11 +1,7 @@
 import { MotionConfig } from "framer-motion";
 import { getGalleryPageData } from "@/lib/data/getGallery";
 import { GalleryHero } from "@/components/sections/gallery/GalleryHero";
-import { GalleryNavigation } from "@/components/sections/gallery/GalleryNavigation";
-import { CustomerStories } from "@/components/sections/gallery/CustomerStories";
-import { KitchenStories } from "@/components/sections/gallery/KitchenStories";
-import { BrandJourney } from "@/components/sections/gallery/BrandJourney";
-import { PhotoGallery } from "@/components/sections/gallery/PhotoGallery";
+import { GalleryExplorer } from "@/components/sections/gallery/GalleryExplorer";
 import { GalleryCTA } from "@/components/sections/gallery/GalleryCTA";
 
 export const metadata = {
@@ -21,16 +17,17 @@ export default async function GalleryPage() {
     <div className="bg-[var(--bg-base)]">
       <MotionConfig reducedMotion="user">
         <GalleryHero data={data.hero} />
-        <GalleryNavigation tabs={data.tabs} />
-        <CustomerStories
+        <GalleryExplorer
+          tabs={data.tabs}
           videos={data.videos}
           instagram={data.instagram}
           googleReviews={data.googleReviews}
           stories={data.stories}
+          kitchen={data.kitchen}
+          journey={data.journey}
+          gallery={data.gallery}
+          categories={data.galleryCategories}
         />
-        <KitchenStories kitchen={data.kitchen} />
-        <BrandJourney journey={data.journey} />
-        <PhotoGallery gallery={data.gallery} categories={data.galleryCategories} />
         <GalleryCTA data={data.cta} />
       </MotionConfig>
     </div>

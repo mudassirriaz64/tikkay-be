@@ -40,10 +40,7 @@ export function PhotoGallery({ gallery, categories }: PhotoGalleryProps) {
   };
 
   return (
-    <section
-      id="gallery"
-      className="scroll-mt-[140px] bg-[var(--bg-deep)] py-[88px] lg:py-[112px]"
-    >
+    <section className="bg-[var(--bg-deep)] py-[88px] lg:py-[112px]">
       <div className="mx-auto max-w-[1280px] px-4 lg:px-[64px]">
         <Reveal className="mb-10">
           <SectionHeading

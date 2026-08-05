@@ -116,10 +116,7 @@ export function CustomerStories({
   stories,
 }: CustomerStoriesProps) {
   return (
-    <section
-      id="customers"
-      className="scroll-mt-[140px] bg-[var(--bg-base)] py-[88px] lg:py-[112px]"
-    >
+    <section className="bg-[var(--bg-base)] py-[88px] lg:py-[112px]">
       <div className="mx-auto max-w-[1280px] px-4 lg:px-[64px]">
         <Reveal className="mb-12">
           <SectionHeading
