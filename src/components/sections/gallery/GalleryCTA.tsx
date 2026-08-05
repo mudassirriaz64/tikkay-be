@@ -1,15 +1,15 @@
 import { CTABanner } from "@/components/ui/CTABanner";
-import { ReviewsCtaData } from "@/types";
+import { GalleryCtaData } from "@/types";
 
-interface ReviewCTAProps {
-  data: ReviewsCtaData;
+interface GalleryCTAProps {
+  data: GalleryCtaData;
 }
 
-export function ReviewCTA({ data }: ReviewCTAProps) {
+export function GalleryCTA({ data }: GalleryCTAProps) {
   return (
     <CTABanner
       data={{
-        eyebrow: "Your Turn To Be Heard",
+        eyebrow: "The Story Continues",
         title: data.title,
         description: data.description,
         primaryLabel: data.primaryLabel,

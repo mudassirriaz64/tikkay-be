@@ -1,3 +1,5 @@
+import { GalleryImage } from "./gallery";
+
 export type ReviewSource = "Google" | "Instagram" | "Direct";
 
 export type ReviewCategory =
@@ -48,13 +50,6 @@ export interface VideoReview {
   duration: string;
   thumbnail: string;
   category: ReviewCategory;
-}
-
-export interface GalleryImage {
-  id: string;
-  imageUrl: string;
-  caption: string;
-  tag: string;
 }
 
 export interface ReviewsHeroData {
