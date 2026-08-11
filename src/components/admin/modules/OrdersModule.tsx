@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useAdminData } from "@/providers/AdminDataProvider";
 import { Badge, BadgeTone, PageHeader, SectionCard, StatCard } from "../ui/panel";
-import { Toggle } from "../ui/controls";
+import { Select, Toggle } from "../ui/controls";
 import { Button } from "@/components/ui/Button";
 import { formatCurrency } from "@/lib/utils/formatCurrency";
 import { formatDate } from "@/lib/utils/formatDate";
@@ -13,12 +13,21 @@ import {
   MapPin,
   Package,
   Phone,
+  PencilLine,
   Receipt,
   ShoppingBag,
   Star,
   UserRound,
   Wallet,
 } from "lucide-react";
+
+const ORDER_STATUSES: OrderStatus[] = [
+  "placed",
+  "preparing",
+  "ready",
+  "out-for-delivery",
+  "delivered",
+];
 
 const ORDER_STATUS_META: Record<OrderStatus, { label: string; tone: BadgeTone }> = {
   placed: { label: "Placed", tone: "neutral" },
@@ -44,6 +53,13 @@ export function OrdersModule() {
       reviews: data.orders.reviews.map((r) =>
         r.id === review.id ? { ...r, is_approved: !r.is_approved } : r,
       ),
+    });
+  }
+
+  function updateOrderStatus(id: string, status: OrderStatus) {
+    updateSlice("orders", {
+      ...data.orders,
+      orders: orders.map((o) => (o.id === id ? { ...o, status } : o)),
     });
   }
 
@@ -114,7 +130,7 @@ export function OrdersModule() {
       {showAllOrders ? (
         <SectionCard
           title="All Orders"
-          description="Every order placed by the guest, with live status"
+          description="Every order placed by the guest - update any status directly"
         >
           <ul className="divide-y divide-[var(--border-warm)]">
             {orders.map((order) => {
@@ -144,9 +160,31 @@ export function OrdersModule() {
                       })}
                     </p>
                   </div>
-                  <p className="shrink-0 text-sm font-bold text-[var(--text-primary)]">
-                    {formatCurrency(order.total)}
-                  </p>
+                  <div className="flex shrink-0 flex-col items-start gap-2 sm:items-end">
+                    <p className="text-sm font-bold text-[var(--text-primary)]">
+                      {formatCurrency(order.total)}
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <PencilLine
+                        className="h-3.5 w-3.5 text-[var(--text-faint)]"
+                        aria-hidden="true"
+                      />
+                      <Select
+                        value={order.status}
+                        onChange={(e) =>
+                          updateOrderStatus(order.id, e.target.value as OrderStatus)
+                        }
+                        aria-label={`Update status for ${order.id}`}
+                        className="h-9 w-48 py-1.5 text-xs"
+                      >
+                        {ORDER_STATUSES.map((s) => (
+                          <option key={s} value={s}>
+                            {ORDER_STATUS_META[s].label}
+                          </option>
+                        ))}
+                      </Select>
+                    </div>
+                  </div>
                 </li>
               );
             })}
@@ -154,7 +192,8 @@ export function OrdersModule() {
         </SectionCard>
       ) : null}
 
-      <div className="grid grid-cols-1 gap-6 xl:grid-cols-5">
+      {!showAllOrders ? (
+        <div className="grid grid-cols-1 gap-6 xl:grid-cols-5">
         <SectionCard
           title="Guest Profile"
           description="Demo account shown on the accounts page"
@@ -236,7 +275,8 @@ export function OrdersModule() {
             ))}
           </ul>
         </SectionCard>
-      </div>
+        </div>
+      ) : null}
     </div>
   );
 }
