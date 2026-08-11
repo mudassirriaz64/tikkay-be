@@ -31,7 +31,7 @@ export function ContactInput({
 }: ContactInputProps) {
   const fieldClasses = cn(
     "peer w-full rounded-xl border bg-[var(--bg-surface-alt)] px-4 text-[var(--text-primary)] outline-none transition-all duration-300 placeholder-transparent",
-    textarea ? "min-h-[136px] resize-none pb-3 pt-6" : "h-14 pb-2 pt-6",
+    textarea ? "min-h-[136px] resize-none pb-3 pt-9" : "h-14 pb-2 pt-6",
     error
       ? "border-[var(--accent-ember)]/70 focus:border-[var(--accent-ember)] focus:shadow-[0_0_0_4px_rgba(217,56,30,0.12)]"
       : "border-[var(--border-warm)] focus:border-[var(--accent-peach)]/70 focus:shadow-[0_0_0_4px_rgba(255,180,162,0.08)]",
@@ -40,7 +40,7 @@ export function ContactInput({
   const labelClasses = cn(
     "pointer-events-none absolute left-4 text-[var(--text-muted)] transition-all duration-300",
     textarea
-      ? "top-5 text-sm peer-placeholder-shown:top-6 peer-focus:top-5 peer-focus:text-xs"
+      ? "top-4 text-xs peer-placeholder-shown:top-6 peer-placeholder-shown:text-sm"
       : "top-3 text-xs peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-sm",
     error ? "text-[var(--accent-ember)]" : "peer-focus:text-[var(--accent-peach)]",
   );
