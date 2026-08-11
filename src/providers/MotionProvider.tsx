@@ -13,8 +13,6 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import Lenis from "lenis";
 
-// helo
-
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 interface MotionContextValue {
