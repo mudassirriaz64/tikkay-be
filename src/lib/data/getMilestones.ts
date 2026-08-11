@@ -1,6 +1,7 @@
-import { mockMilestones } from "../mock/milestones";
+import { db } from "./defaults";
+import { MilestoneStat } from "../mock/milestones";
 
-export async function getMilestones() {
+export async function getMilestones(): Promise<MilestoneStat[]> {
   await new Promise((resolve) => setTimeout(resolve, 500));
-  return mockMilestones;
+  return db.about.milestones;
 }
