@@ -1,11 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import { useAdminData } from "@/providers/AdminDataProvider";
-import { PageHeader, SectionCard, StatCard } from "../ui/panel";
+import { Badge, BadgeTone, PageHeader, SectionCard, StatCard } from "../ui/panel";
 import { Toggle } from "../ui/controls";
+import { Button } from "@/components/ui/Button";
 import { formatCurrency } from "@/lib/utils/formatCurrency";
 import { formatDate } from "@/lib/utils/formatDate";
-import { AccountReview } from "@/types";
+import { AccountOrder, AccountReview, OrderStatus } from "@/types";
 import {
   Mail,
   MapPin,
@@ -18,8 +20,17 @@ import {
   Wallet,
 } from "lucide-react";
 
+const ORDER_STATUS_META: Record<OrderStatus, { label: string; tone: BadgeTone }> = {
+  placed: { label: "Placed", tone: "neutral" },
+  preparing: { label: "In The Kitchen", tone: "orange" },
+  ready: { label: "Ready", tone: "gold" },
+  "out-for-delivery": { label: "Out For Delivery", tone: "peach" },
+  delivered: { label: "Delivered", tone: "green" },
+};
+
 export function OrdersModule() {
   const { data, updateSlice } = useAdminData();
+  const [showAllOrders, setShowAllOrders] = useState(false);
 
   const profile = data.orders.profile;
   const orders = data.orders.orders;
@@ -34,6 +45,10 @@ export function OrdersModule() {
         r.id === review.id ? { ...r, is_approved: !r.is_approved } : r,
       ),
     });
+  }
+
+  function orderItemsLabel(order: AccountOrder) {
+    return order.items.map((i) => `${i.title} ×${i.quantity}`).join(", ");
   }
 
   const profileFields = [
@@ -56,6 +71,17 @@ export function OrdersModule() {
         eyebrow="Fulfilment"
         title="Orders"
         description="One guest account powers the demo experience. Manage the profile shown on the accounts page and moderate this guest's reviews."
+        actions={
+          <Button
+            variant={showAllOrders ? "secondary" : "outline"}
+            size="sm"
+            onClick={() => setShowAllOrders((s) => !s)}
+            className="flex items-center gap-2 rounded-xl"
+          >
+            <ShoppingBag className="h-4 w-4" aria-hidden="true" />
+            {showAllOrders ? "Hide All Orders" : `All Orders (${orders.length})`}
+          </Button>
+        }
       />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -84,6 +110,49 @@ export function OrdersModule() {
           sub="Across all orders"
         />
       </div>
+
+      {showAllOrders ? (
+        <SectionCard
+          title="All Orders"
+          description="Every order placed by the guest, with live status"
+        >
+          <ul className="divide-y divide-[var(--border-warm)]">
+            {orders.map((order) => {
+              const meta = ORDER_STATUS_META[order.status];
+              return (
+                <li
+                  key={order.id}
+                  className="flex flex-col gap-3 py-4 first:pt-0 last:pb-0 sm:flex-row sm:items-center sm:justify-between"
+                >
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="text-sm font-bold text-[var(--text-primary)]">
+                        {order.id}
+                      </p>
+                      <Badge tone={meta.tone}>{meta.label}</Badge>
+                    </div>
+                    <p className="mt-1 truncate text-xs text-[var(--text-muted)]">
+                      {orderItemsLabel(order)}
+                    </p>
+                    <p className="mt-0.5 text-xs text-[var(--text-faint)]">
+                      {new Date(order.placedAt).toLocaleDateString("en-US", {
+                        weekday: "short",
+                        month: "short",
+                        day: "numeric",
+                        hour: "numeric",
+                        minute: "2-digit",
+                      })}
+                    </p>
+                  </div>
+                  <p className="shrink-0 text-sm font-bold text-[var(--text-primary)]">
+                    {formatCurrency(order.total)}
+                  </p>
+                </li>
+              );
+            })}
+          </ul>
+        </SectionCard>
+      ) : null}
 
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-5">
         <SectionCard
