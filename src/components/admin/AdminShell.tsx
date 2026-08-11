@@ -41,7 +41,7 @@ export function AdminShell({ activeTab, onTabChange, children }: AdminShellProps
   }
 
   return (
-    <div className="flex min-h-screen bg-[var(--bg-deep)]">
+    <div className="min-h-screen bg-[var(--bg-deep)]">
       {/* Mobile overlay */}
       {mobileOpen ? (
         <button
@@ -52,13 +52,12 @@ export function AdminShell({ activeTab, onTabChange, children }: AdminShellProps
         />
       ) : null}
 
-      {/* Sidebar */}
+      {/* Sidebar — fixed, never scrolls with the page */}
       <aside
         className={cn(
           "fixed inset-y-0 left-0 z-50 flex flex-col border-r border-[var(--border-warm)] bg-[rgba(12,12,12,0.97)] transition-[width,transform] duration-300 ease-out",
           collapsed ? "w-[76px]" : "w-64",
-          mobileOpen ? "translate-x-0" : "-translate-x-full",
-          "lg:sticky lg:top-0 lg:h-screen lg:translate-x-0",
+          mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
         )}
       >
         {/* Brand */}
@@ -148,7 +147,12 @@ export function AdminShell({ activeTab, onTabChange, children }: AdminShellProps
       </aside>
 
       {/* Main column */}
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div
+        className={cn(
+          "flex min-w-0 flex-col transition-[padding-left] duration-300 ease-out",
+          collapsed ? "lg:pl-[76px]" : "lg:pl-64",
+        )}
+      >
         {/* Top bar */}
         <header className="sticky top-0 z-30 border-b border-[var(--border-warm)] bg-[rgba(14,14,14,0.92)] backdrop-blur-[10px]">
           <div className="flex h-16 items-center justify-between gap-4 px-4 lg:px-8">
