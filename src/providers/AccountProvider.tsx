@@ -18,6 +18,7 @@ interface AccountContextType {
   removeReview: (reviewId: string) => void;
   updateReview: (reviewId: string, patch: Partial<AccountReview>) => void;
   reorder: (order: AccountOrder, menuItems: MenuItem[]) => void;
+  deleteAccount: () => void;
 }
 
 const AccountContext = createContext<AccountContextType | undefined>(undefined);
@@ -107,6 +108,12 @@ export function AccountProvider({
     [addToCart],
   );
 
+  const deleteAccount = useCallback(() => {
+    setProfile(null);
+    setFavorites([]);
+    setReviews([]);
+  }, [setProfile, setFavorites, setReviews]);
+
   return (
     <AccountContext.Provider
       value={{
@@ -122,6 +129,7 @@ export function AccountProvider({
         removeReview,
         updateReview,
         reorder,
+        deleteAccount,
       }}
     >
       {children}

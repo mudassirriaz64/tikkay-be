@@ -8,7 +8,7 @@ interface ContactInputProps {
   value: string;
   onChange: (value: string) => void;
   name?: string;
-  type?: "text" | "email" | "tel";
+  type?: "text" | "email" | "tel" | "password";
   error?: string;
   textarea?: boolean;
   required?: boolean;
