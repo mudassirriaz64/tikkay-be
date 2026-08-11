@@ -1,13 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { ReactNode, useEffect, useState } from "react";
 import { cn } from "@/lib/utils/cn";
 import {
   ChevronLeft,
   ChevronRight,
   ExternalLink,
-  Flame,
+  LogOut,
   Menu,
   RotateCcw,
   X,
@@ -67,9 +68,15 @@ export function AdminShell({ activeTab, onTabChange, children }: AdminShellProps
             collapsed && "lg:justify-center lg:px-0",
           )}
         >
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[var(--accent-orange)]/15 text-[var(--accent-orange)]">
-            <Flame className="h-5 w-5" />
-          </span>
+          <div className="relative h-9 w-9 shrink-0 overflow-hidden">
+            <Image
+              src="/logo/logo_transparent.png"
+              alt="Tikkay Shikkay Logo"
+              fill
+              sizes="36px"
+              className="object-contain"
+            />
+          </div>
           <div className={cn("leading-tight", collapsed && "lg:hidden")}>
             <p className="font-[family:var(--font-serif)] text-sm font-bold uppercase tracking-[0.14em] text-[var(--text-primary)]">
               Tikkay<span className="text-[var(--accent-orange)]">Shikkay</span>
@@ -123,8 +130,27 @@ export function AdminShell({ activeTab, onTabChange, children }: AdminShellProps
           })}
         </nav>
 
-        {/* Collapse toggle (desktop) */}
-        <div className="shrink-0 border-t border-[var(--border-warm)] p-3">
+        {/* Collapse toggle + Logout (bottom) */}
+        <div className="shrink-0 space-y-1.5 border-t border-[var(--border-warm)] p-3">
+          <Link
+            href="/"
+            title={collapsed ? "Logout" : undefined}
+            className={cn(
+              "flex w-full items-center gap-3 rounded-xl border border-transparent px-3 py-2.5 text-left text-sm font-bold uppercase tracking-[0.1em] text-[var(--text-muted)] transition-all duration-300 hover:bg-[var(--accent-red)]/10 hover:text-[var(--accent-red)]",
+              collapsed && "lg:justify-center lg:px-0",
+            )}
+          >
+            <LogOut className="h-[18px] w-[18px] shrink-0" />
+            <span
+              className={cn(
+                "whitespace-nowrap",
+                collapsed && "lg:hidden",
+              )}
+            >
+              Logout
+            </span>
+          </Link>
+
           <button
             type="button"
             onClick={() => setCollapsed((c) => !c)}
