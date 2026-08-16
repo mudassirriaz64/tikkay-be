@@ -38,7 +38,7 @@ export const getAboutPageData = asyncHandler(async function (_req: Request, res:
     getOrCreateFounder(),
     StatItem.find().sort({ display_order: 1 }),
     JourneyPostModel.find().sort({ display_order: 1, day_number: 1 }),
-    MilestoneStat.find().sort({ display_order: 1, year: 1 }),
+    MilestoneStat.find().sort({ display_order: 1 }),
   ]);
 
   const pageData = {

@@ -51,6 +51,34 @@ export const protect = asyncHandler(async (req: AuthRequest, _res: Response, nex
   }
 });
 
+export const protectOptional = asyncHandler(async (req: AuthRequest, _res: Response, next: NextFunction) => {
+  let token: string | undefined;
+
+  token = req.cookies?.accessToken ||
+    (req.headers.authorization?.startsWith('Bearer')
+      ? req.headers.authorization.split(' ')[1]
+      : undefined);
+
+  if (!token) return next();
+
+  try {
+    const decodedToken = jwt.verify(token, config.JWT_SECRET) as JwtPayload;
+    const user = await User.findById(decodedToken?._id).select('-password -refreshToken -__v');
+
+    if (user) {
+      req.user = {
+        _id: user._id.toString(),
+        name: user.name,
+        email: user.email,
+        role: user.role as UserRole,
+      };
+    }
+    next();
+  } catch {
+    next();
+  }
+});
+
 export const verifyRole = (...allowedRoles: UserRole[]) => {
   return (req: AuthRequest, _res: Response, next: NextFunction) => {
     if (!req.user?.role) {

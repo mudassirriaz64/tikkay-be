@@ -27,7 +27,7 @@ export interface IOrder extends Document {
   deliveryFee: number;
   total: number;
   status: OrderStatus;
-  payment_method: 'cash' | 'card' | 'wallet';
+  payment_method: 'cash' | 'card' | 'online';
   payment_status: 'pending' | 'paid' | 'failed';
   order_notes?: string;
   timeline: IOrderTimelineStep[];
@@ -77,7 +77,7 @@ const orderSchema = new Schema<IOrder>(
     },
     payment_method: {
       type: String,
-      enum: ['cash', 'card', 'wallet'],
+      enum: ['cash', 'card', 'online'],
       default: 'cash',
     },
     payment_status: {

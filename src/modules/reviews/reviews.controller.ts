@@ -10,6 +10,7 @@ import {
 } from './reviews.model';
 import { AuthRequest } from '../../middleware/auth.middleware';
 import { GalleryImage } from '../gallery/gallery.model';
+import { Types } from 'mongoose';
 
 const getOrCreatePageConfig = async (): Promise<any> => {
   let config = await ReviewsPageConfig.findOne({});
@@ -60,9 +61,10 @@ export const getPendingReviews = asyncHandler(async (_req: AuthRequest, res: Res
     .json(new ApiResponse(200, reviews, 'Pending reviews fetched successfully'));
 });
 
-export const createReview = asyncHandler(async (req: Request, res: Response) => {
+export const createReview = asyncHandler(async (req: AuthRequest, res: Response) => {
   const review = await CustomerReview.create({
     ...req.body,
+    user_id: req.user?._id ? new Types.ObjectId(req.user._id) : undefined,
     is_approved: false,
   });
 

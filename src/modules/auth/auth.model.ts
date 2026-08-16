@@ -1,4 +1,4 @@
-import { Schema, model, Document, Model } from 'mongoose';
+import { Schema, model, Document, Model, Types } from 'mongoose';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { config } from '../../config';
@@ -13,6 +13,7 @@ export interface IUser extends Document {
   role: UserRole;
   refreshToken?: string;
   memberSince: string;
+  favorites: Types.ObjectId[];
   isPasswordCorrect(password: string): Promise<boolean>;
   generateAccessToken(): string;
   generateRefreshToken(): string;
@@ -65,6 +66,11 @@ const userSchema = new Schema<IUser, IUserModel>(
     memberSince: {
       type: String,
       default: () => new Date().toISOString().split('T')[0],
+    },
+    favorites: {
+      type: [Schema.Types.ObjectId],
+      ref: 'MenuItem',
+      default: [],
     },
   },
   {

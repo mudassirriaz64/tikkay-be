@@ -23,10 +23,8 @@ export interface IStatItem extends Document {
 }
 
 export interface IMilestoneStat extends Document {
-  year: string;
-  title: string;
-  description?: string;
-  value?: string;
+  number: string;
+  label: string;
   display_order: number;
 }
 
@@ -67,10 +65,8 @@ const statItemSchema = new Schema<IStatItem>(
 
 const milestoneStatSchema = new Schema<IMilestoneStat>(
   {
-    year: { type: String, required: true },
-    title: { type: String, required: true },
-    description: { type: String, default: '' },
-    value: { type: String, default: '' },
+    number: { type: String, required: true },
+    label: { type: String, required: true },
     display_order: { type: Number, default: 0 },
   },
   { timestamps: true }

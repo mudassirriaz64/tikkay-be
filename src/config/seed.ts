@@ -443,12 +443,12 @@ const seed = async () => {
 
     log('Seeding Milestones (About)...');
     await MilestoneStat.create([
-      { year: '2013', title: 'Founded', description: 'Tikkay Shikkay starts as a backyard grill passion project.', display_order: 1 },
-      { year: '2015', title: 'First Outlet', description: 'First small outlet opens in Lahore with 8 seats.', display_order: 2 },
-      { year: '2018', title: 'Award Winner', description: 'Wins Best BBQ Award - Pakistan Restaurant Awards.', value: '#1 BBQ', display_order: 3 },
-      { year: '2021', title: '3 New Cities', description: 'Expands to Karachi, Islamabad, and Multan.', value: '+5 Outlets', display_order: 4 },
-      { year: '2024', title: '12 Locations', description: 'Nationwide footprint with 12 active locations.', value: '12 Hubs', display_order: 5 },
-      { year: '2026', title: 'Going Global', description: 'International franchise expansion begins.', display_order: 6 },
+      { number: '2013', label: 'Founded', display_order: 1 },
+      { number: '2015', label: 'First Outlet', display_order: 2 },
+      { number: '2018', label: 'Award Winner', display_order: 3 },
+      { number: '2021', label: '3 New Cities', display_order: 4 },
+      { number: '2024', label: '12 Locations', display_order: 5 },
+      { number: '2026', label: 'Going Global', display_order: 6 },
     ]);
     success('About Milestones seeded');
 

@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { verifyAdmin, protect } from '../../middleware/auth.middleware';
+import { verifyAdmin, protect, protectOptional } from '../../middleware/auth.middleware';
 import {
   getReviewsPageData,
   getPendingReviews,
@@ -33,13 +33,7 @@ router.route('/')
     const reviews = await CustomerReview.find({ is_approved: true }).sort({ display_order: 1, createdAt: -1 });
     res.json({ success: true, data: reviews, message: 'Reviews fetched' });
   }))
-  .post(createReview);
-
-router.route('/pending').get(protect, verifyAdmin, getPendingReviews);
-router.route('/:id/approve').patch(protect, verifyAdmin, approveReview);
-router.route('/:id')
-  .patch(protect, verifyAdmin, updateReview)
-  .delete(protect, verifyAdmin, deleteReview);
+  .post(protectOptional, createReview);
 
 router.route('/statistics')
   .get(getStatistics)
@@ -56,5 +50,11 @@ router.route('/videos')
 router.route('/videos/:id')
   .patch(protect, verifyAdmin, updateVideoReview)
   .delete(protect, verifyAdmin, deleteVideoReview);
+
+router.route('/pending').get(protect, verifyAdmin, getPendingReviews);
+router.route('/:id/approve').patch(protect, verifyAdmin, approveReview);
+router.route('/:id')
+  .patch(protect, verifyAdmin, updateReview)
+  .delete(protect, verifyAdmin, deleteReview);
 
 export default router;

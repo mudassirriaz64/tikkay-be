@@ -33,6 +33,10 @@ export const createOrder = asyncHandler(async (req: Request, res: Response) => {
     throw new ApiError(400, 'Order must contain at least one item');
   }
 
+  if (user_id !== undefined && user_id !== null && !Types.ObjectId.isValid(user_id)) {
+    throw new ApiError(400, 'Invalid user_id');
+  }
+
   const placedAt = new Date().toISOString();
   const order = await Order.create({
     user_id: user_id ? new Types.ObjectId(user_id) : undefined,
@@ -72,7 +76,8 @@ export const getAllOrders = asyncHandler(async (req: AuthRequest, res: Response)
   if (status) filter.status = status;
 
   const query = Order.find(filter).sort({ createdAt: -1 });
-  if (limit) query.limit(parseInt(limit as string, 10));
+  const parsedLimit = limit ? parseInt(limit as string, 10) : NaN;
+  if (Number.isFinite(parsedLimit) && parsedLimit > 0) query.limit(parsedLimit);
 
   const orders = await query;
 
@@ -81,11 +86,17 @@ export const getAllOrders = asyncHandler(async (req: AuthRequest, res: Response)
     .json(new ApiResponse(200, orders, 'All orders fetched successfully'));
 });
 
-export const getOrderById = asyncHandler(async (req: Request, res: Response) => {
+export const getOrderById = asyncHandler(async (req: AuthRequest, res: Response) => {
   const { id } = req.params;
   const order = await Order.findById(id);
 
   if (!order) {
+    throw new ApiError(404, 'Order not found');
+  }
+
+  const isAdmin = req.user?.role === 'admin';
+  const isOwner = order.user_id && order.user_id.toString() === req.user?._id;
+  if (!isAdmin && !isOwner) {
     throw new ApiError(404, 'Order not found');
   }
 

@@ -22,7 +22,7 @@ const getOrCreatePageConfig = async (): Promise<any> => {
 export const getMenuPageData = asyncHandler(async (_req: Request, res: Response) => {
   const [categories, items, pageConfig] = await Promise.all([
     MenuCategory.find().sort({ display_order: 1, name: 1 }),
-    MenuItem.find().sort({ display_order: 1, price: 1 }).populate('category_id', 'name slug'),
+    MenuItem.find().sort({ display_order: 1, price: 1 }),
     getOrCreatePageConfig(),
   ]);
 
@@ -118,8 +118,7 @@ export const getMenuItems = asyncHandler(async (req: Request, res: Response) => 
   if (section) filter.display_section = section;
 
   const items = await MenuItem.find(filter)
-    .sort({ display_order: 1, price: 1 })
-    .populate('category_id', 'name slug');
+    .sort({ display_order: 1, price: 1 });
 
   res
     .status(200)
@@ -128,7 +127,7 @@ export const getMenuItems = asyncHandler(async (req: Request, res: Response) => 
 
 export const getMenuItem = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
-  const item = await MenuItem.findById(id).populate('category_id', 'name slug');
+  const item = await MenuItem.findById(id);
 
   if (!item) {
     throw new ApiError(404, 'Menu item not found');
@@ -141,7 +140,6 @@ export const getMenuItem = asyncHandler(async (req: Request, res: Response) => {
 
 export const createMenuItem = asyncHandler(async (req: AuthRequest, res: Response) => {
   const item = await MenuItem.create(req.body);
-  await item.populate('category_id', 'name slug');
 
   res
     .status(201)
@@ -153,7 +151,7 @@ export const updateMenuItem = asyncHandler(async (req: AuthRequest, res: Respons
   const item = await MenuItem.findByIdAndUpdate(id, req.body, {
     new: true,
     runValidators: true,
-  }).populate('category_id', 'name slug');
+  });
 
   if (!item) {
     throw new ApiError(404, 'Menu item not found');
