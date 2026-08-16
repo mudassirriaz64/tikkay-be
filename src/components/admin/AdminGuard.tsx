@@ -10,9 +10,9 @@ export function AdminGuard({ children }: { children: ReactNode }) {
   const [checked, setChecked] = useState(false);
 
   useEffect(() => {
-    if (authStatus === "checking") return;
+    if (authStatus === "idle" || authStatus === "checking") return;
 
-    if (authStatus === "guest" || authStatus === "idle" || !backendUser) {
+    if (authStatus === "guest" || !backendUser) {
       router.replace("/admin/login");
       return;
     }

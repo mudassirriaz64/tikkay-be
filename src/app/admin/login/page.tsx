@@ -1,11 +1,9 @@
 "use client";
 
 import { useState, FormEvent } from "react";
-import { useRouter } from "next/navigation";
 import { useAccount } from "@/providers/AccountProvider";
 
 export default function AdminLoginPage() {
-  const router = useRouter();
   const { authenticate, authError, clearAuthError } = useAccount();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -23,7 +21,7 @@ export default function AdminLoginPage() {
         alert("Access denied. Admin accounts only.");
         return;
       }
-      router.replace("/admin");
+      window.location.href = "/admin";
     } catch {
       // authenticate() sets authError internally
     } finally {

@@ -1,38 +1,65 @@
 "use client";
 
-import { useState } from "react";
+import { useState, FormEvent } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ContactInput } from "@/components/ui/contact/ContactInput";
 import { Button } from "@/components/ui/Button";
 import { useAccount } from "@/providers/AccountProvider";
-import { UserProfile } from "@/types";
-import { Lock, Sparkles } from "lucide-react";
+import { Lock } from "lucide-react";
 
-interface AccountsSignInProps {
-  demoProfile: UserProfile;
-}
+type AuthMode = "login" | "register";
 
-export function AccountsSignIn({ demoProfile }: AccountsSignInProps) {
-  const { signIn } = useAccount();
+export function AccountsSignIn() {
+  const { authenticate, createAccount, authError, clearAuthError } = useAccount();
+  const [mode, setMode] = useState<AuthMode>("login");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [error, setError] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [fieldError, setFieldError] = useState("");
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    if (!name.trim() || !email.trim()) {
-      setError("Please enter your name and email to continue.");
+  function switchMode(next: AuthMode) {
+    setMode(next);
+    clearAuthError();
+    setFieldError("");
+  }
+
+  async function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    setFieldError("");
+    clearAuthError();
+
+    if (mode === "register" && !name.trim()) {
+      setFieldError("Please enter your name.");
       return;
     }
-    signIn({
-      name: name.trim(),
-      email: email.trim(),
-      phone: "",
-      address: "",
-      memberSince: new Date().toISOString(),
-    });
-  };
+    if (!email.trim()) {
+      setFieldError("Please enter your email.");
+      return;
+    }
+    if (!password || password.length < 6) {
+      setFieldError("Password must be at least 6 characters.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      if (mode === "register") {
+        await createAccount({
+          name: name.trim(),
+          email: email.trim(),
+          password,
+        });
+      } else {
+        await authenticate({ email: email.trim(), password });
+      }
+    } catch {
+      // authError is set internally by AccountProvider
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <section className="relative overflow-hidden bg-[var(--bg-deep)] py-[88px] lg:py-[120px]">
@@ -60,60 +87,110 @@ export function AccountsSignIn({ demoProfile }: AccountsSignInProps) {
                 <Lock className="h-6 w-6" aria-hidden="true" />
               </span>
               <h1 className="font-[family:var(--font-serif)] text-3xl font-bold uppercase tracking-[-0.02em] text-[var(--text-primary)]">
-                Your Account
+                {mode === "login" ? "Welcome Back" : "Create Account"}
               </h1>
               <p className="text-sm leading-relaxed text-[var(--text-body)]">
-                Track your orders, save your favourites and manage your profile
-                - all in one place.
+                {mode === "login"
+                  ? "Sign in to track your orders, save favourites and manage your profile."
+                  : "Register to start ordering and track your favourite dishes."}
               </p>
             </div>
 
+            <div className="flex rounded-xl border border-[var(--border-warm)] bg-[var(--bg-surface-alt)] p-1">
+              <button
+                type="button"
+                onClick={() => switchMode("login")}
+                className={`flex-1 rounded-lg py-2.5 text-xs font-bold uppercase tracking-widest transition-all ${
+                  mode === "login"
+                    ? "bg-[var(--bg-base)] text-[var(--text-primary)] shadow-sm"
+                    : "text-[var(--text-faint)] hover:text-[var(--text-body)]"
+                }`}
+              >
+                Sign In
+              </button>
+              <button
+                type="button"
+                onClick={() => switchMode("register")}
+                className={`flex-1 rounded-lg py-2.5 text-xs font-bold uppercase tracking-widest transition-all ${
+                  mode === "register"
+                    ? "bg-[var(--bg-base)] text-[var(--text-primary)] shadow-sm"
+                    : "text-[var(--text-faint)] hover:text-[var(--text-body)]"
+                }`}
+              >
+                Register
+              </button>
+            </div>
+
             <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+              {mode === "register" && (
+                <ContactInput
+                  id="auth-name"
+                  label="Full name"
+                  value={name}
+                  onChange={setName}
+                  autoComplete="name"
+                  required
+                />
+              )}
               <ContactInput
-                id="account-name"
-                label="Full name"
-                value={name}
-                onChange={setName}
-                autoComplete="name"
-              />
-              <ContactInput
-                id="account-email"
+                id="auth-email"
                 label="Email address"
                 type="email"
                 value={email}
                 onChange={setEmail}
                 autoComplete="email"
+                required
               />
-              {error ? (
-                <p className="text-xs text-[var(--accent-ember)]">{error}</p>
-              ) : null}
-              <Button type="submit" className="w-full rounded-xl">
-                Create my account
+              <ContactInput
+                id="auth-password"
+                label="Password"
+                type="password"
+                value={password}
+                onChange={setPassword}
+                autoComplete={mode === "login" ? "current-password" : "new-password"}
+                required
+              />
+
+              {(fieldError || authError) && (
+                <p className="rounded-lg bg-red-500/10 px-3 py-2 text-xs text-red-400">
+                  {fieldError || authError}
+                </p>
+              )}
+
+              <Button type="submit" disabled={loading} className="w-full rounded-xl">
+                {loading
+                  ? mode === "login"
+                    ? "Signing in…"
+                    : "Creating account…"
+                  : mode === "login"
+                    ? "Sign In"
+                    : "Create Account"}
               </Button>
             </form>
 
-            <div className="flex items-center gap-4">
-              <span className="h-px flex-1 bg-[var(--border-warm)]" />
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--text-faint)]">
-                or
-              </span>
-              <span className="h-px flex-1 bg-[var(--border-warm)]" />
-            </div>
-
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => signIn(demoProfile)}
-              className="flex items-center justify-center gap-2 rounded-xl"
-            >
-              <Sparkles className="h-4 w-4" aria-hidden="true" />
-              Continue with demo account
-            </Button>
-
-            <p className="text-center text-[11px] leading-relaxed text-[var(--text-faint)]">
-              Demo mode - no password needed. Your data stays saved in this
-              browser only.
-            </p>
+            {mode === "login" ? (
+              <p className="text-center text-xs text-[var(--text-faint)]">
+                Don&apos;t have an account?{" "}
+                <button
+                  type="button"
+                  onClick={() => switchMode("register")}
+                  className="font-bold text-[var(--accent-peach)] hover:underline"
+                >
+                  Register here
+                </button>
+              </p>
+            ) : (
+              <p className="text-center text-xs text-[var(--text-faint)]">
+                Already have an account?{" "}
+                <button
+                  type="button"
+                  onClick={() => switchMode("login")}
+                  className="font-bold text-[var(--accent-peach)] hover:underline"
+                >
+                  Sign in
+                </button>
+              </p>
+            )}
           </motion.div>
         </div>
       </div>

@@ -185,11 +185,25 @@ export function AccountProvider({
     async (input: RegisterInput): Promise<AuthUser> => {
       setAuthError(null);
       try {
-        const user = await authService.register(input);
-        setBackendUser(user);
-        setProfile(backendUserToProfile(user));
+        const res = await authService.register(input);
+        setBackendUser(res.user);
+        setProfile(backendUserToProfile(res.user));
         setAuthStatus("authenticated");
-        return user;
+        try {
+          const [remoteFavs, remoteReviews] = await Promise.all([
+            usersService.getFavorites().catch(() => [] as string[]),
+            usersService.getMyReviews().catch(() => [] as AccountReview[]),
+          ]);
+          if (Array.isArray(remoteFavs) && remoteFavs.length > 0) {
+            setFavorites(remoteFavs);
+          }
+          if (Array.isArray(remoteReviews) && remoteReviews.length > 0) {
+            setReviews(remoteReviews);
+          }
+        } catch {
+          /* ignore */
+        }
+        return res.user;
       } catch (err) {
         const msg =
           (isApiError(err) ? err.message : undefined) ||
@@ -198,7 +212,7 @@ export function AccountProvider({
         throw err;
       }
     },
-    [setProfile],
+    [setProfile, setFavorites, setReviews],
   );
 
   const refreshSession = useCallback(async () => {

@@ -32,8 +32,8 @@ export interface ChangePasswordInput {
 }
 
 export const authService = {
-  register(data: RegisterInput): Promise<AuthUser> {
-    return api.post<AuthUser>('/auth/register', data);
+  register(data: RegisterInput): Promise<{ user: AuthUser; accessToken: string; refreshToken: string }> {
+    return api.post<{ user: AuthUser; accessToken: string; refreshToken: string }>('/auth/register', data);
   },
 
   login(data: LoginInput): Promise<{ user: AuthUser; accessToken: string; refreshToken: string }> {

@@ -19,7 +19,7 @@ export function AccountsPage({ data }: AccountsPageProps) {
   }, []);
 
   if (!mounted || !isSignedIn) {
-    return <AccountsSignIn demoProfile={data.demoProfile} />;
+    return <AccountsSignIn />;
   }
 
   return <AccountsDashboard data={data} />;
