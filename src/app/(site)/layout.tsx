@@ -3,6 +3,7 @@ import { Footer } from "@/components/layout/Footer";
 import { StickyOrderBar } from "@/components/sections/StickyOrderBar";
 import { MotionProvider } from "@/providers/MotionProvider";
 import { CartProvider } from "@/context/CartContext";
+import { AccountProvider } from "@/providers/AccountProvider";
 
 export default function SiteLayout({
   children,
@@ -12,12 +13,14 @@ export default function SiteLayout({
   return (
     <MotionProvider>
       <CartProvider>
-        <div className="pb-[89px] md:pb-0">
-          <Navbar />
-          <main>{children}</main>
-          <Footer />
-          <StickyOrderBar />
-        </div>
+        <AccountProvider>
+          <div className="pb-[89px] md:pb-0">
+            <Navbar />
+            <main>{children}</main>
+            <Footer />
+            <StickyOrderBar />
+          </div>
+        </AccountProvider>
       </CartProvider>
     </MotionProvider>
   );

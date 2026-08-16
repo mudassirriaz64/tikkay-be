@@ -1,6 +1,5 @@
 import { MotionConfig } from "framer-motion";
 import { getAccountsPageData } from "@/lib/data/getAccounts";
-import { AccountProvider } from "@/providers/AccountProvider";
 import { AccountsPage } from "@/components/sections/accounts/AccountsPage";
 
 export const metadata = {
@@ -15,9 +14,7 @@ export default async function AccountsRoute() {
   return (
     <div className="bg-[var(--bg-base)]">
       <MotionConfig reducedMotion="user">
-        <AccountProvider initialReviews={data.reviews}>
-          <AccountsPage data={data} />
-        </AccountProvider>
+        <AccountsPage data={data} />
       </MotionConfig>
     </div>
   );
