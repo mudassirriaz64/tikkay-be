@@ -1,21 +1,16 @@
-import { MotionConfig } from "framer-motion";
-import { getAccountsPageData } from "@/lib/data/getAccounts";
 import { AccountsPage } from "@/components/sections/accounts/AccountsPage";
+import type { Metadata } from "next";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "My Account - Tikkay Shikkay",
   description:
     "Track your orders, save your favourites and manage your profile at Tikkay Shikkay.",
 };
 
-export default async function AccountsRoute() {
-  const data = await getAccountsPageData();
-
+export default function AccountsRoute() {
   return (
     <div className="bg-[var(--bg-base)]">
-      <MotionConfig reducedMotion="user">
-        <AccountsPage data={data} />
-      </MotionConfig>
+      <AccountsPage />
     </div>
   );
 }
