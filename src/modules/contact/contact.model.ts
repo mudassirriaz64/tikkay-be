@@ -21,7 +21,7 @@ export interface IOpeningDay extends Document {
   display_order: number;
 }
 
-export interface IContactPageConfig extends Document {
+export interface IContactPageConfig extends Document<string> {
   hero: {
     label: string;
     titleLead: string;
@@ -95,6 +95,7 @@ const openingDaySchema = new Schema<IOpeningDay>(
 
 const contactPageConfigSchema = new Schema<IContactPageConfig>(
   {
+    _id: { type: String },
     hero: {
       label: { type: String, default: 'Get In Touch' },
       titleLead: { type: String, default: "Let's Talk" },

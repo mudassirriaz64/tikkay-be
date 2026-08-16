@@ -44,7 +44,7 @@ export interface IVideoReview extends Document {
   display_order: number;
 }
 
-export interface IReviewsPageConfig extends Document {
+export interface IReviewsPageConfig extends Document<string> {
   hero: {
     label: string;
     titleLead: string;
@@ -126,6 +126,7 @@ const videoReviewSchema = new Schema<IVideoReview>(
 
 const reviewsPageConfigSchema = new Schema<IReviewsPageConfig>(
   {
+    _id: { type: String },
     hero: {
       label: { type: String, default: 'Wall of Love' },
       titleLead: { type: String, default: 'Stories from the' },

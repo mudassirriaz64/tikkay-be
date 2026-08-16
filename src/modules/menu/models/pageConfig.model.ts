@@ -8,7 +8,7 @@ export interface IPlatterOption {
   price: number;
 }
 
-export interface IMenuPageConfig extends Document {
+export interface IMenuPageConfig extends Document<string> {
   tabs: {
     id: string;
     label: string;
@@ -36,6 +36,7 @@ const platterOptionSchema = new Schema<IPlatterOption>(
 
 const menuPageConfigSchema = new Schema<IMenuPageConfig>(
   {
+    _id: { type: String },
     tabs: {
       type: [
         {

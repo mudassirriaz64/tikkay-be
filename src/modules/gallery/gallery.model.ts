@@ -94,7 +94,7 @@ export interface IJourneyPost extends Document {
   display_order: number;
 }
 
-export interface IGalleryPageConfig extends Document {
+export interface IGalleryPageConfig extends Document<string> {
   hero: {
     label: string;
     titleLead: string;
@@ -243,6 +243,7 @@ const journeyPostSchema = new Schema<IJourneyPost>(
 
 const galleryPageConfigSchema = new Schema<IGalleryPageConfig>(
   {
+    _id: { type: String },
     hero: {
       label: { type: String, default: 'Gallery' },
       titleLead: { type: String, default: 'A Peek Inside the' },

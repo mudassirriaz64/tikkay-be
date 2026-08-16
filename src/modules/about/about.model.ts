@@ -3,7 +3,7 @@ export type MediaType = 'Image' | 'Video';
 export type { IJourneyPost } from '../gallery/gallery.model';
 export { JourneyPost as JourneyPostModel } from '../gallery/gallery.model';
 
-export interface IFounderDetails extends Document {
+export interface IFounderDetails extends Document<string> {
   portraitUrl: string;
   quote: string;
   quoteAuthor: string;
@@ -28,7 +28,7 @@ export interface IMilestoneStat extends Document {
   display_order: number;
 }
 
-export interface IAboutPageConfig extends Document {
+export interface IAboutPageConfig extends Document<string> {
   hero: {
     label: string;
     titleLead: string;
@@ -40,6 +40,7 @@ export interface IAboutPageConfig extends Document {
 
 const founderDetailsSchema = new Schema<IFounderDetails>(
   {
+    _id: { type: String },
     portraitUrl: { type: String, required: true, default: '/images/our_legacy.png' },
     quote: { type: String, required: true, default: '' },
     quoteAuthor: { type: String, required: true, default: 'Ahmed Raza' },
@@ -74,6 +75,7 @@ const milestoneStatSchema = new Schema<IMilestoneStat>(
 
 const aboutPageConfigSchema = new Schema<IAboutPageConfig>(
   {
+    _id: { type: String },
     hero: {
       label: { type: String, default: 'Our Story' },
       titleLead: { type: String, default: 'Twelve Years of' },

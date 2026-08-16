@@ -2,7 +2,7 @@
 /// <reference path="../../types/global.d.ts" />
 import { Schema, model, Document } from 'mongoose';
 
-export interface ISiteSettings extends Document {
+export interface ISiteSettings extends Document<string> {
   hero_title: string;
   hero_subtitle: string;
   hero_media_url: string;
@@ -13,6 +13,7 @@ export interface ISiteSettings extends Document {
 
 const siteSettingsSchema = new Schema<ISiteSettings>(
   {
+    _id: { type: String },
     hero_title: {
       type: String,
       required: [true, 'Hero title is required'],
