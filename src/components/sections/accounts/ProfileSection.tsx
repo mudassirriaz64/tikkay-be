@@ -16,6 +16,7 @@ import {
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/motion/Reveal";
 import { ContactInput } from "@/components/ui/contact/ContactInput";
+import { PasswordInput } from "@/components/ui/PasswordInput";
 import { Button } from "@/components/ui/Button";
 import { useAccount } from "@/providers/AccountProvider";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
@@ -364,27 +365,24 @@ export function ProfileSection() {
                   className="flex flex-col gap-3"
                 >
                   {password ? (
-                    <ContactInput
+                    <PasswordInput
                       id="sec-current-password"
                       label="Current password"
-                      type="password"
                       value={currentPassword}
                       onChange={setCurrentPassword}
                       autoComplete="current-password"
                     />
                   ) : null}
-                  <ContactInput
+                  <PasswordInput
                     id="sec-new-password"
                     label="New password"
-                    type="password"
                     value={newPassword}
                     onChange={setNewPassword}
                     autoComplete="new-password"
                   />
-                  <ContactInput
+                  <PasswordInput
                     id="sec-confirm-password"
                     label="Confirm new password"
-                    type="password"
                     value={confirmPassword}
                     onChange={setConfirmPassword}
                     autoComplete="new-password"

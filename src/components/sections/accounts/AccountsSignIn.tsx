@@ -4,6 +4,7 @@ import { useState, FormEvent } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ContactInput } from "@/components/ui/contact/ContactInput";
+import { PasswordInput } from "@/components/ui/PasswordInput";
 import { Button } from "@/components/ui/Button";
 import { useAccount } from "@/providers/AccountProvider";
 import { Lock } from "lucide-react";
@@ -54,6 +55,7 @@ export function AccountsSignIn() {
       } else {
         await authenticate({ email: email.trim(), password });
       }
+      window.location.href = "/";
     } catch {
       // authError is set internally by AccountProvider
     } finally {
@@ -141,10 +143,9 @@ export function AccountsSignIn() {
                 autoComplete="email"
                 required
               />
-              <ContactInput
+              <PasswordInput
                 id="auth-password"
                 label="Password"
-                type="password"
                 value={password}
                 onChange={setPassword}
                 autoComplete={mode === "login" ? "current-password" : "new-password"}

@@ -2,11 +2,13 @@
 
 import { useState, FormEvent } from "react";
 import { useAccount } from "@/providers/AccountProvider";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function AdminLoginPage() {
   const { authenticate, authError, clearAuthError } = useAccount();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: FormEvent) {
@@ -60,14 +62,25 @@ export default function AdminLoginPage() {
             <label className="mb-1 block text-xs font-bold uppercase tracking-widest text-[var(--text-faint)]">
               Password
             </label>
-            <input
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-base)] px-3 py-2.5 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--accent-orange)]"
-              placeholder="••••••••"
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-base)] px-3 py-2.5 pr-10 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--accent-orange)]"
+                placeholder="••••••••"
+              />
+              <button
+                type="button"
+                tabIndex={-1}
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-[var(--text-faint)] transition-colors hover:text-[var(--text-primary)]"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
+            </div>
           </div>
 
           {authError && (
