@@ -4,6 +4,7 @@ import { AdminDataProvider } from "@/providers/AdminDataProvider";
 import { AdminPage } from "@/components/admin/AdminPage";
 import { CartProvider } from "@/context/CartContext";
 import { AccountProvider } from "@/providers/AccountProvider";
+import { AdminGuard } from "@/components/admin/AdminGuard";
 
 export const metadata = {
   title: "Admin Studio - Tikkay Shikkay",
@@ -12,16 +13,30 @@ export const metadata = {
 };
 
 export default async function AdminRoute() {
-  const data = await getAdminPageData();
+  let data;
+
+  try {
+    data = await getAdminPageData();
+  } catch {
+    data = null;
+  }
 
   return (
     <div className="bg-[var(--bg-base)]">
       <MotionConfig reducedMotion="user">
         <CartProvider>
           <AccountProvider>
-            <AdminDataProvider initialData={data}>
-              <AdminPage />
-            </AdminDataProvider>
+            <AdminGuard>
+              {data ? (
+                <AdminDataProvider initialData={data as any}>
+                  <AdminPage />
+                </AdminDataProvider>
+              ) : (
+                <div className="flex h-screen items-center justify-center">
+                  <p className="text-[var(--text-faint)]">Failed to load admin data. Please check your connection.</p>
+                </div>
+              )}
+            </AdminGuard>
           </AccountProvider>
         </CartProvider>
       </MotionConfig>

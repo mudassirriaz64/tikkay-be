@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { FounderDetails } from "@/lib/mock/about";
+import { FounderDetails } from "@/types";
 import { AccentCard } from "@/components/ui/AccentCard";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/motion/Reveal";

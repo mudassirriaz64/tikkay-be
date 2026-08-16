@@ -65,7 +65,7 @@ export interface AdminAboutData {
 }
 
 export interface AdminOrdersData {
-  profile: UserProfile;
+  profile: UserProfile | null;
   orders: AccountOrder[];
   reviews: AccountReview[];
   menuItems: MenuItem[];

@@ -5,3 +5,4 @@ export * from './reviews';
 export * from './contact';
 export * from './gallery';
 export * from './accounts';
+export * from './about';

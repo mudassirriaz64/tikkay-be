@@ -1,3 +1,10 @@
+export interface GalleryItem {
+  id: string;
+  url: string;
+  alt: string;
+  tag: string;
+}
+
 export type GalleryTabId = "customers" | "behind-scenes" | "journey" | "gallery";
 
 export type GalleryTabIcon = "users" | "chef-hat" | "flame" | "camera";

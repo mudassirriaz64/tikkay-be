@@ -150,19 +150,8 @@ export function AdminDataProvider({
   const [lastSaveError, setLastSaveError] = useState<string | null>(null);
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (parsed && parsed.settings && parsed.menu) {
-          setData({ ...initialData, ...parsed });
-        }
-      }
-    } catch {
-      /* ignore corrupted storage */
-    }
     setIsHydrated(true);
-  }, [initialData]);
+  }, []);
 
   useEffect(() => {
     if (isHydrated) {

@@ -41,7 +41,7 @@ export function OrdersModule() {
   const { data, updateSlice } = useAdminData();
   const [showAllOrders, setShowAllOrders] = useState(false);
 
-  const profile = data.orders.profile;
+  const profile = data.orders.profile ?? { name: "Admin", email: "", phone: "", address: "", memberSince: "" };
   const orders = data.orders.orders;
   const revenue = orders.reduce((sum, o) => sum + o.total, 0);
   const delivered = orders.filter((o) => o.status === "delivered").length;

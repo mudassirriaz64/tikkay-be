@@ -1,7 +1,5 @@
 import { api } from './client';
-import { JourneyPost } from '@/types';
-import type { FounderDetails, StatItem } from '@/lib/mock/about';
-import type { MilestoneStat } from '@/lib/mock/milestones';
+import { JourneyPost, FounderDetails, StatItem, MilestoneStat } from '@/types';
 
 export interface AboutPageData {
   hero: unknown;
