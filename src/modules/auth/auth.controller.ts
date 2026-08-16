@@ -53,9 +53,25 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
     throw new ApiError(500, 'Something went wrong while registering the user');
   }
 
+  const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id.toString());
+
+  const loggedInUser = await User.findById(user._id);
+
   res
     .status(201)
-    .json(new ApiResponse(201, createdUser, 'User registered successfully'));
+    .cookie('accessToken', accessToken, cookieOptions)
+    .cookie('refreshToken', refreshToken, cookieOptions)
+    .json(
+      new ApiResponse(
+        201,
+        {
+          user: loggedInUser,
+          accessToken,
+          refreshToken,
+        },
+        'User registered successfully'
+      )
+    );
 });
 
 export const login = asyncHandler(async (req: Request, res: Response) => {
