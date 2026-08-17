@@ -187,6 +187,21 @@ export const getMenuItem = asyncHandler(async (req: Request, res: Response) => {
 
 export const createMenuItem = asyncHandler(async (req: AuthRequest, res: Response) => {
   const data = { ...req.body };
+
+  // Resolve category_id if provided as a slug or invalid ObjectId
+  if (data.category_id && !Types.ObjectId.isValid(data.category_id)) {
+    const matchedCategory = await MenuCategory.findOne({
+      $or: [{ slug: data.category_id }, { name: new RegExp(`^${data.category_id}$`, 'i') }],
+    });
+    if (matchedCategory) {
+      data.category_id = matchedCategory._id;
+    } else {
+      // If no category found, fallback to first available or create
+      const firstCat = await MenuCategory.findOne();
+      if (firstCat) data.category_id = firstCat._id;
+    }
+  }
+
   if (!data.slug && data.title) {
     let baseSlug = generateSlug(data.title);
     let candidate = baseSlug;
@@ -206,6 +221,17 @@ export const createMenuItem = asyncHandler(async (req: AuthRequest, res: Respons
 export const updateMenuItem = asyncHandler(async (req: AuthRequest, res: Response) => {
   const { id } = req.params;
   const data = { ...req.body };
+
+  // Resolve category_id if provided as a slug or invalid ObjectId
+  if (data.category_id && !Types.ObjectId.isValid(data.category_id)) {
+    const matchedCategory = await MenuCategory.findOne({
+      $or: [{ slug: data.category_id }, { name: new RegExp(`^${data.category_id}$`, 'i') }],
+    });
+    if (matchedCategory) {
+      data.category_id = matchedCategory._id;
+    }
+  }
+
   if (!data.slug && data.title) {
     let baseSlug = generateSlug(data.title);
     let candidate = baseSlug;
