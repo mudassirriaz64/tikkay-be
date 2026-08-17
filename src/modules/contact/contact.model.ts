@@ -48,6 +48,7 @@ export interface IContactPageConfig extends Document<string> {
     menuLabel: string;
     quoteLabel: string;
     imageUrl: string;
+    image_public_id?: string;
   };
   franchise: {
     eyebrow: string;
@@ -122,6 +123,7 @@ const contactPageConfigSchema = new Schema<IContactPageConfig>(
       menuLabel: { type: String, default: 'View Catering Menu' },
       quoteLabel: { type: String, default: 'Request a Custom Quote' },
       imageUrl: { type: String, default: '/images/contact/catering.jpg' },
+      image_public_id: { type: String, default: undefined },
     },
     franchise: {
       eyebrow: { type: String, default: 'Franchise' },

@@ -6,6 +6,7 @@ export interface ISiteSettings extends Document<string> {
   hero_title: string;
   hero_subtitle: string;
   hero_media_url: string;
+  hero_media_public_id?: string;
   live_cam_active: boolean;
   fresh_batch_count: number;
   updated_at: string;
@@ -30,6 +31,10 @@ const siteSettingsSchema = new Schema<ISiteSettings>(
       type: String,
       required: [true, 'Hero media URL is required'],
       default: '/images/hero_image.png',
+    },
+    hero_media_public_id: {
+      type: String,
+      default: undefined,
     },
     live_cam_active: {
       type: Boolean,

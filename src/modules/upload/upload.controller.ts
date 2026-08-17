@@ -14,19 +14,53 @@ cloudinary.config({
   api_secret: config.CLOUDINARY_API_SECRET,
 });
 
+const ALLOWED_FOLDERS = [
+  'menu',
+  'gallery/customers',
+  'gallery/kitchen',
+  'gallery/journey',
+  'gallery/photos',
+  'about/founder',
+  'settings/hero',
+  'contact/catering',
+];
+
+function sanitizeAndValidateFolder(rawFolder?: string): string {
+  if (!rawFolder) return 'tikkayshikkay/uploads';
+
+  let cleaned = rawFolder.replace(/^\/+|\/+$/g, '').trim().toLowerCase();
+
+  // Special match for menu category folders e.g. "menu/tikka", "menu/boti", "menu/platters", "menu/sides", etc.
+  if (cleaned.startsWith('menu/') || cleaned === 'menu') {
+    const sub = cleaned.replace(/^menu\/?/, '');
+    const cleanSub = sub.replace(/[^a-z0-9-_]/g, '');
+    return cleanSub ? `tikkayshikkay/menu/${cleanSub}` : 'tikkayshikkay/menu';
+  }
+
+  // Exact match with allowlist
+  if (ALLOWED_FOLDERS.includes(cleaned)) {
+    return `tikkayshikkay/${cleaned}`;
+  }
+
+  return 'tikkayshikkay/uploads';
+}
+
 const storage = new CloudinaryStorage({
   cloudinary,
-  params: async (_req, file) => {
+  params: async (req, file) => {
     const isVideo = file.mimetype.startsWith('video/');
+    const folderParam = (req.query?.folder as string) || (req.body?.folder as string);
+    const targetFolder = sanitizeAndValidateFolder(folderParam);
+
     return {
-      folder: 'tikkay-shikkay',
+      folder: targetFolder,
       resource_type: isVideo ? 'video' : 'image',
       allowed_formats: isVideo
         ? ['mp4', 'webm', 'mov']
         : ['jpg', 'jpeg', 'png', 'gif', 'webp', 'avif'],
       transformation: isVideo
         ? undefined
-        : [{ width: 1200, height: 1200, crop: 'limit', quality: 'auto' }],
+        : [{ width: 1600, height: 1600, crop: 'limit', quality: 'auto' }],
     };
   },
 });

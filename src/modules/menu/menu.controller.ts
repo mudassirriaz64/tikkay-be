@@ -27,7 +27,18 @@ export const getMenuPageData = asyncHandler(async (_req: Request, res: Response)
     getOrCreatePageConfig(),
   ]);
 
-  const featuredItems = items.filter((item) => item.display_section === 'featured' || item.is_bestseller);
+  const tikkaCategory = categories.find(
+    (c) => c.slug === 'tikka' || c.name.toLowerCase().includes('tikka')
+  );
+
+  const featuredItems = items.filter(
+    (item) => item.display_section === 'featured' || item.is_bestseller
+  );
+
+  const tikkaItems = tikkaCategory
+    ? items.filter((item) => item.category_id.toString() === tikkaCategory._id.toString())
+    : items.filter((item) => item.title.toLowerCase().includes('tikka'));
+
   const botiItems = items.filter((item) => item.display_section === 'boti');
   const sideItems = items.filter((item) => item.display_section === 'sides' || item.is_signature);
 
@@ -41,11 +52,26 @@ export const getMenuPageData = asyncHandler(async (_req: Request, res: Response)
         .filter((item: IMenuItem | undefined) => !!item) as IMenuItem[]
     : botiItems.slice(1);
 
+  // Generate tabs dynamically directly from MongoDB categories
+  const dynamicCategoryTabs = categories.map((cat) => ({
+    id: `tab-${cat.slug || cat._id.toString()}`,
+    label: cat.name,
+    sectionId: cat.slug || cat._id.toString(),
+  }));
+
+  // Build full dynamic tab list: Featured Picks + Dynamic Categories from MongoDB + Platters
+  const dynamicTabs = [
+    { id: 'tab-featured', label: 'Featured Picks', sectionId: 'featured-picks' },
+    ...dynamicCategoryTabs,
+    { id: 'tab-platters', label: 'Build Platter', sectionId: 'platters' },
+  ];
+
   const pageData = {
     categories,
     items,
-    tabs: pageConfig.tabs,
+    tabs: dynamicTabs,
     featured: featuredItems,
+    tikka: tikkaItems,
     platter: pageConfig.platter,
     boti: {
       featured: boti_featured || null,

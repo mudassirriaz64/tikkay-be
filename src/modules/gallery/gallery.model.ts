@@ -8,6 +8,7 @@ export type JourneyType = 'milestone' | 'achievement' | 'challenge' | 'lesson' |
 
 export interface IGalleryImage extends Document {
   imageUrl: string;
+  image_public_id?: string;
   caption: string;
   location: string;
   category: GalleryCategoryId;
@@ -27,6 +28,7 @@ export interface IVideoTestimonial extends Document {
 
 export interface IInstagramPost extends Document {
   imageUrl: string;
+  image_public_id?: string;
   caption: string;
   tag: string;
   likes: number;
@@ -47,6 +49,7 @@ export interface IGoogleReview extends Document {
 export interface ICustomerStory extends Document {
   customer_name: string;
   imageUrl: string;
+  image_public_id?: string;
   favorite_meal: string;
   years_visiting: number;
   visits: number;
@@ -63,6 +66,7 @@ export interface IKitchenProcess extends Document {
   step: number;
   title: string;
   imageUrl: string;
+  image_public_id?: string;
   story: string;
   fact: string;
   time: string;
@@ -73,6 +77,7 @@ export interface IJourneyMilestone extends Document {
   year: string;
   title: string;
   imageUrl: string;
+  image_public_id?: string;
   story: string;
   badge: string;
   type: JourneyType;
@@ -90,6 +95,7 @@ export interface IJourneyPost extends Document {
   content: string;
   media_type: 'Image' | 'Video';
   media_url: string;
+  image_public_id?: string;
   created_at: string;
   display_order: number;
 }
@@ -130,6 +136,7 @@ export interface IGalleryPageConfig extends Document<string> {
 const galleryImageSchema = new Schema<IGalleryImage>(
   {
     imageUrl: { type: String, required: true },
+    image_public_id: { type: String, default: undefined },
     caption: { type: String, required: true, default: '' },
     location: { type: String, default: '' },
     category: { type: String, enum: ['food', 'grill', 'customers', 'atmosphere'], required: true },
@@ -155,6 +162,7 @@ const videoTestimonialSchema = new Schema<IVideoTestimonial>(
 const instagramPostSchema = new Schema<IInstagramPost>(
   {
     imageUrl: { type: String, required: true },
+    image_public_id: { type: String, default: undefined },
     caption: { type: String, default: '' },
     tag: { type: String, default: '' },
     likes: { type: Number, default: 0, min: 0 },
@@ -181,6 +189,7 @@ const customerStorySchema = new Schema<ICustomerStory>(
   {
     customer_name: { type: String, required: true },
     imageUrl: { type: String, required: true, default: '/images/gallery/default-customer.jpg' },
+    image_public_id: { type: String, default: undefined },
     favorite_meal: { type: String, default: '' },
     years_visiting: { type: Number, default: 1, min: 1 },
     visits: { type: Number, default: 1, min: 1 },
@@ -202,6 +211,7 @@ const kitchenProcessSchema = new Schema<IKitchenProcess>(
     step: { type: Number, required: true, min: 1 },
     title: { type: String, required: true },
     imageUrl: { type: String, required: true, default: '/images/gallery/default-kitchen.jpg' },
+    image_public_id: { type: String, default: undefined },
     story: { type: String, required: true },
     fact: { type: String, default: '' },
     time: { type: String, default: '' },
@@ -215,6 +225,7 @@ const journeyMilestoneSchema = new Schema<IJourneyMilestone>(
     year: { type: String, required: true },
     title: { type: String, required: true },
     imageUrl: { type: String, required: true, default: '/images/gallery/default-journey.jpg' },
+    image_public_id: { type: String, default: undefined },
     story: { type: String, required: true },
     badge: { type: String, default: '' },
     type: { type: String, enum: ['milestone', 'achievement', 'challenge', 'lesson', 'future'], required: true },
@@ -235,6 +246,7 @@ const journeyPostSchema = new Schema<IJourneyPost>(
     content: { type: String, required: true },
     media_type: { type: String, enum: ['Image', 'Video'], required: true },
     media_url: { type: String, required: true },
+    image_public_id: { type: String, default: undefined },
     created_at: { type: String, default: () => new Date().toISOString() },
     display_order: { type: Number, default: 0 },
   },
