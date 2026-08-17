@@ -7,6 +7,8 @@ import { AccountProvider } from "@/providers/AccountProvider";
 import { getSiteSettings } from "@/lib/data/getSiteSettings";
 import { mockSiteSettings } from "@/lib/mock/settings";
 
+export const dynamic = "force-dynamic";
+
 export default async function SiteLayout({
   children,
 }: {

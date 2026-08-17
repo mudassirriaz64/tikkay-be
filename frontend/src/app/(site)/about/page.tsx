@@ -14,6 +14,8 @@ export const metadata = {
   description: "Learn about the heritage, the vision, and the pitmasters behind Tikkay Shikkay.",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function AboutPage() {
   const [founderDetails, stats, journeyPosts, galleryItems] = await Promise.all([
     getAboutFounderDetails(),
