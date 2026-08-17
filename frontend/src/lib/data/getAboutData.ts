@@ -1,14 +1,30 @@
 import { aboutService } from "@/lib/api/about.service";
+import { tryOrFallback } from "@/lib/api/client";
+import { mockFounderDetails, mockAboutStats } from "@/lib/mock/about";
 
 export async function getAboutPageData() {
-  return aboutService.getPageData();
+  return tryOrFallback(
+    () => aboutService.getPageData(),
+    {
+      hero: null,
+      founder: mockFounderDetails,
+      stats: mockAboutStats,
+      journeyPosts: [],
+      milestones: [],
+    },
+  );
 }
 
 export async function getAboutFounderDetails() {
-  const data = await aboutService.getPageData();
-  return data.founder;
+  return tryOrFallback(
+    () => aboutService.getPageData().then((d) => d.founder),
+    mockFounderDetails,
+  );
 }
 
 export async function getAboutStats() {
-  return aboutService.getStats();
+  return tryOrFallback(
+    () => aboutService.getStats(),
+    mockAboutStats,
+  );
 }
