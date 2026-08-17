@@ -18,6 +18,7 @@ export interface IMenuPageConfig extends Document<string> {
     baseLabel: string;
     basePrice: number;
     imageUrl: string;
+    image_public_id?: string;
     meats: IPlatterOption[];
     sides: IPlatterOption[];
   };
@@ -56,6 +57,7 @@ const menuPageConfigSchema = new Schema<IMenuPageConfig>(
       baseLabel: { type: String, default: 'Build Your Platter' },
       basePrice: { type: Number, default: 2500, min: 0 },
       imageUrl: { type: String, default: '/images/menu/platter-biryani.jpg' },
+      image_public_id: { type: String, default: undefined },
       meats: {
         type: [platterOptionSchema],
         default: [],

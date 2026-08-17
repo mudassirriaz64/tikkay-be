@@ -5,6 +5,7 @@ export { JourneyPost as JourneyPostModel } from '../gallery/gallery.model';
 
 export interface IFounderDetails extends Document<string> {
   portraitUrl: string;
+  portrait_public_id?: string;
   quote: string;
   quoteAuthor: string;
   quoteRole: string;
@@ -35,6 +36,7 @@ export interface IAboutPageConfig extends Document<string> {
     titleAccent: string;
     description: string;
     imageUrl: string;
+    image_public_id?: string;
   };
 }
 
@@ -42,6 +44,7 @@ const founderDetailsSchema = new Schema<IFounderDetails>(
   {
     _id: { type: String },
     portraitUrl: { type: String, required: true, default: '/images/our_legacy.png' },
+    portrait_public_id: { type: String, default: undefined },
     quote: { type: String, required: true, default: '' },
     quoteAuthor: { type: String, required: true, default: 'Ahmed Raza' },
     quoteRole: { type: String, required: true, default: 'Founder & Pitmaster' },
@@ -82,6 +85,7 @@ const aboutPageConfigSchema = new Schema<IAboutPageConfig>(
       titleAccent: { type: String, default: 'Fire & Flavor' },
       description: { type: String, default: 'From a backyard grill obsession to Pakistan\'s most-loved BBQ brand — this is how the fire grew.' },
       imageUrl: { type: String, default: '/images/about-hero.jpg' },
+      image_public_id: { type: String, default: undefined },
     },
   },
   { timestamps: true }

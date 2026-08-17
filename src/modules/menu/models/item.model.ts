@@ -15,6 +15,7 @@ export interface IMenuItem extends Document {
   is_bestseller: boolean;
   is_available: boolean;
   image_url: string;
+  image_public_id?: string;
   ribbon?: MenuRibbon;
   tags?: string[];
   is_signature?: boolean;
@@ -72,6 +73,10 @@ const menuItemSchema = new Schema<IMenuItem>(
       type: String,
       required: [true, 'Image URL is required'],
       default: '/images/menu/default.jpg',
+    },
+    image_public_id: {
+      type: String,
+      default: undefined,
     },
     ribbon: {
       type: String,
