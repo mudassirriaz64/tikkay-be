@@ -17,7 +17,19 @@ const PAGE_CONFIG_ID = 'about-page-config';
 const getOrCreateFounder = async (): Promise<any> => {
   let founder = await FounderDetails.findById(FOUNDER_ID);
   if (!founder) {
-    founder = new FounderDetails({ _id: FOUNDER_ID });
+    founder = new FounderDetails({
+      _id: FOUNDER_ID,
+      portraitUrl: '/images/our_legacy.png',
+      quote: "The grill doesn't lie. It reveals the soul of the spice. Once the charcoal catches, there are no shortcuts.",
+      quoteAuthor: 'Ahmed Raza',
+      quoteRole: 'Founder & Pitmaster',
+      eyebrow: 'The Visionary',
+      title: 'Meet Ahmed',
+      bio: "Ahmed Raza started Tikkay Shikkay with a simple obsession: to preserve the authentic, raw heat of ancestral Pakistani street BBQ.",
+      caption: 'Ahmed Raza, 2024',
+      mission: 'Serve honest, fire-grilled food that feels handcrafted from the first bite to the last, without compromise.',
+      vision: "To be Pakistan's benchmark for fire-grilled flavor, where ancestral methods meet modern consistency.",
+    });
     await founder.save();
   }
   return founder;
