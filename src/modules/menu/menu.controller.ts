@@ -52,19 +52,24 @@ export const getMenuPageData = asyncHandler(async (_req: Request, res: Response)
         .filter((item: IMenuItem | undefined) => !!item) as IMenuItem[]
     : botiItems.slice(1);
 
-  // Default tabs updated with Featured and Tikka
-  const defaultTabs = [
+  // Generate tabs dynamically directly from MongoDB categories
+  const dynamicCategoryTabs = categories.map((cat) => ({
+    id: `tab-${cat.slug || cat._id.toString()}`,
+    label: cat.name,
+    sectionId: cat.slug || cat._id.toString(),
+  }));
+
+  // Build full dynamic tab list: Featured Picks + Dynamic Categories from MongoDB + Platters
+  const dynamicTabs = [
     { id: 'tab-featured', label: 'Featured Picks', sectionId: 'featured-picks' },
-    { id: 'tab-tikka', label: 'Tikka Specials', sectionId: 'tikka' },
-    { id: 'tab-boti', label: 'Boti & Kabab', sectionId: 'boti' },
+    ...dynamicCategoryTabs,
     { id: 'tab-platters', label: 'Build Platter', sectionId: 'platters' },
-    { id: 'tab-sides', label: 'Sides & Dips', sectionId: 'sides' },
   ];
 
   const pageData = {
     categories,
     items,
-    tabs: pageConfig.tabs && pageConfig.tabs.length >= 5 ? pageConfig.tabs : defaultTabs,
+    tabs: dynamicTabs,
     featured: featuredItems,
     tikka: tikkaItems,
     platter: pageConfig.platter,
