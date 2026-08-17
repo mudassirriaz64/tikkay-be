@@ -8,9 +8,6 @@
 out/
 build/
 
-# Sub-repositories
-backend/
-
 # Dependency directories
 node_modules/
 jspm_packages/
