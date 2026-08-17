@@ -27,7 +27,18 @@ export const getMenuPageData = asyncHandler(async (_req: Request, res: Response)
     getOrCreatePageConfig(),
   ]);
 
-  const featuredItems = items.filter((item) => item.display_section === 'featured' || item.is_bestseller);
+  const tikkaCategory = categories.find(
+    (c) => c.slug === 'tikka' || c.name.toLowerCase().includes('tikka')
+  );
+
+  const featuredItems = items.filter(
+    (item) => item.display_section === 'featured' || item.is_bestseller
+  );
+
+  const tikkaItems = tikkaCategory
+    ? items.filter((item) => item.category_id.toString() === tikkaCategory._id.toString())
+    : items.filter((item) => item.title.toLowerCase().includes('tikka'));
+
   const botiItems = items.filter((item) => item.display_section === 'boti');
   const sideItems = items.filter((item) => item.display_section === 'sides' || item.is_signature);
 
@@ -41,11 +52,21 @@ export const getMenuPageData = asyncHandler(async (_req: Request, res: Response)
         .filter((item: IMenuItem | undefined) => !!item) as IMenuItem[]
     : botiItems.slice(1);
 
+  // Default tabs updated with Featured and Tikka
+  const defaultTabs = [
+    { id: 'tab-featured', label: 'Featured Picks', sectionId: 'featured-picks' },
+    { id: 'tab-tikka', label: 'Tikka Specials', sectionId: 'tikka' },
+    { id: 'tab-boti', label: 'Boti & Kabab', sectionId: 'boti' },
+    { id: 'tab-platters', label: 'Build Platter', sectionId: 'platters' },
+    { id: 'tab-sides', label: 'Sides & Dips', sectionId: 'sides' },
+  ];
+
   const pageData = {
     categories,
     items,
-    tabs: pageConfig.tabs,
+    tabs: pageConfig.tabs && pageConfig.tabs.length >= 5 ? pageConfig.tabs : defaultTabs,
     featured: featuredItems,
+    tikka: tikkaItems,
     platter: pageConfig.platter,
     boti: {
       featured: boti_featured || null,
