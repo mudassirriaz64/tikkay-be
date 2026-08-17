@@ -1,15 +1,8 @@
-# Ignore all Markdown files by default
-*.md
-# Exclude README.md so it remains tracked
-!README.md
-
 # Next.js build and cache outputs
 .next/
 out/
 build/
-
-# Sub-repositories
-backend/
+dist/
 
 # Dependency directories
 node_modules/
@@ -35,13 +28,13 @@ lerna-debug.log*
 .DS_Store
 Thumbs.db
 
+# TypeScript cache
+*.tsbuildinfo
+next-env.d.ts
+
 # IDE / Editor configurations
 .idea/
 .vscode/
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
 *.sw?
 
 # Vercel deployment files
