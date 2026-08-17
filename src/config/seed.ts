@@ -62,29 +62,34 @@ const seed = async () => {
 
     console.log('');
     log('Seeding Users...');
+    const adminEmail = process.env.ADMIN_EMAIL || 'admin@tikkay.com';
+    const adminPassword = process.env.ADMIN_PASSWORD || 'Admin@123';
+    const userEmail = process.env.USER_EMAIL || 'user@tikkay.com';
+    const userPassword = process.env.USER_PASSWORD || 'User@123';
+
     await User.create([
       {
         _id: new Types.ObjectId('000000000000000000000001'),
         name: 'Ahmed Raza',
-        email: 'admin@tikkay.com',
+        email: adminEmail,
         phone: '+92 300 1234567',
         address: 'Tikkay Shikkay HQ, Lahore',
-        password: 'Admin@123',
+        password: adminPassword,
         role: 'admin',
         memberSince: '2024-01-01',
       },
       {
         _id: new Types.ObjectId('000000000000000000000002'),
         name: 'Demo User',
-        email: 'user@tikkay.com',
+        email: userEmail,
         phone: '+92 300 9876543',
         address: '123 Main Street, Gulberg, Lahore',
-        password: 'User@123',
+        password: userPassword,
         role: 'user',
         memberSince: '2024-06-15',
       },
     ]);
-    success('Users seeded (admin@tikkay.com / User@123)');
+    success(`Users seeded (${adminEmail} / ${userEmail})`);
 
     console.log('');
     log('Seeding Site Settings...');
@@ -469,8 +474,8 @@ const seed = async () => {
     console.log('\x1b[32m   ✅ DATABASE SEEDED SUCCESSFULLY! ✅\x1b[0m');
     console.log('\x1b[32m══════════════════════════════════════════════════\x1b[0m\n');
     console.log('\x1b[33m  Quick Access:\x1b[0m');
-    console.log('    🔐 Admin Login:  admin@tikkay.com  /  Admin@123');
-    console.log('    👤 User Login:   user@tikkay.com   /  User@123');
+    console.log(`    🔐 Admin Login:  ${adminEmail}  /  ${adminPassword}`);
+    console.log(`    👤 User Login:   ${userEmail}   /  ${userPassword}`);
     console.log('    🌐 Server:       http://localhost:5000');
     console.log('');
 

@@ -7,6 +7,7 @@ import { MenuItem, IMenuItem } from './models/item.model';
 import { MenuPageConfig } from './models/pageConfig.model';
 import { AuthRequest } from '../../middleware/auth.middleware';
 import { Types } from 'mongoose';
+import { generateSlug } from '../../utils/slug';
 
 const PAGE_CONFIG_ID = 'menu-page-config';
 
@@ -67,7 +68,17 @@ export const getCategories = asyncHandler(async (_req: Request, res: Response) =
 });
 
 export const createCategory = asyncHandler(async (req: AuthRequest, res: Response) => {
-  const category = await MenuCategory.create(req.body);
+  const data = { ...req.body };
+  if (!data.slug && data.name) {
+    let baseSlug = generateSlug(data.name);
+    let candidate = baseSlug;
+    let count = 1;
+    while (await MenuCategory.findOne({ slug: candidate })) {
+      candidate = `${baseSlug}-${count++}`;
+    }
+    data.slug = candidate;
+  }
+  const category = await MenuCategory.create(data);
 
   res
     .status(201)
@@ -76,7 +87,17 @@ export const createCategory = asyncHandler(async (req: AuthRequest, res: Respons
 
 export const updateCategory = asyncHandler(async (req: AuthRequest, res: Response) => {
   const { id } = req.params;
-  const category = await MenuCategory.findByIdAndUpdate(id, req.body, {
+  const data = { ...req.body };
+  if (!data.slug && data.name) {
+    let baseSlug = generateSlug(data.name);
+    let candidate = baseSlug;
+    let count = 1;
+    while (await MenuCategory.findOne({ slug: candidate, _id: { $ne: id } })) {
+      candidate = `${baseSlug}-${count++}`;
+    }
+    data.slug = candidate;
+  }
+  const category = await MenuCategory.findByIdAndUpdate(id, data, {
     new: true,
     runValidators: true,
   });
@@ -139,7 +160,17 @@ export const getMenuItem = asyncHandler(async (req: Request, res: Response) => {
 });
 
 export const createMenuItem = asyncHandler(async (req: AuthRequest, res: Response) => {
-  const item = await MenuItem.create(req.body);
+  const data = { ...req.body };
+  if (!data.slug && data.title) {
+    let baseSlug = generateSlug(data.title);
+    let candidate = baseSlug;
+    let count = 1;
+    while (await MenuItem.findOne({ slug: candidate })) {
+      candidate = `${baseSlug}-${count++}`;
+    }
+    data.slug = candidate;
+  }
+  const item = await MenuItem.create(data);
 
   res
     .status(201)
@@ -148,7 +179,17 @@ export const createMenuItem = asyncHandler(async (req: AuthRequest, res: Respons
 
 export const updateMenuItem = asyncHandler(async (req: AuthRequest, res: Response) => {
   const { id } = req.params;
-  const item = await MenuItem.findByIdAndUpdate(id, req.body, {
+  const data = { ...req.body };
+  if (!data.slug && data.title) {
+    let baseSlug = generateSlug(data.title);
+    let candidate = baseSlug;
+    let count = 1;
+    while (await MenuItem.findOne({ slug: candidate, _id: { $ne: id } })) {
+      candidate = `${baseSlug}-${count++}`;
+    }
+    data.slug = candidate;
+  }
+  const item = await MenuItem.findByIdAndUpdate(id, data, {
     new: true,
     runValidators: true,
   });
