@@ -3,11 +3,20 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+let cachedConnection: typeof mongoose | null = null;
+
 export const connectDB = async (): Promise<void> => {
   try {
+    if (cachedConnection && mongoose.connection.readyState === 1) {
+      return;
+    }
+
     const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/tikkay-shikkay';
 
-    const conn = await mongoose.connect(mongoURI);
+    const conn = await mongoose.connect(mongoURI, {
+      bufferCommands: false,
+    });
+    cachedConnection = conn;
     console.log(`\x1b[36m✓ MongoDB Connected: ${conn.connection.host}\x1b[0m`);
     console.log(`\x1b[36m✓ Database: ${conn.connection.name}\x1b[0m`);
 
@@ -20,7 +29,10 @@ export const connectDB = async (): Promise<void> => {
     });
   } catch (error) {
     console.error(`\x1b[31m✗ MongoDB connection failed: ${(error as Error).message}\x1b[0m`);
-    process.exit(1);
+    if (process.env.NODE_ENV !== 'production') {
+      process.exit(1);
+    }
+    throw error;
   }
 };
 
