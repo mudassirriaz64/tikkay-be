@@ -5,6 +5,11 @@ import { siteConfig } from "@/config/site";
 export const metadata: Metadata = {
   title: siteConfig.name,
   description: siteConfig.description,
+  icons: {
+    icon: "/logo/logo_transparent.png",
+    shortcut: "/logo/logo_transparent.png",
+    apple: "/logo/logo_transparent.png",
+  },
 };
 
 export default function RootLayout({
