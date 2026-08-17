@@ -19,3 +19,53 @@ export interface MenuItem {
   is_available: boolean;
   image_url: string;
 }
+
+export type MenuRibbon = "Legendary" | "Chef's Choice";
+
+export interface MenuTab {
+  id: string;
+  label: string;
+  sectionId: string;
+}
+
+export interface FeaturedItem extends MenuItem {
+  ribbon?: MenuRibbon;
+  tags?: string[];
+}
+
+export interface PlatterOption {
+  id: string;
+  name: string;
+  price: number;
+}
+
+export interface PlatterData {
+  baseLabel: string;
+  basePrice: number;
+  imageUrl: string;
+  meats: PlatterOption[];
+  sides: PlatterOption[];
+}
+
+export interface BotiItem extends MenuItem {
+  ribbon?: MenuRibbon;
+}
+
+export interface BotiData {
+  featured: BotiItem;
+  compact: BotiItem[];
+}
+
+export interface SideItem extends MenuItem {
+  isSignature?: boolean;
+}
+
+export interface MenuPageData {
+  categories: MenuCategory[];
+  items: MenuItem[];
+  tabs: MenuTab[];
+  featured: FeaturedItem[];
+  platter: PlatterData;
+  boti: BotiData;
+  sides: SideItem[];
+}

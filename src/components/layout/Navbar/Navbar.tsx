@@ -7,7 +7,7 @@ import { siteConfig } from "@/config/site";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils/cn";
 import Image from "next/image";
-import { Menu, X, MessageCircle, Instagram, Facebook } from "lucide-react";
+import { Menu, X, MessageCircle, Instagram, Facebook, UserRound } from "lucide-react";
 
 export function Navbar() {
   const pathname = usePathname();
@@ -49,7 +49,7 @@ export function Navbar() {
         )}
       >
         <div className="relative mx-auto flex h-full max-w-[1280px] items-center justify-between gap-6 px-4 lg:px-[64px]">
-          <Link href="/" className="shrink-0 flex items-center">
+          <Link href="/" className="flex shrink-0 items-center gap-3">
             <div className={cn(
               "relative overflow-hidden transition-all duration-300 ease-in-out",
               scrolled ? "h-9 w-9" : "h-11 w-11"
@@ -62,6 +62,13 @@ export function Navbar() {
                 className="object-contain"
               />
             </div>
+            <span className={cn(
+              "hidden font-[family:var(--font-serif)] font-bold uppercase tracking-[0.16em] text-[var(--text-primary)] transition-all duration-300 ease-in-out min-[420px]:inline-block",
+              scrolled ? "text-base" : "text-lg"
+            )}>
+              Tikkay
+              <span className="text-[var(--accent-orange)]">Shikkay</span>
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -88,6 +95,17 @@ export function Navbar() {
           </nav>
 
           <div className="flex shrink-0 items-center gap-4">
+            <Link
+              href="/accounts"
+              aria-label="My Account"
+              className={cn(
+                "flex items-center justify-center rounded-xl border border-[var(--border-warm)] bg-[var(--bg-surface-alt)]/40 text-[var(--text-primary)] transition-all hover:bg-[var(--bg-surface-hover)] hover:text-[var(--accent-peach)] active:scale-95",
+                scrolled ? "h-9 w-9" : "h-10 w-10",
+              )}
+            >
+              <UserRound className="h-5 w-5" aria-hidden="true" />
+            </Link>
+
             <Button
               variant="primary"
               size="sm"
@@ -162,6 +180,20 @@ export function Navbar() {
                 </Link>
               );
             })}
+
+            <Link
+              href="/accounts"
+              onClick={() => setIsMenuOpen(false)}
+              className={cn(
+                "flex items-center gap-3 font-[family:var(--font-serif)] text-lg font-bold uppercase tracking-[0.14em] transition-colors py-1 border-b border-[var(--border-warm)]/10",
+                pathname === "/accounts"
+                  ? "text-[var(--accent-peach)]"
+                  : "text-[var(--text-primary)] hover:text-[var(--accent-peach)]",
+              )}
+            >
+              <UserRound className="h-4 w-4" aria-hidden="true" />
+              My Account
+            </Link>
           </nav>
         </div>
 

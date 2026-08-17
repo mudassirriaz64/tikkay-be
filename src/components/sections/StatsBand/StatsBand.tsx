@@ -1,4 +1,4 @@
-import { StatItem } from "@/lib/mock/about";
+import { StatItem } from "@/types";
 import { Reveal } from "@/components/motion/Reveal";
 
 export function StatsBand({ stats }: { stats: StatItem[] }) {

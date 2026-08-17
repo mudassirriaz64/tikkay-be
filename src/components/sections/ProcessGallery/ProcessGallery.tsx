@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { GalleryItem } from "@/lib/mock/gallery";
+import { GalleryItem } from "@/types";
 import { Reveal } from "@/components/motion/Reveal";
 
 export function ProcessGallery({ items }: { items: GalleryItem[] }) {

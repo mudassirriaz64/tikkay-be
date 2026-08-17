@@ -1,7 +1,10 @@
-import { CustomerReview } from '@/types';
-import { mockReviews } from '../mock/reviews';
+import { CustomerReview, ReviewsPageData } from "@/types";
+import { reviewsService } from "@/lib/api/reviews.service";
 
 export async function getReviews(): Promise<CustomerReview[]> {
-  await new Promise((resolve) => setTimeout(resolve, 500));
-  return mockReviews;
+  return reviewsService.getApproved();
+}
+
+export async function getReviewsPageData(): Promise<ReviewsPageData> {
+  return reviewsService.getPageData();
 }

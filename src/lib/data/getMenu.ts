@@ -1,10 +1,6 @@
-import { MenuCategory, MenuItem } from '@/types';
-import { mockMenuCategories, mockMenuItems } from '../mock/menu';
+import { MenuPageData } from "@/types";
+import { menuService } from "@/lib/api/menu.service";
 
-export async function getMenu(): Promise<{ categories: MenuCategory[]; items: MenuItem[] }> {
-  await new Promise((resolve) => setTimeout(resolve, 500));
-  return {
-    categories: mockMenuCategories,
-    items: mockMenuItems,
-  };
+export async function getMenu(): Promise<MenuPageData> {
+  return menuService.getPageData();
 }

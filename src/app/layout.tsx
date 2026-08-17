@@ -1,15 +1,15 @@
-import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
-import { StickyOrderBar } from "@/components/sections/StickyOrderBar";
-import { MotionProvider } from "@/providers/MotionProvider";
-import { CartProvider } from "@/context/CartContext";
-import "./globals.css";
 import { Metadata } from "next";
+import "./globals.css";
 import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
   title: siteConfig.name,
   description: siteConfig.description,
+  icons: {
+    icon: "/logo/logo_transparent.png",
+    shortcut: "/logo/logo_transparent.png",
+    apple: "/logo/logo_transparent.png",
+  },
 };
 
 export default function RootLayout({
@@ -21,16 +21,9 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         suppressHydrationWarning
-        className="antialiased selection:bg-[var(--accent-peach)] selection:text-[var(--text-on-peach)] pb-[89px] md:pb-0"
+        className="antialiased selection:bg-[var(--accent-peach)] selection:text-[var(--text-on-peach)]"
       >
-        <MotionProvider>
-          <CartProvider>
-            <Navbar />
-            <main>{children}</main>
-            <Footer />
-            <StickyOrderBar />
-          </CartProvider>
-        </MotionProvider>
+        {children}
       </body>
     </html>
   );

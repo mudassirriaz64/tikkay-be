@@ -1,7 +1,6 @@
 import { JourneyPost } from '@/types';
-import { mockJourneyPosts } from '../mock/journey';
+import { aboutService } from '@/lib/api/about.service';
 
 export async function getJourneyPosts(): Promise<JourneyPost[]> {
-  await new Promise((resolve) => setTimeout(resolve, 500));
-  return mockJourneyPosts;
+  return aboutService.getJourneyPosts();
 }

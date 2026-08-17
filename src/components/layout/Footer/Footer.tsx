@@ -1,5 +1,6 @@
 import { siteConfig } from "@/config/site";
 import Link from "next/link";
+import { Flame } from "lucide-react";
 
 export function Footer() {
   return (
@@ -122,6 +123,13 @@ export function Footer() {
         <p className="font-[family:var(--font-serif)] text-[11px] tracking-widest text-stone-500 uppercase">
           {siteConfig.footer.copyright}
         </p>
+        <Link
+          href="/admin"
+          className="mt-3 inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-stone-600 transition-colors hover:text-[var(--accent-orange)]"
+        >
+          <Flame className="h-3 w-3" />
+          Admin Studio
+        </Link>
       </div>
     </footer>
   );

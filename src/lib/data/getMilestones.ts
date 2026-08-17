@@ -1,6 +1,5 @@
-import { mockMilestones } from "../mock/milestones";
+import { aboutService } from "@/lib/api/about.service";
 
 export async function getMilestones() {
-  await new Promise((resolve) => setTimeout(resolve, 500));
-  return mockMilestones;
+  return aboutService.getMilestones();
 }

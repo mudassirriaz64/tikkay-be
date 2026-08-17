@@ -1,13 +1,14 @@
-import { FounderDetails, StatItem, mockFounderDetails, mockAboutStats } from '../mock/about';
+import { aboutService } from "@/lib/api/about.service";
 
-export async function getAboutFounderDetails(): Promise<FounderDetails> {
-  // Simulate network delay
-  await new Promise((resolve) => setTimeout(resolve, 300));
-  return mockFounderDetails;
+export async function getAboutPageData() {
+  return aboutService.getPageData();
 }
 
-export async function getAboutStats(): Promise<StatItem[]> {
-  // Simulate network delay
-  await new Promise((resolve) => setTimeout(resolve, 300));
-  return mockAboutStats;
+export async function getAboutFounderDetails() {
+  const data = await aboutService.getPageData();
+  return data.founder;
+}
+
+export async function getAboutStats() {
+  return aboutService.getStats();
 }

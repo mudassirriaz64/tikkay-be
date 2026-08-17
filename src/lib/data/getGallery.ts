@@ -1,7 +1,10 @@
-import { GalleryItem, mockGalleryItems } from '../mock/gallery';
+import { GalleryPageData } from "@/types";
+import { galleryService } from "@/lib/api/gallery.service";
 
-export async function getGalleryItems(): Promise<GalleryItem[]> {
-  // Simulate network delay
-  await new Promise((resolve) => setTimeout(resolve, 300));
-  return mockGalleryItems;
+export async function getGalleryPageData(): Promise<GalleryPageData> {
+  return galleryService.getPageData();
+}
+
+export async function getGalleryItems() {
+  return galleryService.images.getAll() as unknown as any[];
 }
