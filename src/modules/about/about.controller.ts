@@ -70,10 +70,15 @@ export const getFounder = asyncHandler(async function (_req: AuthRequest, res: R
 });
 
 export const updateFounder = asyncHandler(async function (req: AuthRequest, res: Response) {
-  const founder = await FounderDetails.findByIdAndUpdate(FOUNDER_ID, req.body, {
-    new: true, runValidators: true, upsert: true, setDefaultsOnInsert: true,
-  });
-  res.status(200).json(new ApiResponse(200, founder, 'Founder details updated'));
+  let founder = await FounderDetails.findById(FOUNDER_ID);
+  if (!founder) {
+    founder = new FounderDetails({ _id: FOUNDER_ID, ...req.body });
+    await founder.save();
+  } else {
+    Object.assign(founder, req.body);
+    await founder.save();
+  }
+  res.status(200).json(new ApiResponse(200, founder, 'Founder details updated successfully'));
 });
 
 export const getPageConfig = asyncHandler(async function (_req: AuthRequest, res: Response) {
@@ -92,6 +97,17 @@ export const stats = {
   getAll: asyncHandler(async function (_req: Request, res: Response) {
     const items = await StatItem.find().sort({ display_order: 1 });
     res.status(200).json(new ApiResponse(200, items, 'Stat Item fetched successfully'));
+  }),
+  saveAll: asyncHandler(async function (req: AuthRequest, res: Response) {
+    const rawStats = Array.isArray(req.body) ? req.body : req.body.stats || [];
+    await StatItem.deleteMany({});
+    const itemsToInsert = rawStats.map((s: any, idx: number) => ({
+      value: s.value || '0',
+      label: s.label || '',
+      display_order: idx + 1,
+    }));
+    const created = await StatItem.insertMany(itemsToInsert);
+    res.status(200).json(new ApiResponse(200, created, 'Stats saved successfully'));
   }),
   create: asyncHandler(async function (req: AuthRequest, res: Response) {
     const item = await StatItem.create(req.body);
@@ -120,6 +136,17 @@ export const milestones = {
   getAll: asyncHandler(async function (_req: Request, res: Response) {
     const items = await MilestoneStat.find().sort({ display_order: 1 });
     res.status(200).json(new ApiResponse(200, items, 'Milestone fetched successfully'));
+  }),
+  saveAll: asyncHandler(async function (req: AuthRequest, res: Response) {
+    const rawMilestones = Array.isArray(req.body) ? req.body : req.body.milestones || [];
+    await MilestoneStat.deleteMany({});
+    const itemsToInsert = rawMilestones.map((m: any, idx: number) => ({
+      number: m.number || '0',
+      label: m.label || '',
+      display_order: idx + 1,
+    }));
+    const created = await MilestoneStat.insertMany(itemsToInsert);
+    res.status(200).json(new ApiResponse(200, created, 'Milestones saved successfully'));
   }),
   create: asyncHandler(async function (req: AuthRequest, res: Response) {
     const item = await MilestoneStat.create(req.body);

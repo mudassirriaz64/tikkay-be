@@ -94,16 +94,53 @@ const createGenericCrud = (Model, name) => ({
 });
 const contactMethodsCRUD = createGenericCrud(ContactMethod, 'Contact Method');
 const openingDaysCRUD = createGenericCrud(OpeningDay, 'Opening Day');
-export const contactMethods = contactMethodsCRUD;
-export const openingDays = openingDaysCRUD;
+export const contactMethods = {
+    ...contactMethodsCRUD,
+    saveAll: asyncHandler(async (req, res) => {
+        const rawMethods = Array.isArray(req.body) ? req.body : req.body.methods || [];
+        await ContactMethod.deleteMany({});
+        const itemsToInsert = rawMethods.map((m, idx) => ({
+            icon: m.icon || 'phone',
+            accent: m.accent || 'orange',
+            title: m.title || 'Contact Method',
+            value: m.value || '',
+            helper: m.helper || '',
+            href: m.href || '#',
+            display_order: idx + 1,
+        }));
+        const created = await ContactMethod.insertMany(itemsToInsert);
+        res.status(200).json(new ApiResponse(200, created, 'Contact methods saved successfully'));
+    }),
+};
+export const openingDays = {
+    ...openingDaysCRUD,
+    saveAll: asyncHandler(async (req, res) => {
+        const rawDays = Array.isArray(req.body) ? req.body : req.body.openingHours || [];
+        await OpeningDay.deleteMany({});
+        const itemsToInsert = rawDays.map((d, idx) => ({
+            day: d.day || 'Monday',
+            hours: d.hours || '',
+            isClosed: Boolean(d.isClosed),
+            display_order: idx + 1,
+        }));
+        const created = await OpeningDay.insertMany(itemsToInsert);
+        res.status(200).json(new ApiResponse(200, created, 'Opening hours saved successfully'));
+    }),
+};
 export const getPageConfig = asyncHandler(async (_req, res) => {
     const config = await getOrCreatePageConfig();
     res.status(200).json(new ApiResponse(200, config, 'Contact page config fetched'));
 });
 export const updatePageConfig = asyncHandler(async (req, res) => {
-    const config = await ContactPageConfig.findByIdAndUpdate(PAGE_CONFIG_ID, req.body, {
-        new: true, runValidators: true, upsert: true, setDefaultsOnInsert: true,
-    });
-    res.status(200).json(new ApiResponse(200, config, 'Contact page config updated'));
+    let config = await ContactPageConfig.findById(PAGE_CONFIG_ID);
+    if (!config) {
+        config = new ContactPageConfig({ _id: PAGE_CONFIG_ID, ...req.body });
+        await config.save();
+    }
+    else {
+        Object.assign(config, req.body);
+        await config.save();
+    }
+    res.status(200).json(new ApiResponse(200, config, 'Contact page config updated successfully'));
 });
 //# sourceMappingURL=contact.controller.js.map

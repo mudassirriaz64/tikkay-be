@@ -6,6 +6,7 @@ export declare const getPageConfig: (req: Request, res: Response, next: import("
 export declare const updatePageConfig: (req: Request, res: Response, next: import("express").NextFunction) => void;
 export declare const stats: {
     getAll: (req: Request, res: Response, next: import("express").NextFunction) => void;
+    saveAll: (req: Request, res: Response, next: import("express").NextFunction) => void;
     create: (req: Request, res: Response, next: import("express").NextFunction) => void;
     getById: (req: Request, res: Response, next: import("express").NextFunction) => void;
     update: (req: Request, res: Response, next: import("express").NextFunction) => void;
@@ -13,6 +14,7 @@ export declare const stats: {
 };
 export declare const milestones: {
     getAll: (req: Request, res: Response, next: import("express").NextFunction) => void;
+    saveAll: (req: Request, res: Response, next: import("express").NextFunction) => void;
     create: (req: Request, res: Response, next: import("express").NextFunction) => void;
     getById: (req: Request, res: Response, next: import("express").NextFunction) => void;
     update: (req: Request, res: Response, next: import("express").NextFunction) => void;

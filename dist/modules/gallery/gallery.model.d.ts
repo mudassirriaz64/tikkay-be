@@ -3,8 +3,12 @@ export type GalleryTabId = 'customers' | 'behind-scenes' | 'journey' | 'gallery'
 export type GalleryCategoryId = 'food' | 'grill' | 'customers' | 'atmosphere';
 export type JourneyType = 'milestone' | 'achievement' | 'challenge' | 'lesson' | 'future';
 export interface IGalleryImage extends Document {
+    media_type: 'image' | 'video';
     imageUrl: string;
     image_public_id?: string;
+    video_url?: string;
+    video_public_id?: string;
+    duration?: string;
     caption: string;
     location: string;
     category: GalleryCategoryId;
@@ -63,6 +67,13 @@ export interface IKitchenProcess extends Document {
     title: string;
     imageUrl: string;
     image_public_id?: string;
+    video_url?: string;
+    video_public_id?: string;
+    temperature?: string;
+    technique_tags: string[];
+    ingredients_highlight?: string;
+    chef_secret?: string;
+    is_featured: boolean;
     story: string;
     fact: string;
     time: string;

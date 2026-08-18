@@ -76,6 +76,13 @@ export interface IKitchenProcess extends Document {
   title: string;
   imageUrl: string;
   image_public_id?: string;
+  video_url?: string;
+  video_public_id?: string;
+  temperature?: string;
+  technique_tags: string[];
+  ingredients_highlight?: string;
+  chef_secret?: string;
+  is_featured: boolean;
   story: string;
   fact: string;
   time: string;
@@ -230,6 +237,13 @@ const kitchenProcessSchema = new Schema<IKitchenProcess>(
     title: { type: String, required: true },
     imageUrl: { type: String, required: true, default: '/images/gallery/default-kitchen.jpg' },
     image_public_id: { type: String, default: undefined },
+    video_url: { type: String, default: undefined },
+    video_public_id: { type: String, default: undefined },
+    temperature: { type: String, default: '' },
+    technique_tags: { type: [String], default: [] },
+    ingredients_highlight: { type: String, default: '' },
+    chef_secret: { type: String, default: '' },
+    is_featured: { type: Boolean, default: false },
     story: { type: String, required: true },
     fact: { type: String, default: '' },
     time: { type: String, default: '' },

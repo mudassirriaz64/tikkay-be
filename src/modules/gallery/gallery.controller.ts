@@ -34,7 +34,7 @@ export const getGalleryPageData = asyncHandler(async function (_req: Request, re
     GoogleReview.find().sort({ display_order: 1, createdAt: -1 }),
     CustomerStory.find().sort({ display_order: 1 }),
     KitchenProcess.find().sort({ step: 1, display_order: 1 }),
-    JourneyMilestone.find().sort({ display_order: 1, year: 1 }),
+    JourneyMilestone.find().sort({ year: 1, display_order: 1 }),
     GalleryImage.find().sort({ display_order: 1, createdAt: -1 }),
   ]);
 
@@ -258,13 +258,29 @@ export const kitchenProcesses = {
   delete: asyncHandler(async function (req: AuthRequest, res: Response) {
     const item = await KitchenProcess.findByIdAndDelete(req.params.id);
     if (!item) throw new ApiError(404, 'Kitchen Process not found');
+
+    if (item.image_public_id) {
+      try {
+        await cloudinary.uploader.destroy(item.image_public_id);
+      } catch {
+        /* ignore */
+      }
+    }
+    if (item.video_public_id) {
+      try {
+        await cloudinary.uploader.destroy(item.video_public_id, { resource_type: 'video' });
+      } catch {
+        /* ignore */
+      }
+    }
+
     res.status(200).json(new ApiResponse(200, {}, 'Kitchen Process deleted successfully'));
   }),
 };
 
 export const journeyMilestones = {
   getAll: asyncHandler(async function (_req: Request, res: Response) {
-    const items = await JourneyMilestone.find().sort({ display_order: 1 });
+    const items = await JourneyMilestone.find().sort({ year: 1, display_order: 1 });
     res.status(200).json(new ApiResponse(200, items, 'Journey Milestone fetched successfully'));
   }),
   create: asyncHandler(async function (req: AuthRequest, res: Response) {

@@ -25,6 +25,7 @@ router.route('/founder')
 
 router.route('/stats')
   .get(stats.getAll)
+  .put(protect, verifyAdmin, stats.saveAll)
   .post(protect, verifyAdmin, stats.create);
 router.route('/stats/:id')
   .get(stats.getById)
@@ -33,6 +34,7 @@ router.route('/stats/:id')
 
 router.route('/milestones')
   .get(milestones.getAll)
+  .put(protect, verifyAdmin, milestones.saveAll)
   .post(protect, verifyAdmin, milestones.create);
 router.route('/milestones/:id')
   .get(milestones.getById)
