@@ -7,8 +7,12 @@ export type GalleryCategoryId = 'food' | 'grill' | 'customers' | 'atmosphere';
 export type JourneyType = 'milestone' | 'achievement' | 'challenge' | 'lesson' | 'future';
 
 export interface IGalleryImage extends Document {
+  media_type: 'image' | 'video';
   imageUrl: string;
   image_public_id?: string;
+  video_url?: string;
+  video_public_id?: string;
+  duration?: string;
   caption: string;
   location: string;
   category: GalleryCategoryId;
@@ -20,9 +24,14 @@ export interface IGalleryImage extends Document {
 export interface IVideoTestimonial extends Document {
   customer_name: string;
   title: string;
+  description?: string;
   duration: string;
   thumbnail: string;
+  video_url?: string;
+  video_public_id?: string;
   source: string;
+  source_type: 'embed' | 'upload';
+  status: 'ready' | 'processing' | 'failed';
   display_order: number;
 }
 
@@ -135,12 +144,16 @@ export interface IGalleryPageConfig extends Document<string> {
 
 const galleryImageSchema = new Schema<IGalleryImage>(
   {
+    media_type: { type: String, enum: ['image', 'video'], default: 'image' },
     imageUrl: { type: String, required: true },
     image_public_id: { type: String, default: undefined },
+    video_url: { type: String, default: undefined },
+    video_public_id: { type: String, default: undefined },
+    duration: { type: String, default: undefined },
     caption: { type: String, required: true, default: '' },
     location: { type: String, default: '' },
     category: { type: String, enum: ['food', 'grill', 'customers', 'atmosphere'], required: true },
-    alt: { type: String, required: true, default: 'Gallery image' },
+    alt: { type: String, required: true, default: 'Gallery media' },
     tag: { type: String, default: undefined },
     display_order: { type: Number, default: 0 },
   },
@@ -149,11 +162,16 @@ const galleryImageSchema = new Schema<IGalleryImage>(
 
 const videoTestimonialSchema = new Schema<IVideoTestimonial>(
   {
-    customer_name: { type: String, required: true },
+    customer_name: { type: String, required: true, default: 'Tikkay Shikkay' },
     title: { type: String, required: true },
+    description: { type: String, default: undefined },
     duration: { type: String, required: true, default: '0:00' },
     thumbnail: { type: String, required: true, default: '/images/gallery/default-video.jpg' },
+    video_url: { type: String, default: undefined },
+    video_public_id: { type: String, default: undefined },
     source: { type: String, default: 'Internal' },
+    source_type: { type: String, enum: ['embed', 'upload'], default: 'embed' },
+    status: { type: String, enum: ['ready', 'processing', 'failed'], default: 'ready' },
     display_order: { type: Number, default: 0 },
   },
   { timestamps: true }

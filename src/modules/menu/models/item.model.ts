@@ -3,7 +3,7 @@
 import { Schema, model, Document, Types } from 'mongoose';
 
 export type SpiceLevel = 'Mild' | 'Medium' | 'Hot' | 'Extra Spicy';
-export type MenuRibbon = 'Legendary' | "Chef's Choice";
+export type MenuRibbon = string;
 
 export interface IMenuItem extends Document {
   category_id: Types.ObjectId;
@@ -82,8 +82,8 @@ const menuItemSchema = new Schema<IMenuItem>(
     },
     ribbon: {
       type: String,
-      enum: ['Legendary', "Chef's Choice"],
       default: undefined,
+      trim: true,
     },
     tags: {
       type: [String],
