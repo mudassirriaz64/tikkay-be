@@ -2,12 +2,13 @@ import { Schema, model, Document, Types, CallbackError } from 'mongoose';
 
 export type OrderStatus = 'placed' | 'preparing' | 'ready' | 'out-for-delivery' | 'delivered';
 
-export interface IOrderItem extends Document {
-  itemId: Types.ObjectId;
+export interface IOrderItem {
+  itemId?: Types.ObjectId | string;
   title: string;
   quantity: number;
   price: number;
   image_url: string;
+  breakdown?: string;
 }
 
 export interface IOrderTimelineStep {
@@ -36,11 +37,12 @@ export interface IOrder extends Document {
 
 const orderItemSchema = new Schema<IOrderItem>(
   {
-    itemId: { type: Schema.Types.ObjectId, ref: 'MenuItem', required: true },
+    itemId: { type: Schema.Types.Mixed, required: false },
     title: { type: String, required: true },
     quantity: { type: Number, required: true, min: 1 },
     price: { type: Number, required: true, min: 0 },
-    image_url: { type: String, required: true, default: '' },
+    image_url: { type: String, required: false, default: '' },
+    breakdown: { type: String, required: false },
   },
   { _id: false }
 );

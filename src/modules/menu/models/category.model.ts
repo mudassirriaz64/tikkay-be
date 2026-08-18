@@ -5,6 +5,7 @@ import { Schema, model, Document } from 'mongoose';
 export interface IMenuCategory extends Document {
   name: string;
   slug: string;
+  subtitle?: string;
   display_order: number;
 }
 
@@ -22,6 +23,11 @@ const menuCategorySchema = new Schema<IMenuCategory>(
       required: [true, 'Category slug is required'],
       unique: true,
       lowercase: true,
+      trim: true,
+    },
+    subtitle: {
+      type: String,
+      default: undefined,
       trim: true,
     },
     display_order: {
