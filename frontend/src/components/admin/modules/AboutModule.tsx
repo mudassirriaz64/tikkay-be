@@ -51,12 +51,17 @@ export function AboutModule() {
 function FounderManager() {
   const { data, updateSlice } = useAdminData();
   const [draft, setDraft] = useState<FounderDetails>(data.about.founder);
-  const [notice, setNotice] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
 
-  function save() {
-    updateSlice("about", { ...data.about, founder: draft });
-    setNotice(true);
-    setTimeout(() => setNotice(false), 2000);
+  async function save() {
+    try {
+      await aboutService.updateFounder(draft);
+      updateSlice("about", { ...data.about, founder: draft });
+      setNotice("Founder profile saved and updated!");
+      setTimeout(() => setNotice(null), 3000);
+    } catch (e: any) {
+      alert(`Failed to save founder: ${e?.message}`);
+    }
   }
 
   const set = <K extends keyof FounderDetails>(key: K, val: FounderDetails[K]) =>
@@ -64,7 +69,7 @@ function FounderManager() {
 
   return (
     <div className="space-y-5">
-      {notice ? <Notice tone="success">Founder details saved.</Notice> : null}
+      {notice ? <Notice tone="success">{notice}</Notice> : null}
 
       <SectionCard
         title="Founder Profile"
