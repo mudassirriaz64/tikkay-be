@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { v2 as cloudinary } from 'cloudinary';
 import { asyncHandler } from '../../utils/asyncHandler';
 import { ApiError } from '../../utils/ApiError';
 import { ApiResponse } from '../../utils/ApiResponse';
@@ -90,6 +91,23 @@ export const galleryImages = {
   delete: asyncHandler(async function (req: AuthRequest, res: Response) {
     const item = await GalleryImage.findByIdAndDelete(req.params.id);
     if (!item) throw new ApiError(404, 'Gallery Image not found');
+
+    // Clean up Cloudinary assets if present
+    if (item.image_public_id) {
+      try {
+        await cloudinary.uploader.destroy(item.image_public_id, { resource_type: 'image' });
+      } catch {
+        /* ignore image cleanup error */
+      }
+    }
+    if (item.video_public_id) {
+      try {
+        await cloudinary.uploader.destroy(item.video_public_id, { resource_type: 'video' });
+      } catch {
+        /* ignore video cleanup error */
+      }
+    }
+
     res.status(200).json(new ApiResponse(200, {}, 'Gallery Image deleted successfully'));
   }),
 };
@@ -118,6 +136,16 @@ export const videos = {
   delete: asyncHandler(async function (req: AuthRequest, res: Response) {
     const item = await VideoTestimonial.findByIdAndDelete(req.params.id);
     if (!item) throw new ApiError(404, 'Video Testimonial not found');
+
+    // Clean up Cloudinary assets if present
+    if (item.video_public_id) {
+      try {
+        await cloudinary.uploader.destroy(item.video_public_id, { resource_type: 'video' });
+      } catch {
+        /* ignore cloudinary cleanup error */
+      }
+    }
+
     res.status(200).json(new ApiResponse(200, {}, 'Video Testimonial deleted successfully'));
   }),
 };
