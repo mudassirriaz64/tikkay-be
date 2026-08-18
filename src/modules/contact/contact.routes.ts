@@ -22,6 +22,7 @@ router.route('/page-config')
 
 router.route('/methods')
   .get(contactMethods.getAll)
+  .put(protect, verifyAdmin, contactMethods.saveAll)
   .post(protect, verifyAdmin, contactMethods.create);
 router.route('/methods/:id')
   .get(contactMethods.getById)
@@ -30,6 +31,7 @@ router.route('/methods/:id')
 
 router.route('/opening-hours')
   .get(openingDays.getAll)
+  .put(protect, verifyAdmin, openingDays.saveAll)
   .post(protect, verifyAdmin, openingDays.create);
 router.route('/opening-hours/:id')
   .get(openingDays.getById)

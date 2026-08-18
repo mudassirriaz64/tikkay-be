@@ -1,6 +1,6 @@
 export declare const config: {
     PORT: number;
-    NODE_ENV: "test" | "development" | "production";
+    NODE_ENV: "development" | "production" | "test";
     MONGODB_URI: string;
     JWT_SECRET: string;
     JWT_EXPIRES_IN: string;
@@ -9,6 +9,10 @@ export declare const config: {
     CLOUDINARY_CLOUD_NAME: string;
     CLOUDINARY_API_KEY: string;
     CLOUDINARY_API_SECRET: string;
+    GOOGLE_PLACES_API_KEY: string;
+    GOOGLE_PLACE_ID: string;
+    BEHOLD_FEED_URL: string;
+    INSTAGRAM_ACCESS_TOKEN: string;
 };
 export declare const CORS_OPTIONS: {
     origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => void;

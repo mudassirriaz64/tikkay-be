@@ -5,6 +5,7 @@ export declare const getSubmissions: (req: Request, res: Response, next: import(
 export declare const markSubmissionRead: (req: Request, res: Response, next: import("express").NextFunction) => void;
 export declare const deleteSubmission: (req: Request, res: Response, next: import("express").NextFunction) => void;
 export declare const contactMethods: {
+    saveAll: (req: Request, res: Response, next: import("express").NextFunction) => void;
     getAll: (req: Request, res: Response, next: import("express").NextFunction) => void;
     create: (req: Request, res: Response, next: import("express").NextFunction) => void;
     getById: (req: Request, res: Response, next: import("express").NextFunction) => void;
@@ -12,6 +13,7 @@ export declare const contactMethods: {
     delete: (req: Request, res: Response, next: import("express").NextFunction) => void;
 };
 export declare const openingDays: {
+    saveAll: (req: Request, res: Response, next: import("express").NextFunction) => void;
     getAll: (req: Request, res: Response, next: import("express").NextFunction) => void;
     create: (req: Request, res: Response, next: import("express").NextFunction) => void;
     getById: (req: Request, res: Response, next: import("express").NextFunction) => void;

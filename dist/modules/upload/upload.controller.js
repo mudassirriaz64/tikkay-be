@@ -123,10 +123,10 @@ export const getVideoUploadConfig = asyncHandler(async (_req, res) => {
 export const generateVideoSignature = asyncHandler(async (req, res) => {
     const timestamp = Math.round(Date.now() / 1000);
     const folder = 'tikkayshikkay/gallery/videos';
+    // Cloudinary signature signs key-value pairs alphabetically (folder, timestamp)
     const paramsToSign = {
         folder,
         timestamp,
-        resource_type: 'video',
     };
     const signature = cloudinary.utils.api_sign_request(paramsToSign, config.CLOUDINARY_API_SECRET);
     res.status(200).json(new ApiResponse(200, {

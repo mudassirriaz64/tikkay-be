@@ -12,6 +12,10 @@ export const config = {
     CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME || '',
     CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY || '',
     CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET || '',
+    GOOGLE_PLACES_API_KEY: process.env.GOOGLE_PLACES_API_KEY || '',
+    GOOGLE_PLACE_ID: process.env.GOOGLE_PLACE_ID || '',
+    BEHOLD_FEED_URL: process.env.BEHOLD_FEED_URL || '',
+    INSTAGRAM_ACCESS_TOKEN: process.env.INSTAGRAM_ACCESS_TOKEN || '',
 };
 export const CORS_OPTIONS = {
     origin: (origin, callback) => {

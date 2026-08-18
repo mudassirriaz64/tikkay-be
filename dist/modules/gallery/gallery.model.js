@@ -2,12 +2,16 @@
 /// <reference types="mongoose" />
 import { Schema, model } from 'mongoose';
 const galleryImageSchema = new Schema({
+    media_type: { type: String, enum: ['image', 'video'], default: 'image' },
     imageUrl: { type: String, required: true },
     image_public_id: { type: String, default: undefined },
+    video_url: { type: String, default: undefined },
+    video_public_id: { type: String, default: undefined },
+    duration: { type: String, default: undefined },
     caption: { type: String, required: true, default: '' },
     location: { type: String, default: '' },
     category: { type: String, enum: ['food', 'grill', 'customers', 'atmosphere'], required: true },
-    alt: { type: String, required: true, default: 'Gallery image' },
+    alt: { type: String, required: true, default: 'Gallery media' },
     tag: { type: String, default: undefined },
     display_order: { type: Number, default: 0 },
 }, { timestamps: true });
@@ -64,6 +68,13 @@ const kitchenProcessSchema = new Schema({
     title: { type: String, required: true },
     imageUrl: { type: String, required: true, default: '/images/gallery/default-kitchen.jpg' },
     image_public_id: { type: String, default: undefined },
+    video_url: { type: String, default: undefined },
+    video_public_id: { type: String, default: undefined },
+    temperature: { type: String, default: '' },
+    technique_tags: { type: [String], default: [] },
+    ingredients_highlight: { type: String, default: '' },
+    chef_secret: { type: String, default: '' },
+    is_featured: { type: Boolean, default: false },
     story: { type: String, required: true },
     fact: { type: String, default: '' },
     time: { type: String, default: '' },
