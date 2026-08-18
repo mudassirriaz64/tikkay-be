@@ -49,5 +49,6 @@ export const ADMIN_TABS: AdminTabItem[] = [
   { id: "social", label: "Social", icon: Globe },
   { id: "about", label: "About", icon: UserRound },
   { id: "contact", label: "Contact", icon: Phone },
+  { id: "contact-messages", label: "Contact Messages", icon: MessageSquare },
   { id: "orders", label: "Orders", icon: ShoppingBag },
 ];

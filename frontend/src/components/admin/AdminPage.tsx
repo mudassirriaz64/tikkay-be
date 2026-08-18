@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AdminTabId } from "@/types/admin";
 import { AdminShell } from "./AdminShell";
 import { OverviewModule } from "./modules/OverviewModule";
@@ -11,10 +11,23 @@ import { GalleryModule, GalleryTabKey } from "./modules/GalleryModule";
 import { SocialModule } from "./modules/SocialModule";
 import { AboutModule } from "./modules/AboutModule";
 import { ContactModule } from "./modules/ContactModule";
+import { MessagesModule } from "./modules/MessagesModule";
 import { OrdersModule } from "./modules/OrdersModule";
+import { contactService } from "@/lib/api";
 
 export function AdminPage() {
   const [activeTab, setActiveTab] = useState<AdminTabId>("dashboard");
+  const [unreadMessages, setUnreadMessages] = useState<number>(0);
+
+  useEffect(() => {
+    contactService
+      .getSubmissions()
+      .then((subs) => {
+        const unread = (subs || []).filter((s) => !s.is_read).length;
+        setUnreadMessages(unread);
+      })
+      .catch(() => {});
+  }, []);
 
   // Determine Gallery subtab if navigating directly from sidebar
   const gallerySubTab: GalleryTabKey =
@@ -27,7 +40,11 @@ export function AdminPage() {
       : "media";
 
   return (
-    <AdminShell activeTab={activeTab} onTabChange={setActiveTab}>
+    <AdminShell
+      activeTab={activeTab}
+      onTabChange={setActiveTab}
+      unreadMessagesCount={unreadMessages}
+    >
       {activeTab === "dashboard" && <OverviewModule onNavigate={setActiveTab} />}
       {activeTab === "settings" && <SettingsModule />}
       {activeTab === "menu" && <MenuModule />}
@@ -46,6 +63,9 @@ export function AdminPage() {
       {activeTab === "social" && <SocialModule />}
       {activeTab === "about" && <AboutModule />}
       {activeTab === "contact" && <ContactModule />}
+      {activeTab === "contact-messages" && (
+        <MessagesModule onUnreadCountChange={setUnreadMessages} />
+      )}
       {activeTab === "orders" && <OrdersModule />}
     </AdminShell>
   );

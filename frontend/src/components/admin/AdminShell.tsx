@@ -20,10 +20,11 @@ import { ADMIN_TABS } from "./AdminNav";
 interface AdminShellProps {
   activeTab: AdminTabId;
   onTabChange: (tab: AdminTabId) => void;
+  unreadMessagesCount?: number;
   children: ReactNode;
 }
 
-export function AdminShell({ activeTab, onTabChange, children }: AdminShellProps) {
+export function AdminShell({ activeTab, onTabChange, unreadMessagesCount = 0, children }: AdminShellProps) {
   const { resetAll } = useAdminData();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -127,7 +128,14 @@ export function AdminShell({ activeTab, onTabChange, children }: AdminShellProps
                   )}
                 >
                   <div className="flex items-center gap-3">
-                    <Icon className="h-[18px] w-[18px] shrink-0" />
+                    <div className="relative">
+                      <Icon className="h-[18px] w-[18px] shrink-0" />
+                      {tab.id === "contact-messages" && unreadMessagesCount > 0 && collapsed ? (
+                        <span className="absolute -top-1.5 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-[var(--accent-orange)] text-[9px] font-bold text-[var(--text-on-orange)]">
+                          {unreadMessagesCount > 9 ? "9+" : unreadMessagesCount}
+                        </span>
+                      ) : null}
+                    </div>
                     <span
                       className={cn(
                         "whitespace-nowrap",
@@ -137,6 +145,13 @@ export function AdminShell({ activeTab, onTabChange, children }: AdminShellProps
                       {tab.label}
                     </span>
                   </div>
+
+                  {tab.id === "contact-messages" && unreadMessagesCount > 0 && !collapsed ? (
+                    <span className="ml-auto inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-[var(--accent-orange)] px-1.5 text-[11px] font-bold text-[var(--text-on-orange)] shadow-sm">
+                      {unreadMessagesCount}
+                    </span>
+                  ) : null}
+
                   {hasChildren && !collapsed ? (
                     <ChevronRight
                       className={cn(

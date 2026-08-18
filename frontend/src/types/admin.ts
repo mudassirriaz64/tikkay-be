@@ -11,4 +11,5 @@ export type AdminTabId =
   | "social"
   | "about"
   | "contact"
+  | "contact-messages"
   | "orders";
