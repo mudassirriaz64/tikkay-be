@@ -59,12 +59,24 @@ export const getMenuPageData = asyncHandler(async (_req: Request, res: Response)
     sectionId: cat.slug || cat._id.toString(),
   }));
 
-  // Build full dynamic tab list: Featured Picks + Dynamic Categories from MongoDB + Platters
-  const dynamicTabs = [
+  // Build full dynamic tab list: Featured Picks + Dynamic Categories from MongoDB
+  const rawTabs = [
     { id: 'tab-featured', label: 'Featured Picks', sectionId: 'featured-picks' },
     ...dynamicCategoryTabs,
     { id: 'tab-platters', label: 'Build Platter', sectionId: 'platters' },
   ];
+
+  // Deduplicate tabs by unique id & sectionId
+  const seenIds = new Set<string>();
+  const seenSections = new Set<string>();
+  const dynamicTabs = rawTabs.filter((tab) => {
+    if (seenIds.has(tab.id) || seenSections.has(tab.sectionId)) {
+      return false;
+    }
+    seenIds.add(tab.id);
+    seenSections.add(tab.sectionId);
+    return true;
+  });
 
   const pageData = {
     categories,

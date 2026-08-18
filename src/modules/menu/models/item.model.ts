@@ -18,6 +18,8 @@ export interface IMenuItem extends Document {
   image_public_id?: string;
   ribbon?: MenuRibbon;
   tags?: string[];
+  servings?: number;
+  included_items?: string[];
   is_signature?: boolean;
   display_section?: 'featured' | 'boti' | 'sides' | 'regular';
   display_order?: number;
@@ -84,6 +86,14 @@ const menuItemSchema = new Schema<IMenuItem>(
       default: undefined,
     },
     tags: {
+      type: [String],
+      default: [],
+    },
+    servings: {
+      type: Number,
+      default: undefined,
+    },
+    included_items: {
       type: [String],
       default: [],
     },
