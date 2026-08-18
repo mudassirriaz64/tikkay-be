@@ -170,6 +170,56 @@ function MenuItemForm({
         </Field>
       </div>
 
+      {/* Platter-specific fields when category is Platters */}
+      {categories.find((c) => c.id === value.category_id)?.slug === "platters" ? (
+        <div className="grid grid-cols-1 gap-5 md:col-span-2 md:grid-cols-2 rounded-xl border border-[var(--border-warm)] bg-[var(--bg-surface-alt)]/50 p-4">
+          <Field label="Servings Count (e.g. 4)">
+            <NumberInput
+              value={value.servings ?? 4}
+              onChange={(e) => set("servings", Number(e.target.value) || undefined)}
+            />
+          </Field>
+          <Field label="Included Items (comma-separated)">
+            <TextInput
+              value={value.included_items?.join(", ") ?? ""}
+              placeholder="e.g. 2x Chicken Tikka, 2x Seekh Kabab, 2x Naan"
+              onChange={(e) =>
+                set(
+                  "included_items",
+                  e.target.value
+                    .split(",")
+                    .map((s) => s.trim())
+                    .filter(Boolean)
+                )
+              }
+            />
+          </Field>
+        </div>
+      ) : null}
+
+      {/* Ribbon & Custom Write-in Tags for every product */}
+      <div className="grid grid-cols-1 gap-5 md:col-span-2 md:grid-cols-2">
+        <RibbonField
+          value={value.ribbon}
+          onChange={(ribbon) => onChange({ ...value, ribbon })}
+        />
+        <Field label="Custom Tags (comma separated)">
+          <TextInput
+            value={value.tags?.join(", ") ?? ""}
+            placeholder="e.g. Signature, Creamy, High Heat, House Blend"
+            onChange={(e) =>
+              onChange({
+                ...value,
+                tags: e.target.value
+                  .split(",")
+                  .map((t) => t.trim())
+                  .filter(Boolean),
+              })
+            }
+          />
+        </Field>
+      </div>
+
       <div className="flex flex-wrap gap-8 md:col-span-2">
         <Toggle
           checked={value.is_bestseller}
@@ -664,6 +714,7 @@ function CategoriesManager() {
   const { data, updateSlice } = useAdminData();
   const [editing, setEditing] = useState<MenuCategory | null>(null);
   const [newCatName, setNewCatName] = useState("");
+  const [newCatSubtitle, setNewCatSubtitle] = useState("");
   const [isAdding, setIsAdding] = useState(false);
   const [notice, setNotice] = useState<"saved" | "deleted" | null>(null);
   const [pendingDelete, setPendingDelete] = useState<MenuCategory | null>(null);
@@ -684,20 +735,24 @@ function CategoriesManager() {
     const trimmed = newCatName.trim();
     if (!trimmed) return;
     const slug = trimmed.toLowerCase().replace(/[\s\W-]+/g, "-").replace(/^-+|-+$/g, "");
+    const subtitle = newCatSubtitle.trim() || undefined;
     try {
       const created = await menuService.createCategory({
         name: trimmed,
         slug,
+        subtitle,
         display_order: categories.length + 1,
       });
       const newCategory: MenuCategory = created || {
         id: newId("cat"),
         name: trimmed,
         slug,
+        subtitle,
         display_order: categories.length + 1,
       };
       commit([...categories, newCategory]);
       setNewCatName("");
+      setNewCatSubtitle("");
       setIsAdding(false);
       flash("saved");
     } catch (e: any) {
@@ -710,9 +765,10 @@ function CategoriesManager() {
     const trimmed = editing.name.trim();
     if (!trimmed) return;
     const slug = trimmed.toLowerCase().replace(/[\s\W-]+/g, "-").replace(/^-+|-+$/g, "");
-    const updated = { ...editing, name: trimmed, slug };
+    const subtitle = editing.subtitle?.trim() || undefined;
+    const updated = { ...editing, name: trimmed, slug, subtitle };
     try {
-      await menuService.updateCategory(editing.id, { name: trimmed, slug });
+      await menuService.updateCategory(editing.id, { name: trimmed, slug, subtitle });
       commit(categories.map((c) => (c.id === updated.id ? updated : c)));
       setEditing(null);
       flash("saved");
@@ -745,7 +801,7 @@ function CategoriesManager() {
           title="Add New Category"
           actions={
             <>
-              <Button size="sm" variant="ghost" onClick={() => { setIsAdding(false); setNewCatName(""); }}>
+              <Button size="sm" variant="ghost" onClick={() => { setIsAdding(false); setNewCatName(""); setNewCatSubtitle(""); }}>
                 Cancel
               </Button>
               <Button size="sm" onClick={handleCreate} disabled={!newCatName.trim()}>
@@ -754,19 +810,20 @@ function CategoriesManager() {
             </>
           }
         >
-          <div className="max-w-md">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 max-w-2xl">
             <Field label="Category Name">
               <TextInput
                 value={newCatName}
                 onChange={(e) => setNewCatName(e.target.value)}
-                placeholder="e.g. Karahi, Platters, Desserts"
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    handleCreate();
-                  }
-                }}
+                placeholder="e.g. Tikka, Boti, Karahi, Desserts"
                 autoFocus
+              />
+            </Field>
+            <Field label="Eyebrow Subtitle (shown above section title)">
+              <TextInput
+                value={newCatSubtitle}
+                onChange={(e) => setNewCatSubtitle(e.target.value)}
+                placeholder="e.g. Ancestral Fire-Grilled, Charcoal Charred, Sweet Endings"
               />
             </Field>
           </div>
@@ -787,18 +844,19 @@ function CategoriesManager() {
             </>
           }
         >
-          <div className="max-w-md">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 max-w-2xl">
             <Field label="Category Name">
               <TextInput
                 value={editing.name}
                 onChange={(e) => setEditing({ ...editing, name: e.target.value })}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    handleSaveEditing();
-                  }
-                }}
                 autoFocus
+              />
+            </Field>
+            <Field label="Eyebrow Subtitle (shown above section title)">
+              <TextInput
+                value={editing.subtitle || ""}
+                onChange={(e) => setEditing({ ...editing, subtitle: e.target.value })}
+                placeholder="e.g. Ancestral Fire-Grilled, Char & Lacquer, Freshly Coaled"
               />
             </Field>
           </div>
@@ -1043,10 +1101,15 @@ function PlatterManager() {
     { list: "meats" | "sides"; option: PlatterOption } | null
   >(null);
 
-  function save() {
-    updateSlice("menu", { ...data.menu, platter: draft });
-    setNotice(true);
-    setTimeout(() => setNotice(false), 2000);
+  async function save() {
+    try {
+      await menuService.updatePageConfig({ platter: draft });
+      updateSlice("menu", { ...data.menu, platter: draft });
+      setNotice(true);
+      setTimeout(() => setNotice(false), 2000);
+    } catch (e: any) {
+      alert(`Failed to save platter settings: ${e?.message}`);
+    }
   }
 
   function addOption(list: "meats" | "sides") {

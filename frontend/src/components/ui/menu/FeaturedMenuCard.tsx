@@ -48,9 +48,29 @@ export function FeaturedMenuCard({
           </h3>
           <PriceTag price={item.price} className="whitespace-nowrap text-lg" />
         </div>
-        <p className="text-sm leading-relaxed text-[var(--text-body)]">
-          {item.description}
-        </p>
+        {/* Platter Servings & Breakdown */}
+        {item.servings ? (
+          <div className="flex items-center gap-2">
+            <span className="rounded-full bg-[var(--accent-orange)]/15 border border-[var(--accent-orange)]/30 px-2.5 py-0.5 text-xs font-bold text-[var(--accent-orange)]">
+              Serves {item.servings} People
+            </span>
+          </div>
+        ) : null}
+
+        {item.included_items && item.included_items.length > 0 ? (
+          <div className="rounded-xl border border-[var(--border-warm)] bg-[var(--bg-deep)]/60 p-3 space-y-1">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">Includes:</p>
+            <ul className="text-xs text-[var(--text-primary)] space-y-0.5">
+              {item.included_items.map((inc, i) => (
+                <li key={i} className="flex items-center gap-1.5">
+                  <span className="h-1 w-1 rounded-full bg-[var(--accent-peach)]" />
+                  <span>{inc}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+
         {item.tags?.length ? (
           <div className="flex flex-wrap gap-2">
             {item.tags.map((tag) => (
