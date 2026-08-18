@@ -101,31 +101,78 @@ export function AdminShell({ activeTab, onTabChange, children }: AdminShellProps
         <nav className="flex-1 space-y-1.5 overflow-y-auto px-3 py-4">
           {ADMIN_TABS.map((tab) => {
             const Icon = tab.icon;
-            const active = activeTab === tab.id;
+            const hasChildren = tab.children && tab.children.length > 0;
+            const isChildActive = hasChildren && tab.children!.some((c) => c.id === activeTab);
+            const active = activeTab === tab.id || isChildActive;
+
             return (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => handleSelect(tab.id)}
-                title={collapsed ? tab.label : undefined}
-                className={cn(
-                  "group flex w-full items-center gap-3 rounded-xl border px-3 py-2.5 text-left text-sm font-bold uppercase tracking-[0.1em] transition-all duration-300",
-                  collapsed && "lg:justify-center lg:px-0",
-                  active
-                    ? "border-[var(--accent-orange)]/40 bg-[var(--accent-orange)]/12 text-[var(--accent-orange)]"
-                    : "border-transparent bg-transparent text-[var(--text-muted)] hover:bg-[var(--bg-surface)] hover:text-[var(--text-primary)]",
-                )}
-              >
-                <Icon className="h-[18px] w-[18px] shrink-0" />
-                <span
+              <div key={tab.id} className="space-y-1">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (hasChildren) {
+                      // Navigate to first child or default
+                      handleSelect(tab.children![0].id);
+                    } else {
+                      handleSelect(tab.id);
+                    }
+                  }}
+                  title={collapsed ? tab.label : undefined}
                   className={cn(
-                    "whitespace-nowrap",
-                    collapsed && "lg:hidden",
+                    "group flex w-full items-center justify-between rounded-xl border px-3 py-2.5 text-left text-sm font-bold uppercase tracking-[0.1em] transition-all duration-300",
+                    collapsed && "lg:justify-center lg:px-0",
+                    active
+                      ? "border-[var(--accent-orange)]/40 bg-[var(--accent-orange)]/12 text-[var(--accent-orange)]"
+                      : "border-transparent bg-transparent text-[var(--text-muted)] hover:bg-[var(--bg-surface)] hover:text-[var(--text-primary)]",
                   )}
                 >
-                  {tab.label}
-                </span>
-              </button>
+                  <div className="flex items-center gap-3">
+                    <Icon className="h-[18px] w-[18px] shrink-0" />
+                    <span
+                      className={cn(
+                        "whitespace-nowrap",
+                        collapsed && "lg:hidden",
+                      )}
+                    >
+                      {tab.label}
+                    </span>
+                  </div>
+                  {hasChildren && !collapsed ? (
+                    <ChevronRight
+                      className={cn(
+                        "h-4 w-4 transition-transform duration-200 text-[var(--text-faint)]",
+                        active && "rotate-90 text-[var(--accent-orange)]"
+                      )}
+                    />
+                  ) : null}
+                </button>
+
+                {/* Sub-items dropdown when parent is active */}
+                {hasChildren && active && !collapsed ? (
+                  <div className="ml-4 space-y-1 border-l border-[var(--border-warm)]/60 pl-3">
+                    {tab.children!.map((sub) => {
+                      const SubIcon = sub.icon;
+                      const subActive = activeTab === sub.id;
+                      return (
+                        <button
+                          key={sub.id}
+                          type="button"
+                          onClick={() => handleSelect(sub.id)}
+                          className={cn(
+                            "flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-xs font-bold uppercase tracking-[0.08em] transition-colors",
+                            subActive
+                              ? "bg-[var(--accent-orange)] text-[var(--text-on-orange)] shadow-sm"
+                              : "text-[var(--text-muted)] hover:bg-[var(--bg-surface)] hover:text-[var(--text-primary)]"
+                          )}
+                        >
+                          {SubIcon ? <SubIcon className="h-3.5 w-3.5 shrink-0" /> : null}
+                          <span className="truncate">{sub.label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                ) : null}
+              </div>
             );
           })}
         </nav>
