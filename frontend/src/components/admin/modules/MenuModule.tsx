@@ -244,16 +244,43 @@ function RibbonField({
   value: MenuRibbon | undefined;
   onChange: (value: MenuRibbon | undefined) => void;
 }) {
+  const quickRibbons = ["Legendary", "Chef's Choice", "House Special", "Must Try", "Bestseller", "New"];
+
   return (
-    <Field label="Ribbon">
-      <Select
-        value={value ?? ""}
-        onChange={(e) => onChange((e.target.value || undefined) as MenuRibbon | undefined)}
-      >
-        <option value="">No ribbon</option>
-        <option value="Legendary">Legendary</option>
-        <option value="Chef's Choice">Chef&apos;s Choice</option>
-      </Select>
+    <Field label="Ribbon / Gold Badge (e.g. LEGENDARY, MUST TRY)">
+      <div className="space-y-2">
+        <TextInput
+          value={value ?? ""}
+          placeholder="e.g. Legendary, Chef's Choice, Must Try"
+          onChange={(e) => onChange(e.target.value.trim() ? e.target.value : undefined)}
+        />
+        <div className="flex flex-wrap items-center gap-1.5 pt-1">
+          <span className="text-[10px] text-[var(--text-faint)]">Quick pick:</span>
+          {quickRibbons.map((ribbon) => (
+            <button
+              key={ribbon}
+              type="button"
+              onClick={() => onChange(ribbon)}
+              className={`rounded-md px-2 py-0.5 text-[10px] font-bold uppercase transition-colors ${
+                value?.toLowerCase() === ribbon.toLowerCase()
+                  ? "bg-[var(--accent-gold)] text-[var(--text-on-gold)]"
+                  : "bg-[var(--bg-surface-raised)] text-[var(--text-muted)] hover:bg-[var(--accent-gold)]/20 hover:text-[var(--accent-gold)]"
+              }`}
+            >
+              {ribbon}
+            </button>
+          ))}
+          {value ? (
+            <button
+              type="button"
+              onClick={() => onChange(undefined)}
+              className="text-[10px] text-[var(--text-faint)] hover:text-[var(--accent-coral)] underline ml-1"
+            >
+              Clear
+            </button>
+          ) : null}
+        </div>
+      </div>
     </Field>
   );
 }
@@ -649,9 +676,17 @@ function ItemsManager() {
                 <li key={item.id} className="py-3">
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-bold text-[var(--text-primary)]">
-                        {item.title}
-                      </p>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <p className="text-sm font-bold text-[var(--text-primary)]">
+                          {item.title}
+                        </p>
+                        {item.ribbon ? (
+                          <Badge tone="gold">{item.ribbon}</Badge>
+                        ) : null}
+                        {item.tags?.map((tag) => (
+                          <Badge key={tag} tone="peach">{tag}</Badge>
+                        ))}
+                      </div>
                       <p className="text-xs text-[var(--text-faint)]">{item.slug}</p>
                     </div>
                     <div className="flex flex-wrap items-center gap-2">
@@ -981,32 +1016,6 @@ function FeaturedManager() {
             categories={categories}
             onChange={(next) => setEditing((d) => (d ? { ...d, ...next } : d))}
             onAddCategory={handleAddCategory}
-            extra={
-              <div className="grid grid-cols-1 gap-5 md:col-span-2 md:grid-cols-2">
-                <RibbonField
-                  value={editing.ribbon}
-                  onChange={(ribbon) => setEditing((d) => (d ? { ...d, ribbon } : d))}
-                />
-                <Field label="Tags (comma separated)">
-                  <TextInput
-                    value={editing.tags?.join(", ") ?? ""}
-                    onChange={(e) =>
-                      setEditing((d) =>
-                        d
-                          ? {
-                              ...d,
-                              tags: e.target.value
-                                .split(",")
-                                .map((t) => t.trim())
-                                .filter(Boolean),
-                            }
-                          : d,
-                      )
-                    }
-                  />
-                </Field>
-              </div>
-            }
           />
         </SectionCard>
       ) : null}

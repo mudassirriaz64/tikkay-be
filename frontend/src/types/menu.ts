@@ -26,7 +26,7 @@ export interface MenuItem {
   included_items?: string[];
 }
 
-export type MenuRibbon = "Legendary" | "Chef's Choice";
+export type MenuRibbon = string;
 
 export interface MenuTab {
   id: string;
