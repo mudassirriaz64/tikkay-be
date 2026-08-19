@@ -18,6 +18,7 @@ import uploadRoutes from './modules/upload/upload.routes';
 import cateringRoutes from './modules/catering/catering.routes';
 import blogRoutes from './modules/blog/blog.routes';
 import careersRoutes from './modules/careers/careers.routes';
+import franchiseRoutes from './modules/franchise/franchise.routes';
 
 const app = express();
 
@@ -51,6 +52,7 @@ app.get('/', (_req: Request, res: Response) => {
       catering: '/api/v1/catering',
       blog: '/api/v1/blog',
       careers: '/api/v1/careers',
+      franchise: '/api/v1/franchise',
     },
   });
 });
@@ -78,6 +80,7 @@ app.use('/api/v1/upload', uploadRoutes);
 app.use('/api/v1/catering', cateringRoutes);
 app.use('/api/v1/blog', blogRoutes);
 app.use('/api/v1/careers', careersRoutes);
+app.use('/api/v1/franchise', franchiseRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

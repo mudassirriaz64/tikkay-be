@@ -150,13 +150,16 @@ const galleryPageConfigSchema = new Schema({
         ],
     },
     cta: {
-        title: { type: String, default: 'Experience It In Person' },
-        description: { type: String, default: 'The photos tell half the story. Come taste the fire.' },
-        primaryLabel: { type: String, default: 'Book a Table' },
+        title: { type: String, default: 'Step Inside Tikkay Shikkay' },
+        description: {
+            type: String,
+            default: 'From the flame to the table, every skewer is a memory made at the coals. Visit us today and taste the standard.',
+        },
+        primaryLabel: { type: String, default: 'Find Your Table' },
         primaryHref: { type: String, default: '/contact' },
-        secondaryLabel: { type: String, default: 'Order Online' },
+        secondaryLabel: { type: String, default: 'Order for Delivery' },
         secondaryHref: { type: String, default: '/menu' },
-        imageUrl: { type: String, default: '/images/gallery/cta-fire.jpg' },
+        imageUrl: { type: String, default: '/images/reviews/cta-fire.jpg' },
     },
 }, { timestamps: true });
 export const GalleryImage = model('GalleryImage', galleryImageSchema);
