@@ -1,8 +1,10 @@
 "use client";
 
 import Image from "next/image";
+import { Heart } from "lucide-react";
 import { FlameRating } from "@/components/ui/FlameRating";
 import { useCart } from "@/context/CartContext";
+import { useAccount } from "@/providers/AccountProvider";
 import { FeaturedItem } from "@/types/menu";
 import { AddToCartButton } from "./AddToCartButton";
 import { IngredientBadge } from "./IngredientBadge";
@@ -20,7 +22,9 @@ export function FeaturedMenuCard({
   ctaLabel = "Add to Order",
 }: FeaturedMenuCardProps) {
   const { items, addToCart, removeFromCart } = useCart();
+  const { isFavorite, toggleFavorite } = useAccount();
   const quantity = items.find((i) => i.item.id === item.id)?.quantity ?? 0;
+  const favorite = isFavorite(item.id);
 
   return (
     <MenuCard className="h-full">
@@ -34,11 +38,32 @@ export function FeaturedMenuCard({
           className="object-cover object-center transition-transform duration-500 group-hover/menu:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-surface)] via-transparent to-transparent" />
-        {item.ribbon ? (
-          <span className="absolute left-4 top-4 rounded-full bg-[var(--accent-gold)] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--text-on-gold)] shadow-lg">
-            {item.ribbon}
-          </span>
-        ) : null}
+        
+        {/* Top Badges & Favorite Button */}
+        <div className="absolute left-4 right-4 top-4 flex items-center justify-between pointer-events-none">
+          {item.ribbon ? (
+            <span className="pointer-events-auto rounded-full bg-[var(--accent-gold)] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--text-on-gold)] shadow-lg">
+              {item.ribbon}
+            </span>
+          ) : <div />}
+
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              toggleFavorite(item.id);
+            }}
+            aria-label={favorite ? "Remove from favourites" : "Add to favourites"}
+            className={`pointer-events-auto flex h-9 w-9 items-center justify-center rounded-full backdrop-blur-md transition-all shadow-md active:scale-90 ${
+              favorite
+                ? "bg-[var(--accent-ember)] text-white shadow-[0_0_15px_rgba(217,56,30,0.5)]"
+                : "bg-black/50 text-white/80 hover:bg-black/80 hover:text-white"
+            }`}
+          >
+            <Heart className={`h-4 w-4 ${favorite ? "fill-white text-white" : ""}`} />
+          </button>
+        </div>
       </div>
 
       <div className="flex flex-1 flex-col gap-3 p-6">

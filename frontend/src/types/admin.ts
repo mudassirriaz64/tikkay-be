@@ -12,4 +12,8 @@ export type AdminTabId =
   | "about"
   | "contact"
   | "contact-messages"
-  | "orders";
+  | "orders"
+  | "customers"
+  | "catering"
+  | "blog"
+  | "careers";
