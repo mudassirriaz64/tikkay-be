@@ -4,6 +4,7 @@ import { MenuHero } from "@/components/sections/menu/MenuHero";
 import { CategoryTabs } from "@/components/sections/menu/CategoryTabs";
 import { FeaturedGrid } from "@/components/sections/menu/FeaturedGrid";
 import { PlattersSection } from "@/components/sections/menu/PlattersSection";
+import { CateringMenuBanner } from "@/components/sections/menu/CateringMenuBanner";
 
 export const metadata = {
   title: "Menu - Tikkay Shikkay",
@@ -22,6 +23,7 @@ export default async function MenuPage() {
       <MotionConfig reducedMotion="user">
         <MenuHero />
         <CategoryTabs tabs={menu.tabs} />
+        <CateringMenuBanner />
 
         {/* 1. Featured & Bestsellers (Always at the top) */}
         {menu.featured && menu.featured.length > 0 && (

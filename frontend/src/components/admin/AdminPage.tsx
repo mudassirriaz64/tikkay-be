@@ -13,6 +13,10 @@ import { AboutModule } from "./modules/AboutModule";
 import { ContactModule } from "./modules/ContactModule";
 import { MessagesModule } from "./modules/MessagesModule";
 import { OrdersModule } from "./modules/OrdersModule";
+import { CustomersModule } from "./modules/CustomersModule";
+import { CateringModule } from "./modules/CateringModule";
+import { BlogModule } from "./modules/BlogModule";
+import { CareersModule } from "./modules/CareersModule";
 import { contactService } from "@/lib/api";
 
 export function AdminPage() {
@@ -67,6 +71,10 @@ export function AdminPage() {
         <MessagesModule onUnreadCountChange={setUnreadMessages} />
       )}
       {activeTab === "orders" && <OrdersModule />}
+      {activeTab === "customers" && <CustomersModule />}
+      {activeTab === "catering" && <CateringModule />}
+      {activeTab === "blog" && <BlogModule />}
+      {activeTab === "careers" && <CareersModule />}
     </AdminShell>
   );
 }
