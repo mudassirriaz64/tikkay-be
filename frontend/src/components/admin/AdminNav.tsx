@@ -1,6 +1,7 @@
 import {
   BookOpen,
   Briefcase,
+  Building2,
   ChefHat,
   Compass,
   Film,
@@ -57,4 +58,5 @@ export const ADMIN_TABS: AdminTabItem[] = [
   { id: "catering", label: "Catering & Events", icon: UtensilsCrossed },
   { id: "blog", label: "Blog & SEO Stories", icon: BookOpen },
   { id: "careers", label: "Careers & Hiring", icon: Briefcase },
+  { id: "franchise", label: "Franchise & Expansion", icon: Building2 },
 ];
