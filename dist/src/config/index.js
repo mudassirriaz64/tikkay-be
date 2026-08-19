@@ -22,6 +22,8 @@ exports.config = {
     GOOGLE_PLACE_ID: process.env.GOOGLE_PLACE_ID || '',
     BEHOLD_FEED_URL: process.env.BEHOLD_FEED_URL || '',
     INSTAGRAM_ACCESS_TOKEN: process.env.INSTAGRAM_ACCESS_TOKEN || '',
+    RESEND_API_KEY: process.env.RESEND_API_KEY || '',
+    RESEND_FROM_EMAIL: process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev',
 };
 exports.CORS_OPTIONS = {
     origin: (origin, callback) => {

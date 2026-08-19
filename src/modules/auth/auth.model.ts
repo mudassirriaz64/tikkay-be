@@ -19,6 +19,8 @@ export interface IUser extends Document {
   loyalty_points?: number;
   birthday?: string;
   whatsapp_opt_in?: boolean;
+  resetPasswordOTP?: string;
+  resetPasswordExpires?: Date;
   isPasswordCorrect(password: string): Promise<boolean>;
   generateAccessToken(): string;
   generateRefreshToken(): string;
@@ -99,6 +101,14 @@ const userSchema = new Schema<IUser, IUserModel>(
     whatsapp_opt_in: {
       type: Boolean,
       default: false,
+    },
+    resetPasswordOTP: {
+      type: String,
+      select: false,
+    },
+    resetPasswordExpires: {
+      type: Date,
+      select: false,
     },
   },
   {

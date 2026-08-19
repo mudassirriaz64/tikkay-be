@@ -13,5 +13,7 @@ router.route('/logout').post(auth_middleware_1.protect, auth_controller_1.logout
 router.route('/refresh-token').post(auth_controller_1.refreshAccessToken);
 router.route('/change-password').post(auth_middleware_1.protect, (0, validate_middleware_1.validate)(auth_validation_1.changePasswordSchema), auth_controller_1.changeCurrentPassword);
 router.route('/me').get(auth_middleware_1.protect, auth_controller_1.getCurrentUser);
+router.route('/forgot-password').post((0, validate_middleware_1.validate)(auth_validation_1.forgotPasswordSchema), auth_controller_1.forgotPassword);
+router.route('/reset-password').post((0, validate_middleware_1.validate)(auth_validation_1.resetPasswordSchema), auth_controller_1.resetPassword);
 exports.default = router;
 //# sourceMappingURL=auth.routes.js.map

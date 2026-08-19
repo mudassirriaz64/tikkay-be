@@ -13,6 +13,8 @@ export declare const config: {
     GOOGLE_PLACE_ID: string;
     BEHOLD_FEED_URL: string;
     INSTAGRAM_ACCESS_TOKEN: string;
+    RESEND_API_KEY: string;
+    RESEND_FROM_EMAIL: string;
 };
 export declare const CORS_OPTIONS: {
     origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => void;
