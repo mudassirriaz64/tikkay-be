@@ -1,6 +1,11 @@
 import multer from 'multer';
 import { Request, Response } from 'express';
 export declare const upload: multer.Multer;
+export declare const uploadResume: import("express").RequestHandler<import("express-serve-static-core").ParamsDictionary, any, any, import("qs").ParsedQs, Record<string, any>>;
+/**
+ * Hard delete file from Cloudinary storage
+ */
+export declare function destroyCloudinaryAsset(publicId: string): Promise<void>;
 export declare const uploadSingle: import("express").RequestHandler<import("express-serve-static-core").ParamsDictionary, any, any, import("qs").ParsedQs, Record<string, any>>;
 export declare const uploadVideoDisk: import("express").RequestHandler<import("express-serve-static-core").ParamsDictionary, any, any, import("qs").ParsedQs, Record<string, any>>;
 /**

@@ -14,6 +14,9 @@ import aboutRoutes from './modules/about/about.routes';
 import ordersRoutes from './modules/orders/orders.routes';
 import usersRoutes from './modules/users/users.routes';
 import uploadRoutes from './modules/upload/upload.routes';
+import cateringRoutes from './modules/catering/catering.routes';
+import blogRoutes from './modules/blog/blog.routes';
+import careersRoutes from './modules/careers/careers.routes';
 const app = express();
 app.use(cors(CORS_OPTIONS));
 app.use(morgan(config.NODE_ENV === 'production' ? 'combined' : 'dev'));
@@ -40,6 +43,9 @@ app.get('/', (_req, res) => {
             orders: '/api/v1/orders',
             users: '/api/v1/users',
             upload: '/api/v1/upload',
+            catering: '/api/v1/catering',
+            blog: '/api/v1/blog',
+            careers: '/api/v1/careers',
         },
     });
 });
@@ -62,6 +68,9 @@ app.use('/api/v1/about', aboutRoutes);
 app.use('/api/v1/orders', ordersRoutes);
 app.use('/api/v1/users', usersRoutes);
 app.use('/api/v1/upload', uploadRoutes);
+app.use('/api/v1/catering', cateringRoutes);
+app.use('/api/v1/blog', blogRoutes);
+app.use('/api/v1/careers', careersRoutes);
 app.use(notFound);
 app.use(errorHandler);
 export default app;

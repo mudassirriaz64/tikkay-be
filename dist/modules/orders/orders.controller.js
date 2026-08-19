@@ -65,10 +65,14 @@ export const getOrderById = asyncHandler(async (req, res) => {
     if (!order) {
         throw new ApiError(404, 'Order not found');
     }
-    const isAdmin = req.user?.role === 'admin';
-    const isOwner = order.user_id && order.user_id.toString() === req.user?._id;
-    if (!isAdmin && !isOwner) {
-        throw new ApiError(404, 'Order not found');
+    // If order was placed as a guest (no user_id), allow retrieval
+    // If order is linked to a user, enforce owner or admin access
+    if (order.user_id) {
+        const isAdmin = req.user?.role === 'admin';
+        const isOwner = req.user?._id && order.user_id.toString() === req.user._id;
+        if (!isAdmin && !isOwner) {
+            throw new ApiError(403, 'You do not have permission to view this order');
+        }
     }
     res
         .status(200)
@@ -101,6 +105,23 @@ export const updateOrderStatus = asyncHandler(async (req, res) => {
     }
     if (status === 'delivered') {
         order.payment_status = 'paid';
+        // Award loyalty points to member if order is linked to a user account
+        if (order.user_id) {
+            try {
+                const { User } = await import('../auth/auth.model');
+                const user = await User.findById(order.user_id);
+                if (user && user.is_loyalty_member) {
+                    const pointsEarned = Math.floor(order.total / 100);
+                    if (pointsEarned > 0) {
+                        user.loyalty_points = (user.loyalty_points || 0) + pointsEarned;
+                        await user.save();
+                    }
+                }
+            }
+            catch {
+                // Continue silently if user loyalty points update fails
+            }
+        }
     }
     await order.save();
     res

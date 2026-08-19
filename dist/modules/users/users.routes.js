@@ -1,11 +1,14 @@
 /// <reference types="express" />
 import { Router } from 'express';
 import { verifyAdmin, protect } from '../../middleware/auth.middleware';
-import { getProfile, updateProfile, getAllUsers, getUserById, updateUserRole, deleteUser, addToFavorites, getFavorites, getMyReviews, getAccountsPageData, } from './users.controller';
+import { getProfile, updateProfile, getAllUsers, getUserById, updateUserRole, deleteUser, addToFavorites, getFavorites, getMyReviews, getAccountsPageData, joinLoyalty, getLoyaltyStatus, getLoyaltyCount, } from './users.controller';
 const router = Router();
 router.route('/profile')
     .get(protect, getProfile)
     .patch(protect, updateProfile);
+router.route('/loyalty/join').post(protect, joinLoyalty);
+router.route('/loyalty/status').get(protect, getLoyaltyStatus);
+router.route('/loyalty/count').get(getLoyaltyCount);
 router.route('/accounts-page').get(protect, getAccountsPageData);
 router.route('/favorites')
     .get(protect, getFavorites)

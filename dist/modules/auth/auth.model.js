@@ -53,6 +53,29 @@ const userSchema = new Schema({
         ref: 'MenuItem',
         default: [],
     },
+    is_loyalty_member: {
+        type: Boolean,
+        default: false,
+        index: true,
+    },
+    loyalty_joined_at: {
+        type: String,
+        default: undefined,
+    },
+    loyalty_points: {
+        type: Number,
+        default: 0,
+        min: 0,
+    },
+    birthday: {
+        type: String,
+        trim: true,
+        default: '',
+    },
+    whatsapp_opt_in: {
+        type: Boolean,
+        default: false,
+    },
 }, {
     timestamps: true,
     toJSON: {

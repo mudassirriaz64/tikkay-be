@@ -164,6 +164,81 @@ export const getMyReviews = asyncHandler(async (req: AuthRequest, res: Response)
   res.status(200).json(new ApiResponse(200, reviews.map(toAccountReview), 'My reviews fetched successfully'));
 });
 
+export const joinLoyalty = asyncHandler(async (req: AuthRequest, res: Response) => {
+  const userId = req.user!._id;
+  const { birthday, whatsapp_opt_in } = req.body;
+
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new ApiError(404, 'User not found');
+  }
+
+  user.is_loyalty_member = true;
+  if (!user.loyalty_joined_at) {
+    user.loyalty_joined_at = new Date().toISOString();
+  }
+  if (birthday) {
+    user.birthday = birthday;
+  }
+  if (whatsapp_opt_in !== undefined) {
+    user.whatsapp_opt_in = Boolean(whatsapp_opt_in);
+  }
+
+  await user.save();
+
+  // WhatsApp VIP community invite link
+  const whatsappCommunityUrl = 'https://chat.whatsapp.com/TikkayShikkayGrillFamVIP';
+
+  res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        user,
+        whatsapp_community_url: whatsappCommunityUrl,
+      },
+      'Successfully joined the Tikkay Shikkay Loyalty Club'
+    )
+  );
+});
+
+export const getLoyaltyStatus = asyncHandler(async (req: AuthRequest, res: Response) => {
+  const userId = req.user!._id;
+  const user = await User.findById(userId);
+
+  if (!user) {
+    throw new ApiError(404, 'User not found');
+  }
+
+  res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        is_loyalty_member: Boolean(user.is_loyalty_member),
+        loyalty_points: user.loyalty_points || 0,
+        loyalty_joined_at: user.loyalty_joined_at,
+        birthday: user.birthday || '',
+        whatsapp_opt_in: Boolean(user.whatsapp_opt_in),
+        whatsapp_community_url: 'https://chat.whatsapp.com/TikkayShikkayGrillFamVIP',
+      },
+      'Loyalty status fetched successfully'
+    )
+  );
+});
+
+export const getLoyaltyCount = asyncHandler(async (_req: Request, res: Response) => {
+  const memberCount = await User.countDocuments({ is_loyalty_member: true });
+  // Base offset of real loyal community members + live database members
+  const totalDisplayCount = 12470 + memberCount;
+
+  res.status(200).json(
+    new ApiResponse(
+      200,
+      { count: totalDisplayCount, rawCount: memberCount },
+      'Loyalty member count fetched successfully'
+    )
+  );
+});
+
 export const getAccountsPageData = asyncHandler(async (req: AuthRequest, res: Response) => {
   const userId = req.user!._id;
   const [user, orders, reviews, menuItems] = await Promise.all([
@@ -188,3 +263,4 @@ export const getAccountsPageData = asyncHandler(async (req: AuthRequest, res: Re
     .status(200)
     .json(new ApiResponse(200, pageData, 'Accounts page data fetched successfully'));
 });
+

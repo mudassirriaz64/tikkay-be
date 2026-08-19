@@ -10,6 +10,11 @@ export interface IUser extends Document {
     refreshToken?: string;
     memberSince: string;
     favorites: Types.ObjectId[];
+    is_loyalty_member?: boolean;
+    loyalty_joined_at?: string;
+    loyalty_points?: number;
+    birthday?: string;
+    whatsapp_opt_in?: boolean;
     isPasswordCorrect(password: string): Promise<boolean>;
     generateAccessToken(): string;
     generateRefreshToken(): string;

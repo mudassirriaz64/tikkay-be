@@ -82,6 +82,60 @@ export const upload = multer({
   },
 });
 
+// Resume storage supporting PDF, DOCX, DOC, JPG, JPEG, PNG up to 25MB
+const resumeStorage = new CloudinaryStorage({
+  cloudinary,
+  params: async (_req, file) => {
+    const ext = file.originalname.split('.').pop()?.toLowerCase();
+    const isImage = ['jpg', 'jpeg', 'png'].includes(ext || '');
+
+    return {
+      folder: 'tikkayshikkay/careers/resumes',
+      resource_type: isImage ? 'image' : 'raw',
+      allowed_formats: ['pdf', 'docx', 'doc', 'jpg', 'jpeg', 'png'],
+      public_id: `resume-${Date.now()}-${Math.round(Math.random() * 1e6)}`,
+    };
+  },
+});
+
+export const uploadResume = multer({
+  storage: resumeStorage,
+  limits: {
+    fileSize: 25 * 1024 * 1024, // 25 MB
+  },
+  fileFilter: (_req, file, cb) => {
+    const allowedMimes = [
+      'application/pdf',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/msword',
+      'image/jpeg',
+      'image/jpg',
+      'image/png',
+    ];
+    const ext = file.originalname.split('.').pop()?.toLowerCase();
+    const allowedExts = ['pdf', 'docx', 'doc', 'jpg', 'jpeg', 'png'];
+
+    if (allowedMimes.includes(file.mimetype) || allowedExts.includes(ext || '')) {
+      cb(null, true);
+    } else {
+      cb(new ApiError(400, 'Invalid file format. Only PDF, DOCX, and JPG/PNG documents up to 25MB are allowed.'));
+    }
+  },
+}).single('resume');
+
+/**
+ * Hard delete file from Cloudinary storage
+ */
+export async function destroyCloudinaryAsset(publicId: string): Promise<void> {
+  try {
+    // Try raw first (PDF / DOCX), then image
+    await cloudinary.uploader.destroy(publicId, { resource_type: 'raw' });
+    await cloudinary.uploader.destroy(publicId, { resource_type: 'image' });
+  } catch (err) {
+    console.error('Failed to destroy Cloudinary asset:', publicId, err);
+  }
+}
+
 import os from 'os';
 import path from 'path';
 import fs from 'fs';

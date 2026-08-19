@@ -14,6 +14,11 @@ export interface IUser extends Document {
   refreshToken?: string;
   memberSince: string;
   favorites: Types.ObjectId[];
+  is_loyalty_member?: boolean;
+  loyalty_joined_at?: string;
+  loyalty_points?: number;
+  birthday?: string;
+  whatsapp_opt_in?: boolean;
   isPasswordCorrect(password: string): Promise<boolean>;
   generateAccessToken(): string;
   generateRefreshToken(): string;
@@ -71,6 +76,29 @@ const userSchema = new Schema<IUser, IUserModel>(
       type: [Schema.Types.ObjectId],
       ref: 'MenuItem',
       default: [],
+    },
+    is_loyalty_member: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
+    loyalty_joined_at: {
+      type: String,
+      default: undefined,
+    },
+    loyalty_points: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    birthday: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    whatsapp_opt_in: {
+      type: Boolean,
+      default: false,
     },
   },
   {

@@ -1,6 +1,6 @@
 /// <reference types="express" />
 import { Router } from 'express';
-import { verifyAdmin, protect } from '../../middleware/auth.middleware';
+import { verifyAdmin, protect, protectOptional } from '../../middleware/auth.middleware';
 import {
   createOrder,
   getMyOrders,
@@ -19,7 +19,7 @@ router.route('/')
 router.route('/stats').get(protect, verifyAdmin, getOrderStats);
 router.route('/my').get(protect, getMyOrders);
 router.route('/:id')
-  .get(protect, getOrderById)
+  .get(protectOptional, getOrderById)
   .patch(protect, verifyAdmin, updateOrderStatus);
 
 export default router;

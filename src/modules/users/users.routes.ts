@@ -12,6 +12,9 @@ import {
   getFavorites,
   getMyReviews,
   getAccountsPageData,
+  joinLoyalty,
+  getLoyaltyStatus,
+  getLoyaltyCount,
 } from './users.controller';
 
 const router = Router();
@@ -19,6 +22,10 @@ const router = Router();
 router.route('/profile')
   .get(protect, getProfile)
   .patch(protect, updateProfile);
+
+router.route('/loyalty/join').post(protect, joinLoyalty);
+router.route('/loyalty/status').get(protect, getLoyaltyStatus);
+router.route('/loyalty/count').get(getLoyaltyCount);
 
 router.route('/accounts-page').get(protect, getAccountsPageData);
 
