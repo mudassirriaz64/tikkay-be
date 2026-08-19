@@ -1,6 +1,9 @@
-import { Schema, model } from 'mongoose';
-const cateringRequestSchema = new Schema({
-    user_id: { type: Schema.Types.ObjectId, ref: 'User', index: true, default: undefined },
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.CateringRequest = void 0;
+const mongoose_1 = require("mongoose");
+const cateringRequestSchema = new mongoose_1.Schema({
+    user_id: { type: mongoose_1.Schema.Types.ObjectId, ref: 'User', index: true, default: undefined },
     event_type: {
         type: String,
         enum: ['corporate', 'birthday', 'wedding', 'bulk-order'],
@@ -33,5 +36,5 @@ const cateringRequestSchema = new Schema({
 }, { timestamps: true });
 cateringRequestSchema.index({ event_date: 1, status: 1 });
 cateringRequestSchema.index({ user_id: 1, createdAt: -1 });
-export const CateringRequest = model('CateringRequest', cateringRequestSchema);
+exports.CateringRequest = (0, mongoose_1.model)('CateringRequest', cateringRequestSchema);
 //# sourceMappingURL=catering.model.js.map

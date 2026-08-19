@@ -1,29 +1,34 @@
-import express from 'express';
-import cors from 'cors';
-import cookieParser from 'cookie-parser';
-import morgan from 'morgan';
-import { CORS_OPTIONS, config } from './config';
-import { notFound, errorHandler } from './middleware/error.middleware';
-import authRoutes from './modules/auth/auth.routes';
-import settingsRoutes from './modules/settings/settings.routes';
-import menuRoutes from './modules/menu/menu.routes';
-import reviewsRoutes from './modules/reviews/reviews.routes';
-import galleryRoutes from './modules/gallery/gallery.routes';
-import contactRoutes from './modules/contact/contact.routes';
-import aboutRoutes from './modules/about/about.routes';
-import ordersRoutes from './modules/orders/orders.routes';
-import usersRoutes from './modules/users/users.routes';
-import uploadRoutes from './modules/upload/upload.routes';
-import cateringRoutes from './modules/catering/catering.routes';
-import blogRoutes from './modules/blog/blog.routes';
-import careersRoutes from './modules/careers/careers.routes';
-import franchiseRoutes from './modules/franchise/franchise.routes';
-const app = express();
-app.use(cors(CORS_OPTIONS));
-app.use(morgan(config.NODE_ENV === 'production' ? 'combined' : 'dev'));
-app.use(express.json({ limit: '20mb' }));
-app.use(express.urlencoded({ extended: true, limit: '20mb' }));
-app.use(cookieParser());
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const cors_1 = __importDefault(require("cors"));
+const cookie_parser_1 = __importDefault(require("cookie-parser"));
+const morgan_1 = __importDefault(require("morgan"));
+const config_1 = require("./config");
+const error_middleware_1 = require("./middleware/error.middleware");
+const auth_routes_1 = __importDefault(require("./modules/auth/auth.routes"));
+const settings_routes_1 = __importDefault(require("./modules/settings/settings.routes"));
+const menu_routes_1 = __importDefault(require("./modules/menu/menu.routes"));
+const reviews_routes_1 = __importDefault(require("./modules/reviews/reviews.routes"));
+const gallery_routes_1 = __importDefault(require("./modules/gallery/gallery.routes"));
+const contact_routes_1 = __importDefault(require("./modules/contact/contact.routes"));
+const about_routes_1 = __importDefault(require("./modules/about/about.routes"));
+const orders_routes_1 = __importDefault(require("./modules/orders/orders.routes"));
+const users_routes_1 = __importDefault(require("./modules/users/users.routes"));
+const upload_routes_1 = __importDefault(require("./modules/upload/upload.routes"));
+const catering_routes_1 = __importDefault(require("./modules/catering/catering.routes"));
+const blog_routes_1 = __importDefault(require("./modules/blog/blog.routes"));
+const careers_routes_1 = __importDefault(require("./modules/careers/careers.routes"));
+const franchise_routes_1 = __importDefault(require("./modules/franchise/franchise.routes"));
+const app = (0, express_1.default)();
+app.use((0, cors_1.default)(config_1.CORS_OPTIONS));
+app.use((0, morgan_1.default)(config_1.config.NODE_ENV === 'production' ? 'combined' : 'dev'));
+app.use(express_1.default.json({ limit: '20mb' }));
+app.use(express_1.default.urlencoded({ extended: true, limit: '20mb' }));
+app.use((0, cookie_parser_1.default)());
 app.use((_req, res, next) => {
     res.header('Access-Control-Allow-Credentials', 'true');
     next();
@@ -57,24 +62,24 @@ app.get('/api/v1/health', (_req, res) => {
         message: 'Server is running',
         timestamp: new Date().toISOString(),
         uptime: process.uptime(),
-        environment: config.NODE_ENV,
+        environment: config_1.config.NODE_ENV,
     });
 });
-app.use('/api/v1/auth', authRoutes);
-app.use('/api/v1/settings', settingsRoutes);
-app.use('/api/v1/menu', menuRoutes);
-app.use('/api/v1/reviews', reviewsRoutes);
-app.use('/api/v1/gallery', galleryRoutes);
-app.use('/api/v1/contact', contactRoutes);
-app.use('/api/v1/about', aboutRoutes);
-app.use('/api/v1/orders', ordersRoutes);
-app.use('/api/v1/users', usersRoutes);
-app.use('/api/v1/upload', uploadRoutes);
-app.use('/api/v1/catering', cateringRoutes);
-app.use('/api/v1/blog', blogRoutes);
-app.use('/api/v1/careers', careersRoutes);
-app.use('/api/v1/franchise', franchiseRoutes);
-app.use(notFound);
-app.use(errorHandler);
-export default app;
+app.use('/api/v1/auth', auth_routes_1.default);
+app.use('/api/v1/settings', settings_routes_1.default);
+app.use('/api/v1/menu', menu_routes_1.default);
+app.use('/api/v1/reviews', reviews_routes_1.default);
+app.use('/api/v1/gallery', gallery_routes_1.default);
+app.use('/api/v1/contact', contact_routes_1.default);
+app.use('/api/v1/about', about_routes_1.default);
+app.use('/api/v1/orders', orders_routes_1.default);
+app.use('/api/v1/users', users_routes_1.default);
+app.use('/api/v1/upload', upload_routes_1.default);
+app.use('/api/v1/catering', catering_routes_1.default);
+app.use('/api/v1/blog', blog_routes_1.default);
+app.use('/api/v1/careers', careers_routes_1.default);
+app.use('/api/v1/franchise', franchise_routes_1.default);
+app.use(error_middleware_1.notFound);
+app.use(error_middleware_1.errorHandler);
+exports.default = app;
 //# sourceMappingURL=app.js.map

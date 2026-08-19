@@ -1,60 +1,62 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference types="express" />
-import { Router } from 'express';
-import { verifyAdmin, protect } from '../../middleware/auth.middleware';
-import { getGalleryPageData, getPageConfig, updatePageConfig, galleryImages, videos, instagram, googleReviews, customerStories, kitchenProcesses, journeyMilestones, } from './gallery.controller';
-const router = Router();
-router.route('/page-data').get(getGalleryPageData);
+const express_1 = require("express");
+const auth_middleware_1 = require("../../middleware/auth.middleware");
+const gallery_controller_1 = require("./gallery.controller");
+const router = (0, express_1.Router)();
+router.route('/page-data').get(gallery_controller_1.getGalleryPageData);
 router.route('/page-config')
-    .get(protect, verifyAdmin, getPageConfig)
-    .patch(protect, verifyAdmin, updatePageConfig);
+    .get(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, gallery_controller_1.getPageConfig)
+    .patch(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, gallery_controller_1.updatePageConfig);
 router.route('/images')
-    .get(galleryImages.getAll)
-    .post(protect, verifyAdmin, galleryImages.create);
+    .get(gallery_controller_1.galleryImages.getAll)
+    .post(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, gallery_controller_1.galleryImages.create);
 router.route('/images/:id')
-    .get(galleryImages.getById)
-    .patch(protect, verifyAdmin, galleryImages.update)
-    .delete(protect, verifyAdmin, galleryImages.delete);
+    .get(gallery_controller_1.galleryImages.getById)
+    .patch(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, gallery_controller_1.galleryImages.update)
+    .delete(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, gallery_controller_1.galleryImages.delete);
 router.route('/videos')
-    .get(videos.getAll)
-    .post(protect, verifyAdmin, videos.create);
+    .get(gallery_controller_1.videos.getAll)
+    .post(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, gallery_controller_1.videos.create);
 router.route('/videos/:id')
-    .get(videos.getById)
-    .patch(protect, verifyAdmin, videos.update)
-    .delete(protect, verifyAdmin, videos.delete);
+    .get(gallery_controller_1.videos.getById)
+    .patch(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, gallery_controller_1.videos.update)
+    .delete(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, gallery_controller_1.videos.delete);
 router.route('/instagram')
-    .get(instagram.getAll)
-    .post(protect, verifyAdmin, instagram.create);
+    .get(gallery_controller_1.instagram.getAll)
+    .post(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, gallery_controller_1.instagram.create);
 router.route('/instagram/:id')
-    .get(instagram.getById)
-    .patch(protect, verifyAdmin, instagram.update)
-    .delete(protect, verifyAdmin, instagram.delete);
+    .get(gallery_controller_1.instagram.getById)
+    .patch(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, gallery_controller_1.instagram.update)
+    .delete(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, gallery_controller_1.instagram.delete);
 router.route('/google-reviews')
-    .get(googleReviews.getAll)
-    .post(protect, verifyAdmin, googleReviews.create);
+    .get(gallery_controller_1.googleReviews.getAll)
+    .post(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, gallery_controller_1.googleReviews.create);
 router.route('/google-reviews/:id')
-    .get(googleReviews.getById)
-    .patch(protect, verifyAdmin, googleReviews.update)
-    .delete(protect, verifyAdmin, googleReviews.delete);
+    .get(gallery_controller_1.googleReviews.getById)
+    .patch(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, gallery_controller_1.googleReviews.update)
+    .delete(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, gallery_controller_1.googleReviews.delete);
 router.route('/customer-stories')
-    .get(customerStories.getAll)
-    .post(protect, verifyAdmin, customerStories.create);
+    .get(gallery_controller_1.customerStories.getAll)
+    .post(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, gallery_controller_1.customerStories.create);
 router.route('/customer-stories/:id')
-    .get(customerStories.getById)
-    .patch(protect, verifyAdmin, customerStories.update)
-    .delete(protect, verifyAdmin, customerStories.delete);
+    .get(gallery_controller_1.customerStories.getById)
+    .patch(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, gallery_controller_1.customerStories.update)
+    .delete(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, gallery_controller_1.customerStories.delete);
 router.route('/kitchen-processes')
-    .get(kitchenProcesses.getAll)
-    .post(protect, verifyAdmin, kitchenProcesses.create);
+    .get(gallery_controller_1.kitchenProcesses.getAll)
+    .post(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, gallery_controller_1.kitchenProcesses.create);
 router.route('/kitchen-processes/:id')
-    .get(kitchenProcesses.getById)
-    .patch(protect, verifyAdmin, kitchenProcesses.update)
-    .delete(protect, verifyAdmin, kitchenProcesses.delete);
+    .get(gallery_controller_1.kitchenProcesses.getById)
+    .patch(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, gallery_controller_1.kitchenProcesses.update)
+    .delete(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, gallery_controller_1.kitchenProcesses.delete);
 router.route('/journey-milestones')
-    .get(journeyMilestones.getAll)
-    .post(protect, verifyAdmin, journeyMilestones.create);
+    .get(gallery_controller_1.journeyMilestones.getAll)
+    .post(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, gallery_controller_1.journeyMilestones.create);
 router.route('/journey-milestones/:id')
-    .get(journeyMilestones.getById)
-    .patch(protect, verifyAdmin, journeyMilestones.update)
-    .delete(protect, verifyAdmin, journeyMilestones.delete);
-export default router;
+    .get(gallery_controller_1.journeyMilestones.getById)
+    .patch(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, gallery_controller_1.journeyMilestones.update)
+    .delete(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, gallery_controller_1.journeyMilestones.delete);
+exports.default = router;
 //# sourceMappingURL=gallery.routes.js.map

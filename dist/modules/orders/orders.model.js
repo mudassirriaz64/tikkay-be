@@ -1,13 +1,16 @@
-import { Schema, model } from 'mongoose';
-const orderItemSchema = new Schema({
-    itemId: { type: Schema.Types.Mixed, required: false },
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Order = void 0;
+const mongoose_1 = require("mongoose");
+const orderItemSchema = new mongoose_1.Schema({
+    itemId: { type: mongoose_1.Schema.Types.Mixed, required: false },
     title: { type: String, required: true },
     quantity: { type: Number, required: true, min: 1 },
     price: { type: Number, required: true, min: 0 },
     image_url: { type: String, required: false, default: '' },
     breakdown: { type: String, required: false },
 }, { _id: false });
-const orderTimelineStepSchema = new Schema({
+const orderTimelineStepSchema = new mongoose_1.Schema({
     status: {
         type: String,
         enum: ['placed', 'preparing', 'ready', 'out-for-delivery', 'delivered'],
@@ -16,8 +19,8 @@ const orderTimelineStepSchema = new Schema({
     label: { type: String, required: true },
     timestamp: { type: String, required: true, default: () => new Date().toISOString() },
 }, { _id: false });
-const orderSchema = new Schema({
-    user_id: { type: Schema.Types.ObjectId, ref: 'User', index: true, default: undefined },
+const orderSchema = new mongoose_1.Schema({
+    user_id: { type: mongoose_1.Schema.Types.ObjectId, ref: 'User', index: true, default: undefined },
     customer_name: { type: String, required: true, trim: true },
     customer_email: { type: String, required: true, lowercase: true, trim: true },
     customer_phone: { type: String, required: true, default: '' },
@@ -56,5 +59,5 @@ orderSchema.pre('save', function (next) {
     }
     next();
 });
-export const Order = model('Order', orderSchema);
+exports.Order = (0, mongoose_1.model)('Order', orderSchema);
 //# sourceMappingURL=orders.model.js.map

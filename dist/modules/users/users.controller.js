@@ -1,18 +1,54 @@
-import { asyncHandler } from '../../utils/asyncHandler';
-import { ApiError } from '../../utils/ApiError';
-import { ApiResponse } from '../../utils/ApiResponse';
-import { User } from '../auth/auth.model';
-import { Types } from 'mongoose';
-export const getProfile = asyncHandler(async (req, res) => {
-    const user = await User.findById(req.user._id);
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getAccountsPageData = exports.getLoyaltyCount = exports.getLoyaltyStatus = exports.joinLoyalty = exports.getMyReviews = exports.getFavorites = exports.addToFavorites = exports.deleteUser = exports.updateUserRole = exports.getUserById = exports.getAllUsers = exports.updateProfile = exports.getProfile = void 0;
+const asyncHandler_1 = require("../../utils/asyncHandler");
+const ApiError_1 = require("../../utils/ApiError");
+const ApiResponse_1 = require("../../utils/ApiResponse");
+const auth_model_1 = require("../auth/auth.model");
+const mongoose_1 = require("mongoose");
+exports.getProfile = (0, asyncHandler_1.asyncHandler)(async (req, res) => {
+    const user = await auth_model_1.User.findById(req.user._id);
     if (!user) {
-        throw new ApiError(404, 'User not found');
+        throw new ApiError_1.ApiError(404, 'User not found');
     }
     res
         .status(200)
-        .json(new ApiResponse(200, user, 'Profile fetched successfully'));
+        .json(new ApiResponse_1.ApiResponse(200, user, 'Profile fetched successfully'));
 });
-export const updateProfile = asyncHandler(async (req, res) => {
+exports.updateProfile = (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const userId = req.user._id;
     const updateData = {};
     const allowedFields = ['name', 'phone', 'address'];
@@ -21,71 +57,71 @@ export const updateProfile = asyncHandler(async (req, res) => {
             updateData[field] = req.body[field];
         }
     }
-    const user = await User.findByIdAndUpdate(userId, updateData, {
+    const user = await auth_model_1.User.findByIdAndUpdate(userId, updateData, {
         new: true,
         runValidators: true,
     });
     if (!user) {
-        throw new ApiError(404, 'User not found');
+        throw new ApiError_1.ApiError(404, 'User not found');
     }
     res
         .status(200)
-        .json(new ApiResponse(200, user, 'Profile updated successfully'));
+        .json(new ApiResponse_1.ApiResponse(200, user, 'Profile updated successfully'));
 });
-export const getAllUsers = asyncHandler(async (_req, res) => {
-    const users = await User.find().sort({ createdAt: -1 });
+exports.getAllUsers = (0, asyncHandler_1.asyncHandler)(async (_req, res) => {
+    const users = await auth_model_1.User.find().sort({ createdAt: -1 });
     res
         .status(200)
-        .json(new ApiResponse(200, users, 'Users fetched successfully'));
+        .json(new ApiResponse_1.ApiResponse(200, users, 'Users fetched successfully'));
 });
-export const getUserById = asyncHandler(async (req, res) => {
+exports.getUserById = (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const { id } = req.params;
-    const user = await User.findById(id);
+    const user = await auth_model_1.User.findById(id);
     if (!user) {
-        throw new ApiError(404, 'User not found');
+        throw new ApiError_1.ApiError(404, 'User not found');
     }
     res
         .status(200)
-        .json(new ApiResponse(200, user, 'User fetched successfully'));
+        .json(new ApiResponse_1.ApiResponse(200, user, 'User fetched successfully'));
 });
-export const updateUserRole = asyncHandler(async (req, res) => {
+exports.updateUserRole = (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const { id } = req.params;
     const { role } = req.body;
     if (!['user', 'admin'].includes(role)) {
-        throw new ApiError(400, 'Invalid role');
+        throw new ApiError_1.ApiError(400, 'Invalid role');
     }
-    const user = await User.findByIdAndUpdate(id, { role }, { new: true, runValidators: true });
+    const user = await auth_model_1.User.findByIdAndUpdate(id, { role }, { new: true, runValidators: true });
     if (!user) {
-        throw new ApiError(404, 'User not found');
+        throw new ApiError_1.ApiError(404, 'User not found');
     }
     res
         .status(200)
-        .json(new ApiResponse(200, user, 'User role updated successfully'));
+        .json(new ApiResponse_1.ApiResponse(200, user, 'User role updated successfully'));
 });
-export const deleteUser = asyncHandler(async (req, res) => {
+exports.deleteUser = (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const { id } = req.params;
     if (id === req.user._id) {
-        throw new ApiError(400, 'Cannot delete your own account');
+        throw new ApiError_1.ApiError(400, 'Cannot delete your own account');
     }
-    const user = await User.findByIdAndDelete(id);
+    const user = await auth_model_1.User.findByIdAndDelete(id);
     if (!user) {
-        throw new ApiError(404, 'User not found');
+        throw new ApiError_1.ApiError(404, 'User not found');
     }
     res
         .status(200)
-        .json(new ApiResponse(200, {}, 'User deleted successfully'));
+        .json(new ApiResponse_1.ApiResponse(200, {}, 'User deleted successfully'));
 });
-export const addToFavorites = asyncHandler(async (req, res) => {
+exports.addToFavorites = (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const userId = req.user._id;
     const { itemId, toggle } = req.body;
-    if (!itemId || !Types.ObjectId.isValid(itemId)) {
-        throw new ApiError(400, 'Valid itemId is required');
+    if (!itemId || !mongoose_1.Types.ObjectId.isValid(itemId)) {
+        throw new ApiError_1.ApiError(400, 'Valid itemId is required');
     }
-    const user = await User.findById(userId);
+    const user = await auth_model_1.User.findById(userId);
     if (!user) {
-        throw new ApiError(404, 'User not found');
+        throw new ApiError_1.ApiError(404, 'User not found');
     }
-    const objectId = new Types.ObjectId(itemId);
+    const objectId = new mongoose_1.Types.ObjectId(itemId);
     const exists = user.favorites.some((id) => id.toString() === itemId);
     if (toggle) {
         user.favorites = exists
@@ -98,16 +134,16 @@ export const addToFavorites = asyncHandler(async (req, res) => {
     await user.save();
     res
         .status(200)
-        .json(new ApiResponse(200, user.favorites.map((id) => id.toString()), 'Favorites updated successfully'));
+        .json(new ApiResponse_1.ApiResponse(200, user.favorites.map((id) => id.toString()), 'Favorites updated successfully'));
 });
-export const getFavorites = asyncHandler(async (req, res) => {
-    const user = await User.findById(req.user._id);
+exports.getFavorites = (0, asyncHandler_1.asyncHandler)(async (req, res) => {
+    const user = await auth_model_1.User.findById(req.user._id);
     if (!user) {
-        throw new ApiError(404, 'User not found');
+        throw new ApiError_1.ApiError(404, 'User not found');
     }
     res
         .status(200)
-        .json(new ApiResponse(200, user.favorites.map((id) => id.toString()), 'Favorites fetched successfully'));
+        .json(new ApiResponse_1.ApiResponse(200, user.favorites.map((id) => id.toString()), 'Favorites fetched successfully'));
 });
 const toAccountReview = (review) => ({
     id: review._id.toString(),
@@ -117,18 +153,18 @@ const toAccountReview = (review) => ({
     created_at: review.createdAt,
     is_approved: review.is_approved,
 });
-export const getMyReviews = asyncHandler(async (req, res) => {
+exports.getMyReviews = (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const userId = req.user._id;
-    const { CustomerReview } = await import('../reviews/reviews.model');
-    const reviews = await CustomerReview.find({ user_id: new Types.ObjectId(userId) }).sort({ createdAt: -1 });
-    res.status(200).json(new ApiResponse(200, reviews.map(toAccountReview), 'My reviews fetched successfully'));
+    const { CustomerReview } = await Promise.resolve().then(() => __importStar(require('../reviews/reviews.model')));
+    const reviews = await CustomerReview.find({ user_id: new mongoose_1.Types.ObjectId(userId) }).sort({ createdAt: -1 });
+    res.status(200).json(new ApiResponse_1.ApiResponse(200, reviews.map(toAccountReview), 'My reviews fetched successfully'));
 });
-export const joinLoyalty = asyncHandler(async (req, res) => {
+exports.joinLoyalty = (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const userId = req.user._id;
     const { birthday, whatsapp_opt_in } = req.body;
-    const user = await User.findById(userId);
+    const user = await auth_model_1.User.findById(userId);
     if (!user) {
-        throw new ApiError(404, 'User not found');
+        throw new ApiError_1.ApiError(404, 'User not found');
     }
     user.is_loyalty_member = true;
     if (!user.loyalty_joined_at) {
@@ -143,18 +179,18 @@ export const joinLoyalty = asyncHandler(async (req, res) => {
     await user.save();
     // WhatsApp VIP community invite link
     const whatsappCommunityUrl = 'https://chat.whatsapp.com/TikkayShikkayGrillFamVIP';
-    res.status(200).json(new ApiResponse(200, {
+    res.status(200).json(new ApiResponse_1.ApiResponse(200, {
         user,
         whatsapp_community_url: whatsappCommunityUrl,
     }, 'Successfully joined the Tikkay Shikkay Loyalty Club'));
 });
-export const getLoyaltyStatus = asyncHandler(async (req, res) => {
+exports.getLoyaltyStatus = (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const userId = req.user._id;
-    const user = await User.findById(userId);
+    const user = await auth_model_1.User.findById(userId);
     if (!user) {
-        throw new ApiError(404, 'User not found');
+        throw new ApiError_1.ApiError(404, 'User not found');
     }
-    res.status(200).json(new ApiResponse(200, {
+    res.status(200).json(new ApiResponse_1.ApiResponse(200, {
         is_loyalty_member: Boolean(user.is_loyalty_member),
         loyalty_points: user.loyalty_points || 0,
         loyalty_joined_at: user.loyalty_joined_at,
@@ -163,19 +199,19 @@ export const getLoyaltyStatus = asyncHandler(async (req, res) => {
         whatsapp_community_url: 'https://chat.whatsapp.com/TikkayShikkayGrillFamVIP',
     }, 'Loyalty status fetched successfully'));
 });
-export const getLoyaltyCount = asyncHandler(async (_req, res) => {
-    const memberCount = await User.countDocuments({ is_loyalty_member: true });
+exports.getLoyaltyCount = (0, asyncHandler_1.asyncHandler)(async (_req, res) => {
+    const memberCount = await auth_model_1.User.countDocuments({ is_loyalty_member: true });
     // Base offset of real loyal community members + live database members
     const totalDisplayCount = 12470 + memberCount;
-    res.status(200).json(new ApiResponse(200, { count: totalDisplayCount, rawCount: memberCount }, 'Loyalty member count fetched successfully'));
+    res.status(200).json(new ApiResponse_1.ApiResponse(200, { count: totalDisplayCount, rawCount: memberCount }, 'Loyalty member count fetched successfully'));
 });
-export const getAccountsPageData = asyncHandler(async (req, res) => {
+exports.getAccountsPageData = (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const userId = req.user._id;
     const [user, orders, reviews, menuItems] = await Promise.all([
-        User.findById(userId),
-        import('../orders/orders.model').then(({ Order }) => Order.find({ user_id: new Types.ObjectId(userId) }).sort({ createdAt: -1 }).limit(10)),
-        import('../reviews/reviews.model').then(({ CustomerReview }) => CustomerReview.find({ user_id: new Types.ObjectId(userId) }).sort({ createdAt: -1 }).limit(20)),
-        import('../menu/models/item.model').then(({ MenuItem }) => MenuItem.find()),
+        auth_model_1.User.findById(userId),
+        Promise.resolve().then(() => __importStar(require('../orders/orders.model'))).then(({ Order }) => Order.find({ user_id: new mongoose_1.Types.ObjectId(userId) }).sort({ createdAt: -1 }).limit(10)),
+        Promise.resolve().then(() => __importStar(require('../reviews/reviews.model'))).then(({ CustomerReview }) => CustomerReview.find({ user_id: new mongoose_1.Types.ObjectId(userId) }).sort({ createdAt: -1 }).limit(20)),
+        Promise.resolve().then(() => __importStar(require('../menu/models/item.model'))).then(({ MenuItem }) => MenuItem.find()),
     ]);
     const pageData = {
         demoProfile: user,
@@ -185,6 +221,6 @@ export const getAccountsPageData = asyncHandler(async (req, res) => {
     };
     res
         .status(200)
-        .json(new ApiResponse(200, pageData, 'Accounts page data fetched successfully'));
+        .json(new ApiResponse_1.ApiResponse(200, pageData, 'Accounts page data fetched successfully'));
 });
 //# sourceMappingURL=users.controller.js.map

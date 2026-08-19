@@ -1,9 +1,15 @@
-import { Schema, model } from 'mongoose';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
-import { config } from '../../config';
-import { ROLES } from '../../config';
-const userSchema = new Schema({
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.User = void 0;
+const mongoose_1 = require("mongoose");
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const config_1 = require("../../config");
+const config_2 = require("../../config");
+const userSchema = new mongoose_1.Schema({
     name: {
         type: String,
         required: [true, 'Name is required'],
@@ -37,8 +43,8 @@ const userSchema = new Schema({
     },
     role: {
         type: String,
-        enum: [ROLES.USER, ROLES.ADMIN],
-        default: ROLES.USER,
+        enum: [config_2.ROLES.USER, config_2.ROLES.ADMIN],
+        default: config_2.ROLES.USER,
     },
     refreshToken: {
         type: String,
@@ -49,7 +55,7 @@ const userSchema = new Schema({
         default: () => new Date().toISOString().split('T')[0],
     },
     favorites: {
-        type: [Schema.Types.ObjectId],
+        type: [mongoose_1.Schema.Types.ObjectId],
         ref: 'MenuItem',
         default: [],
     },
@@ -90,28 +96,28 @@ const userSchema = new Schema({
 userSchema.pre('save', async function (next) {
     if (!this.isModified('password'))
         return next();
-    this.password = await bcrypt.hash(this.password, 12);
+    this.password = await bcryptjs_1.default.hash(this.password, 12);
     next();
 });
 userSchema.methods.isPasswordCorrect = async function (password) {
-    return await bcrypt.compare(password, this.password);
+    return await bcryptjs_1.default.compare(password, this.password);
 };
 userSchema.methods.generateAccessToken = function () {
-    return jwt.sign({
+    return jsonwebtoken_1.default.sign({
         _id: this._id,
         email: this.email,
         name: this.name,
         role: this.role,
-    }, config.JWT_SECRET, {
-        expiresIn: config.JWT_EXPIRES_IN,
+    }, config_1.config.JWT_SECRET, {
+        expiresIn: config_1.config.JWT_EXPIRES_IN,
     });
 };
 userSchema.methods.generateRefreshToken = function () {
-    return jwt.sign({
+    return jsonwebtoken_1.default.sign({
         _id: this._id,
-    }, config.JWT_SECRET, {
+    }, config_1.config.JWT_SECRET, {
         expiresIn: '10d',
     });
 };
-export const User = model('User', userSchema);
+exports.User = (0, mongoose_1.model)('User', userSchema);
 //# sourceMappingURL=auth.model.js.map

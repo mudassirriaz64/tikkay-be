@@ -1,14 +1,16 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference types="express" />
-import { Router } from 'express';
-import { verifyAdmin, protect } from '../../middleware/auth.middleware';
-import { createFranchiseInquiry, getAllFranchiseInquiries, updateFranchiseStatus, deleteFranchiseInquiry, } from './franchise.controller';
-const router = Router();
+const express_1 = require("express");
+const auth_middleware_1 = require("../../middleware/auth.middleware");
+const franchise_controller_1 = require("./franchise.controller");
+const router = (0, express_1.Router)();
 router.route('/')
-    .post(createFranchiseInquiry)
-    .get(protect, verifyAdmin, getAllFranchiseInquiries);
+    .post(franchise_controller_1.createFranchiseInquiry)
+    .get(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, franchise_controller_1.getAllFranchiseInquiries);
 router.route('/:id/status')
-    .patch(protect, verifyAdmin, updateFranchiseStatus);
+    .patch(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, franchise_controller_1.updateFranchiseStatus);
 router.route('/:id')
-    .delete(protect, verifyAdmin, deleteFranchiseInquiry);
-export default router;
+    .delete(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, franchise_controller_1.deleteFranchiseInquiry);
+exports.default = router;
 //# sourceMappingURL=franchise.routes.js.map

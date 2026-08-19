@@ -1,7 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.SiteSettings = void 0;
 /// <reference types="node" />
 /// <reference path="../../types/global.d.ts" />
-import { Schema, model } from 'mongoose';
-const siteSettingsSchema = new Schema({
+const mongoose_1 = require("mongoose");
+const siteSettingsSchema = new mongoose_1.Schema({
     _id: { type: String },
     hero_title: {
         type: String,
@@ -42,5 +45,5 @@ const siteSettingsSchema = new Schema({
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
 });
-export const SiteSettings = model('SiteSettings', siteSettingsSchema);
+exports.SiteSettings = (0, mongoose_1.model)('SiteSettings', siteSettingsSchema);
 //# sourceMappingURL=settings.model.js.map

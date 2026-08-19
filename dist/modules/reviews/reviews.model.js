@@ -1,7 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ReviewsPageConfig = exports.VideoReview = exports.Statistic = exports.CustomerReview = void 0;
 /// <reference types="node" />
 /// <reference types="mongoose" />
-import { Schema, model } from 'mongoose';
-const customerReviewSchema = new Schema({
+const mongoose_1 = require("mongoose");
+const customerReviewSchema = new mongoose_1.Schema({
     customer_name: { type: String, required: true, trim: true },
     location: { type: String, required: true, trim: true, default: '' },
     rating: { type: Number, required: true, min: 1, max: 5 },
@@ -22,10 +25,10 @@ const customerReviewSchema = new Schema({
     is_approved: { type: Boolean, default: false, index: true },
     display_section: { type: String, enum: ['featured', 'highlights', 'reviews'], default: 'reviews' },
     display_order: { type: Number, default: 0 },
-    user_id: { type: Schema.Types.ObjectId, ref: 'User', default: undefined },
+    user_id: { type: mongoose_1.Schema.Types.ObjectId, ref: 'User', default: undefined },
 }, { timestamps: true });
 customerReviewSchema.index({ is_approved: 1, rating: -1, display_order: 1 });
-const statisticSchema = new Schema({
+const statisticSchema = new mongoose_1.Schema({
     value: { type: Number, required: true, min: 0 },
     decimals: { type: Number, default: 0, min: 0, max: 2 },
     suffix: { type: String, default: '' },
@@ -33,7 +36,7 @@ const statisticSchema = new Schema({
     icon: { type: String, enum: ['star', 'users', 'repeat', 'thumbs-up'], required: true },
     display_order: { type: Number, default: 0 },
 }, { timestamps: true });
-const videoReviewSchema = new Schema({
+const videoReviewSchema = new mongoose_1.Schema({
     customer_name: { type: String, required: true, trim: true },
     title: { type: String, required: true, trim: true },
     duration: { type: String, required: true, default: '0:00' },
@@ -45,7 +48,7 @@ const videoReviewSchema = new Schema({
     },
     display_order: { type: Number, default: 0 },
 }, { timestamps: true });
-const reviewsPageConfigSchema = new Schema({
+const reviewsPageConfigSchema = new mongoose_1.Schema({
     _id: { type: String },
     hero: {
         label: { type: String, default: 'Wall of Love' },
@@ -80,8 +83,8 @@ const reviewsPageConfigSchema = new Schema({
         imageUrl: { type: String, default: '/images/reviews/cta-fire.jpg' },
     },
 }, { timestamps: true });
-export const CustomerReview = model('CustomerReview', customerReviewSchema);
-export const Statistic = model('Statistic', statisticSchema);
-export const VideoReview = model('VideoReview', videoReviewSchema);
-export const ReviewsPageConfig = model('ReviewsPageConfig', reviewsPageConfigSchema);
+exports.CustomerReview = (0, mongoose_1.model)('CustomerReview', customerReviewSchema);
+exports.Statistic = (0, mongoose_1.model)('Statistic', statisticSchema);
+exports.VideoReview = (0, mongoose_1.model)('VideoReview', videoReviewSchema);
+exports.ReviewsPageConfig = (0, mongoose_1.model)('ReviewsPageConfig', reviewsPageConfigSchema);
 //# sourceMappingURL=reviews.model.js.map

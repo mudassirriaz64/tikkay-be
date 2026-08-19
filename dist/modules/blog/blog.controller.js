@@ -1,7 +1,10 @@
-import { asyncHandler } from '../../utils/asyncHandler';
-import { ApiError } from '../../utils/ApiError';
-import { ApiResponse } from '../../utils/ApiResponse';
-import { BlogPost } from './blog.model';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.deletePost = exports.updatePost = exports.createPost = exports.getPostBySlug = exports.getAllPosts = void 0;
+const asyncHandler_1 = require("../../utils/asyncHandler");
+const ApiError_1 = require("../../utils/ApiError");
+const ApiResponse_1 = require("../../utils/ApiResponse");
+const blog_model_1 = require("./blog.model");
 const INITIAL_STORIES = [
     {
         slug: 'how-we-make-our-masala',
@@ -57,12 +60,12 @@ const INITIAL_STORIES = [
     },
 ];
 async function ensureSeedPosts() {
-    const count = await BlogPost.countDocuments();
+    const count = await blog_model_1.BlogPost.countDocuments();
     if (count === 0) {
-        await BlogPost.insertMany(INITIAL_STORIES);
+        await blog_model_1.BlogPost.insertMany(INITIAL_STORIES);
     }
 }
-export const getAllPosts = asyncHandler(async (req, res) => {
+exports.getAllPosts = (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     await ensureSeedPosts();
     const { category, search, tag, include_unpublished } = req.query;
     const filter = {};
@@ -82,30 +85,30 @@ export const getAllPosts = asyncHandler(async (req, res) => {
             { content: { $regex: search, $options: 'i' } },
         ];
     }
-    const posts = await BlogPost.find(filter).sort({ createdAt: -1 });
-    res.status(200).json(new ApiResponse(200, { posts, total: posts.length }, 'Blog posts fetched successfully'));
+    const posts = await blog_model_1.BlogPost.find(filter).sort({ createdAt: -1 });
+    res.status(200).json(new ApiResponse_1.ApiResponse(200, { posts, total: posts.length }, 'Blog posts fetched successfully'));
 });
-export const getPostBySlug = asyncHandler(async (req, res) => {
+exports.getPostBySlug = (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     await ensureSeedPosts();
     const { slug } = req.params;
-    const post = await BlogPost.findOne({ slug });
+    const post = await blog_model_1.BlogPost.findOne({ slug });
     if (!post) {
-        throw new ApiError(404, 'Blog post not found');
+        throw new ApiError_1.ApiError(404, 'Blog post not found');
     }
-    res.status(200).json(new ApiResponse(200, post, 'Blog post fetched successfully'));
+    res.status(200).json(new ApiResponse_1.ApiResponse(200, post, 'Blog post fetched successfully'));
 });
-export const createPost = asyncHandler(async (req, res) => {
+exports.createPost = (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const { title, excerpt, content, category, author, imageUrl, readTime, tags, is_published } = req.body;
     if (!title || !excerpt || !content || !category) {
-        throw new ApiError(400, 'Title, excerpt, content, and category are required');
+        throw new ApiError_1.ApiError(400, 'Title, excerpt, content, and category are required');
     }
     const slug = title
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/(^-|-$)/g, '');
-    const existing = await BlogPost.findOne({ slug });
+    const existing = await blog_model_1.BlogPost.findOne({ slug });
     const finalSlug = existing ? `${slug}-${Date.now()}` : slug;
-    const post = await BlogPost.create({
+    const post = await blog_model_1.BlogPost.create({
         slug: finalSlug,
         title,
         excerpt,
@@ -118,23 +121,23 @@ export const createPost = asyncHandler(async (req, res) => {
         publishedAt: new Date().toISOString().slice(0, 10),
         is_published: is_published !== undefined ? Boolean(is_published) : true,
     });
-    res.status(201).json(new ApiResponse(201, post, 'Blog story created successfully'));
+    res.status(201).json(new ApiResponse_1.ApiResponse(201, post, 'Blog story created successfully'));
 });
-export const updatePost = asyncHandler(async (req, res) => {
+exports.updatePost = (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const { id } = req.params;
     const updates = req.body;
-    const post = await BlogPost.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
+    const post = await blog_model_1.BlogPost.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
     if (!post) {
-        throw new ApiError(404, 'Blog story not found');
+        throw new ApiError_1.ApiError(404, 'Blog story not found');
     }
-    res.status(200).json(new ApiResponse(200, post, 'Blog story updated successfully'));
+    res.status(200).json(new ApiResponse_1.ApiResponse(200, post, 'Blog story updated successfully'));
 });
-export const deletePost = asyncHandler(async (req, res) => {
+exports.deletePost = (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const { id } = req.params;
-    const post = await BlogPost.findByIdAndDelete(id);
+    const post = await blog_model_1.BlogPost.findByIdAndDelete(id);
     if (!post) {
-        throw new ApiError(404, 'Blog story not found');
+        throw new ApiError_1.ApiError(404, 'Blog story not found');
     }
-    res.status(200).json(new ApiResponse(200, null, 'Blog story deleted successfully'));
+    res.status(200).json(new ApiResponse_1.ApiResponse(200, null, 'Blog story deleted successfully'));
 });
 //# sourceMappingURL=blog.controller.js.map

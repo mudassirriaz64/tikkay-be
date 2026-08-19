@@ -1,15 +1,17 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference types="express" />
-import { Router } from 'express';
-import { verifyAdmin, protect, protectOptional } from '../../middleware/auth.middleware';
-import { createOrder, getMyOrders, getAllOrders, getOrderById, updateOrderStatus, getOrderStats, } from './orders.controller';
-const router = Router();
+const express_1 = require("express");
+const auth_middleware_1 = require("../../middleware/auth.middleware");
+const orders_controller_1 = require("./orders.controller");
+const router = (0, express_1.Router)();
 router.route('/')
-    .post(createOrder)
-    .get(protect, verifyAdmin, getAllOrders);
-router.route('/stats').get(protect, verifyAdmin, getOrderStats);
-router.route('/my').get(protect, getMyOrders);
+    .post(orders_controller_1.createOrder)
+    .get(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, orders_controller_1.getAllOrders);
+router.route('/stats').get(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, orders_controller_1.getOrderStats);
+router.route('/my').get(auth_middleware_1.protect, orders_controller_1.getMyOrders);
 router.route('/:id')
-    .get(protectOptional, getOrderById)
-    .patch(protect, verifyAdmin, updateOrderStatus);
-export default router;
+    .get(auth_middleware_1.protectOptional, orders_controller_1.getOrderById)
+    .patch(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, orders_controller_1.updateOrderStatus);
+exports.default = router;
 //# sourceMappingURL=orders.routes.js.map

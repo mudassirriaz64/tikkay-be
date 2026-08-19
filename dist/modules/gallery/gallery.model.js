@@ -1,7 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.GalleryPageConfig = exports.JourneyPost = exports.JourneyMilestone = exports.KitchenProcess = exports.CustomerStory = exports.GoogleReview = exports.InstagramPost = exports.VideoTestimonial = exports.GalleryImage = void 0;
 /// <reference types="node" />
 /// <reference types="mongoose" />
-import { Schema, model } from 'mongoose';
-const galleryImageSchema = new Schema({
+const mongoose_1 = require("mongoose");
+const galleryImageSchema = new mongoose_1.Schema({
     media_type: { type: String, enum: ['image', 'video'], default: 'image' },
     imageUrl: { type: String, required: true },
     image_public_id: { type: String, default: undefined },
@@ -15,7 +18,7 @@ const galleryImageSchema = new Schema({
     tag: { type: String, default: undefined },
     display_order: { type: Number, default: 0 },
 }, { timestamps: true });
-const videoTestimonialSchema = new Schema({
+const videoTestimonialSchema = new mongoose_1.Schema({
     customer_name: { type: String, required: true, default: 'Tikkay Shikkay' },
     title: { type: String, required: true },
     description: { type: String, default: undefined },
@@ -28,7 +31,7 @@ const videoTestimonialSchema = new Schema({
     status: { type: String, enum: ['ready', 'processing', 'failed'], default: 'ready' },
     display_order: { type: Number, default: 0 },
 }, { timestamps: true });
-const instagramPostSchema = new Schema({
+const instagramPostSchema = new mongoose_1.Schema({
     imageUrl: { type: String, required: true },
     image_public_id: { type: String, default: undefined },
     caption: { type: String, default: '' },
@@ -37,7 +40,7 @@ const instagramPostSchema = new Schema({
     comments: { type: Number, default: 0, min: 0 },
     display_order: { type: Number, default: 0 },
 }, { timestamps: true });
-const googleReviewSchema = new Schema({
+const googleReviewSchema = new mongoose_1.Schema({
     customer_name: { type: String, required: true },
     rating: { type: Number, required: true, min: 1, max: 5 },
     visit_date: { type: String, required: true, default: () => new Date().toISOString().split('T')[0] },
@@ -46,7 +49,7 @@ const googleReviewSchema = new Schema({
     source: { type: String, default: 'Google' },
     display_order: { type: Number, default: 0 },
 }, { timestamps: true });
-const customerStorySchema = new Schema({
+const customerStorySchema = new mongoose_1.Schema({
     customer_name: { type: String, required: true },
     imageUrl: { type: String, required: true, default: '/images/gallery/default-customer.jpg' },
     image_public_id: { type: String, default: undefined },
@@ -63,7 +66,7 @@ const customerStorySchema = new Schema({
     ],
     display_order: { type: Number, default: 0 },
 }, { timestamps: true });
-const kitchenProcessSchema = new Schema({
+const kitchenProcessSchema = new mongoose_1.Schema({
     step: { type: Number, required: true, min: 1 },
     title: { type: String, required: true },
     imageUrl: { type: String, required: true, default: '/images/gallery/default-kitchen.jpg' },
@@ -80,7 +83,7 @@ const kitchenProcessSchema = new Schema({
     time: { type: String, default: '' },
     display_order: { type: Number, default: 0 },
 }, { timestamps: true });
-const journeyMilestoneSchema = new Schema({
+const journeyMilestoneSchema = new mongoose_1.Schema({
     year: { type: String, required: true },
     title: { type: String, required: true },
     imageUrl: { type: String, required: true, default: '/images/gallery/default-journey.jpg' },
@@ -95,7 +98,7 @@ const journeyMilestoneSchema = new Schema({
     },
     display_order: { type: Number, default: 0 },
 }, { timestamps: true });
-const journeyPostSchema = new Schema({
+const journeyPostSchema = new mongoose_1.Schema({
     day_number: { type: Number, required: true, min: 1 },
     title: { type: String, required: true },
     content: { type: String, required: true },
@@ -105,7 +108,7 @@ const journeyPostSchema = new Schema({
     created_at: { type: String, default: () => new Date().toISOString() },
     display_order: { type: Number, default: 0 },
 }, { timestamps: true });
-const galleryPageConfigSchema = new Schema({
+const galleryPageConfigSchema = new mongoose_1.Schema({
     _id: { type: String },
     hero: {
         label: { type: String, default: 'Gallery' },
@@ -162,13 +165,13 @@ const galleryPageConfigSchema = new Schema({
         imageUrl: { type: String, default: '/images/reviews/cta-fire.jpg' },
     },
 }, { timestamps: true });
-export const GalleryImage = model('GalleryImage', galleryImageSchema);
-export const VideoTestimonial = model('VideoTestimonial', videoTestimonialSchema);
-export const InstagramPost = model('InstagramPost', instagramPostSchema);
-export const GoogleReview = model('GoogleReview', googleReviewSchema);
-export const CustomerStory = model('CustomerStory', customerStorySchema);
-export const KitchenProcess = model('KitchenProcess', kitchenProcessSchema);
-export const JourneyMilestone = model('JourneyMilestone', journeyMilestoneSchema);
-export const JourneyPost = model('JourneyPost', journeyPostSchema);
-export const GalleryPageConfig = model('GalleryPageConfig', galleryPageConfigSchema);
+exports.GalleryImage = (0, mongoose_1.model)('GalleryImage', galleryImageSchema);
+exports.VideoTestimonial = (0, mongoose_1.model)('VideoTestimonial', videoTestimonialSchema);
+exports.InstagramPost = (0, mongoose_1.model)('InstagramPost', instagramPostSchema);
+exports.GoogleReview = (0, mongoose_1.model)('GoogleReview', googleReviewSchema);
+exports.CustomerStory = (0, mongoose_1.model)('CustomerStory', customerStorySchema);
+exports.KitchenProcess = (0, mongoose_1.model)('KitchenProcess', kitchenProcessSchema);
+exports.JourneyMilestone = (0, mongoose_1.model)('JourneyMilestone', journeyMilestoneSchema);
+exports.JourneyPost = (0, mongoose_1.model)('JourneyPost', journeyPostSchema);
+exports.GalleryPageConfig = (0, mongoose_1.model)('GalleryPageConfig', galleryPageConfigSchema);
 //# sourceMappingURL=gallery.model.js.map

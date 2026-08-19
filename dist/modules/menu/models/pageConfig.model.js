@@ -1,12 +1,15 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.MenuPageConfig = void 0;
 /// <reference types="node" />
 /// <reference types="mongoose" />
-import { Schema, model } from 'mongoose';
-const platterOptionSchema = new Schema({
+const mongoose_1 = require("mongoose");
+const platterOptionSchema = new mongoose_1.Schema({
     id: { type: String, required: true },
     name: { type: String, required: true },
     price: { type: Number, required: true, min: 0 },
 }, { _id: false });
-const menuPageConfigSchema = new Schema({
+const menuPageConfigSchema = new mongoose_1.Schema({
     _id: { type: String },
     tabs: {
         type: [
@@ -48,5 +51,5 @@ const menuPageConfigSchema = new Schema({
 }, {
     timestamps: true,
 });
-export const MenuPageConfig = model('MenuPageConfig', menuPageConfigSchema);
+exports.MenuPageConfig = (0, mongoose_1.model)('MenuPageConfig', menuPageConfigSchema);
 //# sourceMappingURL=pageConfig.model.js.map

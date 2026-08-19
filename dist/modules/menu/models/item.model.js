@@ -1,9 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.MenuItem = void 0;
 /// <reference types="node" />
 /// <reference path="../../../types/global.d.ts" />
-import { Schema, model } from 'mongoose';
-const menuItemSchema = new Schema({
+const mongoose_1 = require("mongoose");
+const menuItemSchema = new mongoose_1.Schema({
     category_id: {
-        type: Schema.Types.ObjectId,
+        type: mongoose_1.Schema.Types.ObjectId,
         ref: 'MenuCategory',
         required: [true, 'Category ID is required'],
         index: true,
@@ -90,5 +93,5 @@ const menuItemSchema = new Schema({
 });
 menuItemSchema.index({ category_id: 1, display_order: 1 });
 menuItemSchema.index({ is_available: 1, is_bestseller: 1 });
-export const MenuItem = model('MenuItem', menuItemSchema);
+exports.MenuItem = (0, mongoose_1.model)('MenuItem', menuItemSchema);
 //# sourceMappingURL=item.model.js.map

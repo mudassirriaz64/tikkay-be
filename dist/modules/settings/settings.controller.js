@@ -1,22 +1,25 @@
-import { asyncHandler } from '../../utils/asyncHandler';
-import { ApiError } from '../../utils/ApiError';
-import { ApiResponse } from '../../utils/ApiResponse';
-import { SiteSettings } from './settings.model';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.updateSettings = exports.getSettings = void 0;
+const asyncHandler_1 = require("../../utils/asyncHandler");
+const ApiError_1 = require("../../utils/ApiError");
+const ApiResponse_1 = require("../../utils/ApiResponse");
+const settings_model_1 = require("./settings.model");
 const getOrCreateSettings = async () => {
-    let settings = await SiteSettings.findOne({});
+    let settings = await settings_model_1.SiteSettings.findOne({});
     if (!settings) {
-        settings = new SiteSettings({});
+        settings = new settings_model_1.SiteSettings({});
         await settings.save();
     }
     return settings;
 };
-export const getSettings = asyncHandler(async (_req, res) => {
+exports.getSettings = (0, asyncHandler_1.asyncHandler)(async (_req, res) => {
     const settings = await getOrCreateSettings();
     res
         .status(200)
-        .json(new ApiResponse(200, settings, 'Site settings fetched successfully'));
+        .json(new ApiResponse_1.ApiResponse(200, settings, 'Site settings fetched successfully'));
 });
-export const updateSettings = asyncHandler(async (req, res) => {
+exports.updateSettings = (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const updateData = {
         ...req.body,
         updated_at: new Date().toISOString(),
@@ -25,10 +28,10 @@ export const updateSettings = asyncHandler(async (req, res) => {
     Object.assign(settings, updateData);
     await settings.save();
     if (!settings) {
-        throw new ApiError(500, 'Failed to update settings');
+        throw new ApiError_1.ApiError(500, 'Failed to update settings');
     }
     res
         .status(200)
-        .json(new ApiResponse(200, settings, 'Site settings updated successfully'));
+        .json(new ApiResponse_1.ApiResponse(200, settings, 'Site settings updated successfully'));
 });
 //# sourceMappingURL=settings.controller.js.map

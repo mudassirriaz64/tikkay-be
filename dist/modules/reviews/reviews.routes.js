@@ -1,35 +1,37 @@
-import { Router } from 'express';
-import { verifyAdmin, protect, protectOptional } from '../../middleware/auth.middleware';
-import { getReviewsPageData, getPendingReviews, createReview, approveReview, updateReview, deleteReview, getStatistics, createStatistic, updateStatistic, deleteStatistic, getVideoReviews, createVideoReview, updateVideoReview, deleteVideoReview, getPageConfig, updatePageConfig, } from './reviews.controller';
-import { CustomerReview } from './reviews.model';
-import { asyncHandler } from '../../utils/asyncHandler';
-const router = Router();
-router.route('/page-data').get(getReviewsPageData);
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const auth_middleware_1 = require("../../middleware/auth.middleware");
+const reviews_controller_1 = require("./reviews.controller");
+const reviews_model_1 = require("./reviews.model");
+const asyncHandler_1 = require("../../utils/asyncHandler");
+const router = (0, express_1.Router)();
+router.route('/page-data').get(reviews_controller_1.getReviewsPageData);
 router.route('/page-config')
-    .get(protect, verifyAdmin, getPageConfig)
-    .patch(protect, verifyAdmin, updatePageConfig);
+    .get(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, reviews_controller_1.getPageConfig)
+    .patch(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, reviews_controller_1.updatePageConfig);
 router.route('/')
-    .get(asyncHandler(async (_req, res) => {
-    const reviews = await CustomerReview.find({ is_approved: true }).sort({ display_order: 1, createdAt: -1 });
+    .get((0, asyncHandler_1.asyncHandler)(async (_req, res) => {
+    const reviews = await reviews_model_1.CustomerReview.find({ is_approved: true }).sort({ display_order: 1, createdAt: -1 });
     res.json({ success: true, data: reviews, message: 'Reviews fetched' });
 }))
-    .post(protectOptional, createReview);
+    .post(auth_middleware_1.protectOptional, reviews_controller_1.createReview);
 router.route('/statistics')
-    .get(getStatistics)
-    .post(protect, verifyAdmin, createStatistic);
+    .get(reviews_controller_1.getStatistics)
+    .post(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, reviews_controller_1.createStatistic);
 router.route('/statistics/:id')
-    .patch(protect, verifyAdmin, updateStatistic)
-    .delete(protect, verifyAdmin, deleteStatistic);
+    .patch(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, reviews_controller_1.updateStatistic)
+    .delete(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, reviews_controller_1.deleteStatistic);
 router.route('/videos')
-    .get(getVideoReviews)
-    .post(protect, verifyAdmin, createVideoReview);
+    .get(reviews_controller_1.getVideoReviews)
+    .post(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, reviews_controller_1.createVideoReview);
 router.route('/videos/:id')
-    .patch(protect, verifyAdmin, updateVideoReview)
-    .delete(protect, verifyAdmin, deleteVideoReview);
-router.route('/pending').get(protect, verifyAdmin, getPendingReviews);
-router.route('/:id/approve').patch(protect, verifyAdmin, approveReview);
+    .patch(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, reviews_controller_1.updateVideoReview)
+    .delete(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, reviews_controller_1.deleteVideoReview);
+router.route('/pending').get(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, reviews_controller_1.getPendingReviews);
+router.route('/:id/approve').patch(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, reviews_controller_1.approveReview);
 router.route('/:id')
-    .patch(protect, verifyAdmin, updateReview)
-    .delete(protect, verifyAdmin, deleteReview);
-export default router;
+    .patch(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, reviews_controller_1.updateReview)
+    .delete(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, reviews_controller_1.deleteReview);
+exports.default = router;
 //# sourceMappingURL=reviews.routes.js.map

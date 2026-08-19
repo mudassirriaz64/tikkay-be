@@ -1,12 +1,16 @@
-import { ApiError } from '../utils/ApiError';
-export const notFound = (req, res, next) => {
-    const error = new ApiError(404, `Not Found - ${req.originalUrl}`);
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.errorHandler = exports.notFound = void 0;
+const ApiError_1 = require("../utils/ApiError");
+const notFound = (req, res, next) => {
+    const error = new ApiError_1.ApiError(404, `Not Found - ${req.originalUrl}`);
     next(error);
 };
-export const errorHandler = (err, _req, res, _next) => {
+exports.notFound = notFound;
+const errorHandler = (err, _req, res, _next) => {
     let statusCode;
     let message;
-    if (err instanceof ApiError) {
+    if (err instanceof ApiError_1.ApiError) {
         statusCode = err.statusCode;
         message = err.message;
     }
@@ -22,4 +26,5 @@ export const errorHandler = (err, _req, res, _next) => {
         errors: err.errors || undefined,
     });
 };
+exports.errorHandler = errorHandler;
 //# sourceMappingURL=error.middleware.js.map

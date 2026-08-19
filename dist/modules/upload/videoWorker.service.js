@@ -1,34 +1,42 @@
-import path from 'path';
-import fs from 'fs';
-import os from 'os';
-import ffmpeg from 'fluent-ffmpeg';
-import ffmpegStatic from 'ffmpeg-static';
-import PQueue from 'p-queue';
-import { v2 as cloudinary } from 'cloudinary';
-import { VideoTestimonial } from '../gallery/gallery.model';
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.videoQueue = void 0;
+exports.formatDuration = formatDuration;
+exports.processVideoJob = processVideoJob;
+const path_1 = __importDefault(require("path"));
+const fs_1 = __importDefault(require("fs"));
+const os_1 = __importDefault(require("os"));
+const fluent_ffmpeg_1 = __importDefault(require("fluent-ffmpeg"));
+const ffmpeg_static_1 = __importDefault(require("ffmpeg-static"));
+const p_queue_1 = __importDefault(require("p-queue"));
+const cloudinary_1 = require("cloudinary");
+const gallery_model_1 = require("../gallery/gallery.model");
 // Configure ffmpeg static binary path if available
-if (ffmpegStatic) {
-    ffmpeg.setFfmpegPath(ffmpegStatic);
+if (ffmpeg_static_1.default) {
+    fluent_ffmpeg_1.default.setFfmpegPath(ffmpeg_static_1.default);
 }
 // Single-concurrency queue so background transcode never starves the server CPU
-export const videoQueue = new PQueue({ concurrency: 1 });
-export function formatDuration(seconds) {
+exports.videoQueue = new p_queue_1.default({ concurrency: 1 });
+function formatDuration(seconds) {
     const m = Math.floor(seconds / 60);
     const s = Math.floor(seconds % 60);
     return `${m}:${s.toString().padStart(2, '0')}`;
 }
-export async function processVideoJob(job) {
+async function processVideoJob(job) {
     const { videoId, rawFilePath } = job;
-    const tempDir = path.join(os.tmpdir(), 'tikkay-transcode');
-    if (!fs.existsSync(tempDir)) {
-        fs.mkdirSync(tempDir, { recursive: true });
+    const tempDir = path_1.default.join(os_1.default.tmpdir(), 'tikkay-transcode');
+    if (!fs_1.default.existsSync(tempDir)) {
+        fs_1.default.mkdirSync(tempDir, { recursive: true });
     }
-    const compressedFilePath = path.join(tempDir, `compressed-${videoId}.mp4`);
-    const thumbnailFilePath = path.join(tempDir, `thumb-${videoId}.jpg`);
+    const compressedFilePath = path_1.default.join(tempDir, `compressed-${videoId}.mp4`);
+    const thumbnailFilePath = path_1.default.join(tempDir, `thumb-${videoId}.jpg`);
     try {
         // 1. Run FFmpeg compression & generate poster thumbnail
         await new Promise((resolve, reject) => {
-            ffmpeg(rawFilePath)
+            (0, fluent_ffmpeg_1.default)(rawFilePath)
                 .outputOptions([
                 '-c:v libx264',
                 '-preset fast',
@@ -53,7 +61,7 @@ export async function processVideoJob(job) {
         let durationStr = '0:30';
         try {
             await new Promise((resolve) => {
-                ffmpeg.ffprobe(compressedFilePath, (err, metadata) => {
+                fluent_ffmpeg_1.default.ffprobe(compressedFilePath, (err, metadata) => {
                     if (!err && metadata?.format?.duration) {
                         durationStr = formatDuration(metadata.format.duration);
                     }
@@ -66,17 +74,17 @@ export async function processVideoJob(job) {
         }
         // 3. Upload Compressed Video & Thumbnail to Cloudinary
         const [videoResult, thumbResult] = await Promise.all([
-            cloudinary.uploader.upload_large(compressedFilePath, {
+            cloudinary_1.v2.uploader.upload_large(compressedFilePath, {
                 resource_type: 'video',
                 folder: 'tikkayshikkay/gallery/videos',
             }),
-            cloudinary.uploader.upload(thumbnailFilePath, {
+            cloudinary_1.v2.uploader.upload(thumbnailFilePath, {
                 resource_type: 'image',
                 folder: 'tikkayshikkay/gallery/videos/thumbnails',
             }),
         ]);
         // 4. Update MongoDB record to status: 'ready'
-        await VideoTestimonial.findByIdAndUpdate(videoId, {
+        await gallery_model_1.VideoTestimonial.findByIdAndUpdate(videoId, {
             video_url: videoResult.secure_url,
             video_public_id: videoResult.public_id,
             thumbnail: thumbResult.secure_url,
@@ -86,19 +94,19 @@ export async function processVideoJob(job) {
     }
     catch (err) {
         console.error(`[VideoWorker] Transcode error for ${videoId}:`, err);
-        await VideoTestimonial.findByIdAndUpdate(videoId, {
+        await gallery_model_1.VideoTestimonial.findByIdAndUpdate(videoId, {
             status: 'failed',
         });
     }
     finally {
         // 5. Cleanup all temporary local files
         try {
-            if (fs.existsSync(rawFilePath))
-                fs.unlinkSync(rawFilePath);
-            if (fs.existsSync(compressedFilePath))
-                fs.unlinkSync(compressedFilePath);
-            if (fs.existsSync(thumbnailFilePath))
-                fs.unlinkSync(thumbnailFilePath);
+            if (fs_1.default.existsSync(rawFilePath))
+                fs_1.default.unlinkSync(rawFilePath);
+            if (fs_1.default.existsSync(compressedFilePath))
+                fs_1.default.unlinkSync(compressedFilePath);
+            if (fs_1.default.existsSync(thumbnailFilePath))
+                fs_1.default.unlinkSync(thumbnailFilePath);
         }
         catch {
             /* ignore cleanup errors */

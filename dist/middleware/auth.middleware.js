@@ -1,22 +1,28 @@
-import jwt from 'jsonwebtoken';
-import { asyncHandler } from '../utils/asyncHandler';
-import { ApiError } from '../utils/ApiError';
-import { config, ROLES } from '../config';
-import { User } from '../modules/auth/auth.model';
-export const protect = asyncHandler(async (req, _res, next) => {
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.verifyAdmin = exports.verifyRole = exports.protectOptional = exports.protect = void 0;
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const asyncHandler_1 = require("../utils/asyncHandler");
+const ApiError_1 = require("../utils/ApiError");
+const config_1 = require("../config");
+const auth_model_1 = require("../modules/auth/auth.model");
+exports.protect = (0, asyncHandler_1.asyncHandler)(async (req, _res, next) => {
     let token;
     token = req.cookies?.accessToken ||
         (req.headers.authorization?.startsWith('Bearer')
             ? req.headers.authorization.split(' ')[1]
             : undefined);
     if (!token) {
-        throw new ApiError(401, 'Unauthorized request: No token provided');
+        throw new ApiError_1.ApiError(401, 'Unauthorized request: No token provided');
     }
     try {
-        const decodedToken = jwt.verify(token, config.JWT_SECRET);
-        const user = await User.findById(decodedToken?._id).select('-password -refreshToken -__v');
+        const decodedToken = jsonwebtoken_1.default.verify(token, config_1.config.JWT_SECRET);
+        const user = await auth_model_1.User.findById(decodedToken?._id).select('-password -refreshToken -__v');
         if (!user) {
-            throw new ApiError(401, 'Invalid Access Token: User not found');
+            throw new ApiError_1.ApiError(401, 'Invalid Access Token: User not found');
         }
         req.user = {
             _id: user._id.toString(),
@@ -27,10 +33,10 @@ export const protect = asyncHandler(async (req, _res, next) => {
         next();
     }
     catch (error) {
-        throw new ApiError(401, error?.message || 'Invalid Access Token');
+        throw new ApiError_1.ApiError(401, error?.message || 'Invalid Access Token');
     }
 });
-export const protectOptional = asyncHandler(async (req, _res, next) => {
+exports.protectOptional = (0, asyncHandler_1.asyncHandler)(async (req, _res, next) => {
     let token;
     token = req.cookies?.accessToken ||
         (req.headers.authorization?.startsWith('Bearer')
@@ -39,8 +45,8 @@ export const protectOptional = asyncHandler(async (req, _res, next) => {
     if (!token)
         return next();
     try {
-        const decodedToken = jwt.verify(token, config.JWT_SECRET);
-        const user = await User.findById(decodedToken?._id).select('-password -refreshToken -__v');
+        const decodedToken = jsonwebtoken_1.default.verify(token, config_1.config.JWT_SECRET);
+        const user = await auth_model_1.User.findById(decodedToken?._id).select('-password -refreshToken -__v');
         if (user) {
             req.user = {
                 _id: user._id.toString(),
@@ -55,16 +61,17 @@ export const protectOptional = asyncHandler(async (req, _res, next) => {
         next();
     }
 });
-export const verifyRole = (...allowedRoles) => {
+const verifyRole = (...allowedRoles) => {
     return (req, _res, next) => {
         if (!req.user?.role) {
-            throw new ApiError(401, 'User not authenticated');
+            throw new ApiError_1.ApiError(401, 'User not authenticated');
         }
         if (!allowedRoles.includes(req.user.role)) {
-            throw new ApiError(403, 'Forbidden: Insufficient permissions');
+            throw new ApiError_1.ApiError(403, 'Forbidden: Insufficient permissions');
         }
         next();
     };
 };
-export const verifyAdmin = verifyRole(ROLES.ADMIN);
+exports.verifyRole = verifyRole;
+exports.verifyAdmin = (0, exports.verifyRole)(config_1.ROLES.ADMIN);
 //# sourceMappingURL=auth.middleware.js.map

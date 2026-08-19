@@ -1,8 +1,11 @@
-import { asyncHandler } from '../../utils/asyncHandler';
-import { ApiError } from '../../utils/ApiError';
-import { ApiResponse } from '../../utils/ApiResponse';
-import { JobRole, JobApplication } from './careers.model';
-import { destroyCloudinaryAsset } from '../upload/upload.controller';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.deleteApplication = exports.updateApplicationStatus = exports.getAllApplications = exports.applyForJob = exports.deleteJob = exports.updateJob = exports.createJob = exports.getAllJobsAdmin = exports.getOpenJobs = void 0;
+const asyncHandler_1 = require("../../utils/asyncHandler");
+const ApiError_1 = require("../../utils/ApiError");
+const ApiResponse_1 = require("../../utils/ApiResponse");
+const careers_model_1 = require("./careers.model");
+const upload_controller_1 = require("../upload/upload.controller");
 const INITIAL_JOBS = [
     {
         title: 'Master Pitmaster (Grill Chef)',
@@ -59,27 +62,27 @@ const INITIAL_JOBS = [
     },
 ];
 async function ensureSeedJobs() {
-    const count = await JobRole.countDocuments();
+    const count = await careers_model_1.JobRole.countDocuments();
     if (count === 0) {
-        await JobRole.insertMany(INITIAL_JOBS);
+        await careers_model_1.JobRole.insertMany(INITIAL_JOBS);
     }
 }
-export const getOpenJobs = asyncHandler(async (_req, res) => {
+exports.getOpenJobs = (0, asyncHandler_1.asyncHandler)(async (_req, res) => {
     await ensureSeedJobs();
-    const jobs = await JobRole.find({ is_active: true }).sort({ createdAt: -1 });
-    res.status(200).json(new ApiResponse(200, jobs, 'Open jobs fetched successfully'));
+    const jobs = await careers_model_1.JobRole.find({ is_active: true }).sort({ createdAt: -1 });
+    res.status(200).json(new ApiResponse_1.ApiResponse(200, jobs, 'Open jobs fetched successfully'));
 });
-export const getAllJobsAdmin = asyncHandler(async (_req, res) => {
+exports.getAllJobsAdmin = (0, asyncHandler_1.asyncHandler)(async (_req, res) => {
     await ensureSeedJobs();
-    const jobs = await JobRole.find().sort({ createdAt: -1 });
-    res.status(200).json(new ApiResponse(200, jobs, 'All jobs fetched successfully'));
+    const jobs = await careers_model_1.JobRole.find().sort({ createdAt: -1 });
+    res.status(200).json(new ApiResponse_1.ApiResponse(200, jobs, 'All jobs fetched successfully'));
 });
-export const createJob = asyncHandler(async (req, res) => {
+exports.createJob = (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const { title, department, type, location, description, requirements, is_active } = req.body;
     if (!title || !department || !description) {
-        throw new ApiError(400, 'Title, department, and description are required');
+        throw new ApiError_1.ApiError(400, 'Title, department, and description are required');
     }
-    const job = await JobRole.create({
+    const job = await careers_model_1.JobRole.create({
         title,
         department,
         type: type || 'Full-time',
@@ -89,45 +92,45 @@ export const createJob = asyncHandler(async (req, res) => {
         is_active: is_active !== undefined ? Boolean(is_active) : true,
         postedDate: new Date().toISOString().slice(0, 10),
     });
-    res.status(201).json(new ApiResponse(201, job, 'Job role created successfully'));
+    res.status(201).json(new ApiResponse_1.ApiResponse(201, job, 'Job role created successfully'));
 });
-export const updateJob = asyncHandler(async (req, res) => {
+exports.updateJob = (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const { id } = req.params;
     const updates = req.body;
-    const job = await JobRole.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
+    const job = await careers_model_1.JobRole.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
     if (!job) {
-        throw new ApiError(404, 'Job role not found');
+        throw new ApiError_1.ApiError(404, 'Job role not found');
     }
-    res.status(200).json(new ApiResponse(200, job, 'Job role updated successfully'));
+    res.status(200).json(new ApiResponse_1.ApiResponse(200, job, 'Job role updated successfully'));
 });
-export const deleteJob = asyncHandler(async (req, res) => {
+exports.deleteJob = (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const { id } = req.params;
     // 1. Find all associated applications and hard-delete their Cloudinary resumes
-    const applications = await JobApplication.find({ job_id: id });
+    const applications = await careers_model_1.JobApplication.find({ job_id: id });
     for (const app of applications) {
         if (app.resume_public_id) {
-            await destroyCloudinaryAsset(app.resume_public_id);
+            await (0, upload_controller_1.destroyCloudinaryAsset)(app.resume_public_id);
         }
     }
     // 2. Delete all applications for this job from database
-    await JobApplication.deleteMany({ job_id: id });
+    await careers_model_1.JobApplication.deleteMany({ job_id: id });
     // 3. Delete the job role
-    const job = await JobRole.findByIdAndDelete(id);
+    const job = await careers_model_1.JobRole.findByIdAndDelete(id);
     if (!job) {
-        throw new ApiError(404, 'Job role not found');
+        throw new ApiError_1.ApiError(404, 'Job role not found');
     }
-    res.status(200).json(new ApiResponse(200, null, 'Job role and all associated applications permanently deleted'));
+    res.status(200).json(new ApiResponse_1.ApiResponse(200, null, 'Job role and all associated applications permanently deleted'));
 });
-export const applyForJob = asyncHandler(async (req, res) => {
+exports.applyForJob = (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     if (!req.file) {
-        throw new ApiError(400, 'Resume file is required (PDF, DOCX, or JPG up to 25MB)');
+        throw new ApiError_1.ApiError(400, 'Resume file is required (PDF, DOCX, or JPG up to 25MB)');
     }
     const { job_id, job_title, full_name, email, phone, experience_years, cover_letter } = req.body;
     if (!job_id || !full_name || !email || !phone) {
-        throw new ApiError(400, 'Missing required applicant personal details');
+        throw new ApiError_1.ApiError(400, 'Missing required applicant personal details');
     }
     const file = req.file;
-    const application = await JobApplication.create({
+    const application = await careers_model_1.JobApplication.create({
         job_id,
         job_title: job_title || 'General Applicant',
         full_name,
@@ -141,9 +144,9 @@ export const applyForJob = asyncHandler(async (req, res) => {
         resume_file_size: file.size,
         status: 'applied',
     });
-    res.status(201).json(new ApiResponse(201, application, 'Application submitted successfully'));
+    res.status(201).json(new ApiResponse_1.ApiResponse(201, application, 'Application submitted successfully'));
 });
-export const getAllApplications = asyncHandler(async (req, res) => {
+exports.getAllApplications = (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const { job_id, status } = req.query;
     const filter = {};
     if (job_id && typeof job_id === 'string' && job_id !== 'all') {
@@ -152,38 +155,38 @@ export const getAllApplications = asyncHandler(async (req, res) => {
     if (status && typeof status === 'string' && status !== 'all') {
         filter.status = status;
     }
-    const applications = await JobApplication.find(filter).sort({ createdAt: -1 });
-    res.status(200).json(new ApiResponse(200, applications, 'Applications fetched successfully'));
+    const applications = await careers_model_1.JobApplication.find(filter).sort({ createdAt: -1 });
+    res.status(200).json(new ApiResponse_1.ApiResponse(200, applications, 'Applications fetched successfully'));
 });
-export const updateApplicationStatus = asyncHandler(async (req, res) => {
+exports.updateApplicationStatus = (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const { id } = req.params;
     const { status, notes } = req.body;
     const validStatuses = ['applied', 'reviewed', 'interview', 'hired', 'rejected'];
     if (!validStatuses.includes(status)) {
-        throw new ApiError(400, 'Invalid application status');
+        throw new ApiError_1.ApiError(400, 'Invalid application status');
     }
-    const app = await JobApplication.findById(id);
+    const app = await careers_model_1.JobApplication.findById(id);
     if (!app) {
-        throw new ApiError(404, 'Application not found');
+        throw new ApiError_1.ApiError(404, 'Application not found');
     }
     app.status = status;
     if (notes !== undefined)
         app.notes = notes;
     await app.save();
-    res.status(200).json(new ApiResponse(200, app, 'Application status updated successfully'));
+    res.status(200).json(new ApiResponse_1.ApiResponse(200, app, 'Application status updated successfully'));
 });
-export const deleteApplication = asyncHandler(async (req, res) => {
+exports.deleteApplication = (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const { id } = req.params;
-    const app = await JobApplication.findById(id);
+    const app = await careers_model_1.JobApplication.findById(id);
     if (!app) {
-        throw new ApiError(404, 'Application not found');
+        throw new ApiError_1.ApiError(404, 'Application not found');
     }
     // Hard delete from Cloudinary
     if (app.resume_public_id) {
-        await destroyCloudinaryAsset(app.resume_public_id);
+        await (0, upload_controller_1.destroyCloudinaryAsset)(app.resume_public_id);
     }
     // Hard delete from MongoDB
-    await JobApplication.findByIdAndDelete(id);
-    res.status(200).json(new ApiResponse(200, null, 'Application and resume hard deleted permanently'));
+    await careers_model_1.JobApplication.findByIdAndDelete(id);
+    res.status(200).json(new ApiResponse_1.ApiResponse(200, null, 'Application and resume hard deleted permanently'));
 });
 //# sourceMappingURL=careers.controller.js.map

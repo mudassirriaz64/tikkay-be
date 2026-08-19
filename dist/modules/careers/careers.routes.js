@@ -1,24 +1,26 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference types="express" />
-import { Router } from 'express';
-import { verifyAdmin, protect } from '../../middleware/auth.middleware';
-import { uploadResume } from '../upload/upload.controller';
-import { getOpenJobs, getAllJobsAdmin, createJob, updateJob, deleteJob, applyForJob, getAllApplications, updateApplicationStatus, deleteApplication, } from './careers.controller';
-const router = Router();
+const express_1 = require("express");
+const auth_middleware_1 = require("../../middleware/auth.middleware");
+const upload_controller_1 = require("../upload/upload.controller");
+const careers_controller_1 = require("./careers.controller");
+const router = (0, express_1.Router)();
 router.route('/jobs')
-    .get(getOpenJobs)
-    .post(protect, verifyAdmin, createJob);
+    .get(careers_controller_1.getOpenJobs)
+    .post(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, careers_controller_1.createJob);
 router.route('/jobs/admin')
-    .get(protect, verifyAdmin, getAllJobsAdmin);
+    .get(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, careers_controller_1.getAllJobsAdmin);
 router.route('/jobs/:id')
-    .patch(protect, verifyAdmin, updateJob)
-    .delete(protect, verifyAdmin, deleteJob);
+    .patch(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, careers_controller_1.updateJob)
+    .delete(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, careers_controller_1.deleteJob);
 router.route('/apply')
-    .post(uploadResume, applyForJob);
+    .post(upload_controller_1.uploadResume, careers_controller_1.applyForJob);
 router.route('/applications')
-    .get(protect, verifyAdmin, getAllApplications);
+    .get(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, careers_controller_1.getAllApplications);
 router.route('/applications/:id')
-    .delete(protect, verifyAdmin, deleteApplication);
+    .delete(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, careers_controller_1.deleteApplication);
 router.route('/applications/:id/status')
-    .patch(protect, verifyAdmin, updateApplicationStatus);
-export default router;
+    .patch(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, careers_controller_1.updateApplicationStatus);
+exports.default = router;
 //# sourceMappingURL=careers.routes.js.map

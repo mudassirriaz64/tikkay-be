@@ -1,7 +1,13 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ROLES = exports.CORS_OPTIONS = exports.config = void 0;
 /// <reference types="node" />
-import dotenv from 'dotenv';
-dotenv.config();
-export const config = {
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
+exports.config = {
     PORT: parseInt(process.env.PORT || '5000', 10),
     NODE_ENV: process.env.NODE_ENV || 'development',
     MONGODB_URI: process.env.MONGODB_URI || 'mongodb://localhost:27017/tikkay-shikkay',
@@ -17,12 +23,12 @@ export const config = {
     BEHOLD_FEED_URL: process.env.BEHOLD_FEED_URL || '',
     INSTAGRAM_ACCESS_TOKEN: process.env.INSTAGRAM_ACCESS_TOKEN || '',
 };
-export const CORS_OPTIONS = {
+exports.CORS_OPTIONS = {
     origin: (origin, callback) => {
         // Allow requests with no origin (e.g. mobile apps, curl, server-to-server, SSR)
         if (!origin)
             return callback(null, true);
-        const clientUrls = (config.CLIENT_URL || '')
+        const clientUrls = (exports.config.CLIENT_URL || '')
             .split(',')
             .map((url) => url.trim().replace(/\/$/, ''))
             .filter(Boolean);
@@ -52,7 +58,7 @@ export const CORS_OPTIONS = {
     optionsSuccessStatus: 204,
     preflightContinue: false,
 };
-export const ROLES = {
+exports.ROLES = {
     ADMIN: 'admin',
     USER: 'user',
 };

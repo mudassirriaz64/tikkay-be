@@ -1,23 +1,25 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference types="express" />
-import { Router } from 'express';
-import { verifyAdmin, protect } from '../../middleware/auth.middleware';
-import { getProfile, updateProfile, getAllUsers, getUserById, updateUserRole, deleteUser, addToFavorites, getFavorites, getMyReviews, getAccountsPageData, joinLoyalty, getLoyaltyStatus, getLoyaltyCount, } from './users.controller';
-const router = Router();
+const express_1 = require("express");
+const auth_middleware_1 = require("../../middleware/auth.middleware");
+const users_controller_1 = require("./users.controller");
+const router = (0, express_1.Router)();
 router.route('/profile')
-    .get(protect, getProfile)
-    .patch(protect, updateProfile);
-router.route('/loyalty/join').post(protect, joinLoyalty);
-router.route('/loyalty/status').get(protect, getLoyaltyStatus);
-router.route('/loyalty/count').get(getLoyaltyCount);
-router.route('/accounts-page').get(protect, getAccountsPageData);
+    .get(auth_middleware_1.protect, users_controller_1.getProfile)
+    .patch(auth_middleware_1.protect, users_controller_1.updateProfile);
+router.route('/loyalty/join').post(auth_middleware_1.protect, users_controller_1.joinLoyalty);
+router.route('/loyalty/status').get(auth_middleware_1.protect, users_controller_1.getLoyaltyStatus);
+router.route('/loyalty/count').get(users_controller_1.getLoyaltyCount);
+router.route('/accounts-page').get(auth_middleware_1.protect, users_controller_1.getAccountsPageData);
 router.route('/favorites')
-    .get(protect, getFavorites)
-    .post(protect, addToFavorites);
-router.route('/my-reviews').get(protect, getMyReviews);
-router.route('/').get(protect, verifyAdmin, getAllUsers);
+    .get(auth_middleware_1.protect, users_controller_1.getFavorites)
+    .post(auth_middleware_1.protect, users_controller_1.addToFavorites);
+router.route('/my-reviews').get(auth_middleware_1.protect, users_controller_1.getMyReviews);
+router.route('/').get(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, users_controller_1.getAllUsers);
 router.route('/:id')
-    .get(protect, verifyAdmin, getUserById)
-    .patch(protect, verifyAdmin, updateUserRole)
-    .delete(protect, verifyAdmin, deleteUser);
-export default router;
+    .get(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, users_controller_1.getUserById)
+    .patch(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, users_controller_1.updateUserRole)
+    .delete(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, users_controller_1.deleteUser);
+exports.default = router;
 //# sourceMappingURL=users.routes.js.map

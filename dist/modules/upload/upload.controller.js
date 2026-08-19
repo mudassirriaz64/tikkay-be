@@ -1,14 +1,21 @@
-import { v2 as cloudinary } from 'cloudinary';
-import { CloudinaryStorage } from 'multer-storage-cloudinary';
-import multer from 'multer';
-import { asyncHandler } from '../../utils/asyncHandler';
-import { ApiError } from '../../utils/ApiError';
-import { ApiResponse } from '../../utils/ApiResponse';
-import { config } from '../../config';
-cloudinary.config({
-    cloud_name: config.CLOUDINARY_CLOUD_NAME,
-    api_key: config.CLOUDINARY_API_KEY,
-    api_secret: config.CLOUDINARY_API_SECRET,
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.uploadFile = exports.uploadVideoVPS = exports.generateVideoSignature = exports.getVideoUploadConfig = exports.uploadVideoDisk = exports.uploadSingle = exports.uploadResume = exports.upload = void 0;
+exports.destroyCloudinaryAsset = destroyCloudinaryAsset;
+const cloudinary_1 = require("cloudinary");
+const multer_storage_cloudinary_1 = require("multer-storage-cloudinary");
+const multer_1 = __importDefault(require("multer"));
+const asyncHandler_1 = require("../../utils/asyncHandler");
+const ApiError_1 = require("../../utils/ApiError");
+const ApiResponse_1 = require("../../utils/ApiResponse");
+const config_1 = require("../../config");
+cloudinary_1.v2.config({
+    cloud_name: config_1.config.CLOUDINARY_CLOUD_NAME,
+    api_key: config_1.config.CLOUDINARY_API_KEY,
+    api_secret: config_1.config.CLOUDINARY_API_SECRET,
 });
 const ALLOWED_FOLDERS = [
     'menu',
@@ -36,8 +43,8 @@ function sanitizeAndValidateFolder(rawFolder) {
     }
     return 'tikkayshikkay/uploads';
 }
-const storage = new CloudinaryStorage({
-    cloudinary,
+const storage = new multer_storage_cloudinary_1.CloudinaryStorage({
+    cloudinary: cloudinary_1.v2,
     params: async (req, file) => {
         const isVideo = file.mimetype.startsWith('video/');
         const folderParam = req.query?.folder || req.body?.folder;
@@ -54,7 +61,7 @@ const storage = new CloudinaryStorage({
         };
     },
 });
-export const upload = multer({
+exports.upload = (0, multer_1.default)({
     storage,
     limits: {
         fileSize: 25 * 1024 * 1024,
@@ -66,13 +73,13 @@ export const upload = multer({
             cb(null, true);
         }
         else {
-            cb(new ApiError(400, `Unsupported file type: ${file.mimetype}`));
+            cb(new ApiError_1.ApiError(400, `Unsupported file type: ${file.mimetype}`));
         }
     },
 });
 // Resume storage supporting PDF, DOCX, DOC, JPG, JPEG, PNG up to 25MB
-const resumeStorage = new CloudinaryStorage({
-    cloudinary,
+const resumeStorage = new multer_storage_cloudinary_1.CloudinaryStorage({
+    cloudinary: cloudinary_1.v2,
     params: async (_req, file) => {
         const ext = file.originalname.split('.').pop()?.toLowerCase();
         const isImage = ['jpg', 'jpeg', 'png'].includes(ext || '');
@@ -84,7 +91,7 @@ const resumeStorage = new CloudinaryStorage({
         };
     },
 });
-export const uploadResume = multer({
+exports.uploadResume = (0, multer_1.default)({
     storage: resumeStorage,
     limits: {
         fileSize: 25 * 1024 * 1024, // 25 MB
@@ -104,45 +111,45 @@ export const uploadResume = multer({
             cb(null, true);
         }
         else {
-            cb(new ApiError(400, 'Invalid file format. Only PDF, DOCX, and JPG/PNG documents up to 25MB are allowed.'));
+            cb(new ApiError_1.ApiError(400, 'Invalid file format. Only PDF, DOCX, and JPG/PNG documents up to 25MB are allowed.'));
         }
     },
 }).single('resume');
 /**
  * Hard delete file from Cloudinary storage
  */
-export async function destroyCloudinaryAsset(publicId) {
+async function destroyCloudinaryAsset(publicId) {
     try {
         // Try raw first (PDF / DOCX), then image
-        await cloudinary.uploader.destroy(publicId, { resource_type: 'raw' });
-        await cloudinary.uploader.destroy(publicId, { resource_type: 'image' });
+        await cloudinary_1.v2.uploader.destroy(publicId, { resource_type: 'raw' });
+        await cloudinary_1.v2.uploader.destroy(publicId, { resource_type: 'image' });
     }
     catch (err) {
         console.error('Failed to destroy Cloudinary asset:', publicId, err);
     }
 }
-import os from 'os';
-import path from 'path';
-import fs from 'fs';
-import { VideoTestimonial } from '../gallery/gallery.model';
-import { videoQueue, processVideoJob } from './videoWorker.service';
-export const uploadSingle = upload.single('file');
+const os_1 = __importDefault(require("os"));
+const path_1 = __importDefault(require("path"));
+const fs_1 = __importDefault(require("fs"));
+const gallery_model_1 = require("../gallery/gallery.model");
+const videoWorker_service_1 = require("./videoWorker.service");
+exports.uploadSingle = exports.upload.single('file');
 // Local disk storage for VPS FFmpeg pipeline (up to 100MB)
-const diskStorage = multer.diskStorage({
+const diskStorage = multer_1.default.diskStorage({
     destination: (_req, _file, cb) => {
-        const uploadDir = path.join(os.tmpdir(), 'tikkay-raw-uploads');
-        if (!fs.existsSync(uploadDir)) {
-            fs.mkdirSync(uploadDir, { recursive: true });
+        const uploadDir = path_1.default.join(os_1.default.tmpdir(), 'tikkay-raw-uploads');
+        if (!fs_1.default.existsSync(uploadDir)) {
+            fs_1.default.mkdirSync(uploadDir, { recursive: true });
         }
         cb(null, uploadDir);
     },
     filename: (_req, file, cb) => {
         const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
-        const ext = path.extname(file.originalname) || '.mp4';
+        const ext = path_1.default.extname(file.originalname) || '.mp4';
         cb(null, `raw-${uniqueSuffix}${ext}`);
     },
 });
-export const uploadVideoDisk = multer({
+exports.uploadVideoDisk = (0, multer_1.default)({
     storage: diskStorage,
     limits: {
         fileSize: 100 * 1024 * 1024, // 100 MB for raw video files on VPS
@@ -152,18 +159,18 @@ export const uploadVideoDisk = multer({
             cb(null, true);
         }
         else {
-            cb(new ApiError(400, 'Only video files are allowed'));
+            cb(new ApiError_1.ApiError(400, 'Only video files are allowed'));
         }
     },
 }).single('video');
 /**
  * Returns current server video capability (VPS vs Vercel Direct)
  */
-export const getVideoUploadConfig = asyncHandler(async (_req, res) => {
+exports.getVideoUploadConfig = (0, asyncHandler_1.asyncHandler)(async (_req, res) => {
     const isVpsFfmpegEnabled = process.env.ENABLE_LOCAL_FFMPEG === 'true' && process.env.VERCEL !== '1';
-    res.status(200).json(new ApiResponse(200, {
+    res.status(200).json(new ApiResponse_1.ApiResponse(200, {
         mode: isVpsFfmpegEnabled ? 'vps' : 'vercel_direct',
-        cloudName: config.CLOUDINARY_CLOUD_NAME,
+        cloudName: config_1.config.CLOUDINARY_CLOUD_NAME,
         maxSizeBytes: 100 * 1024 * 1024,
         allowedFormats: ['mp4', 'webm', 'mov', 'mkv'],
     }, 'Video upload config fetched'));
@@ -171,7 +178,7 @@ export const getVideoUploadConfig = asyncHandler(async (_req, res) => {
 /**
  * Generates Cloudinary signed upload parameters for Vercel/direct browser uploads
  */
-export const generateVideoSignature = asyncHandler(async (req, res) => {
+exports.generateVideoSignature = (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const timestamp = Math.round(Date.now() / 1000);
     const folder = 'tikkayshikkay/gallery/videos';
     // Cloudinary signature signs key-value pairs alphabetically (folder, timestamp)
@@ -179,12 +186,12 @@ export const generateVideoSignature = asyncHandler(async (req, res) => {
         folder,
         timestamp,
     };
-    const signature = cloudinary.utils.api_sign_request(paramsToSign, config.CLOUDINARY_API_SECRET);
-    res.status(200).json(new ApiResponse(200, {
+    const signature = cloudinary_1.v2.utils.api_sign_request(paramsToSign, config_1.config.CLOUDINARY_API_SECRET);
+    res.status(200).json(new ApiResponse_1.ApiResponse(200, {
         signature,
         timestamp,
-        apiKey: config.CLOUDINARY_API_KEY,
-        cloudName: config.CLOUDINARY_CLOUD_NAME,
+        apiKey: config_1.config.CLOUDINARY_API_KEY,
+        cloudName: config_1.config.CLOUDINARY_CLOUD_NAME,
         folder,
         resourceType: 'video',
     }, 'Video upload signature generated'));
@@ -192,17 +199,17 @@ export const generateVideoSignature = asyncHandler(async (req, res) => {
 /**
  * VPS Mode: Async transcode pipeline with 202 Accepted response
  */
-export const uploadVideoVPS = asyncHandler(async (req, res) => {
+exports.uploadVideoVPS = (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const isVpsFfmpegEnabled = process.env.ENABLE_LOCAL_FFMPEG === 'true' && process.env.VERCEL !== '1';
     if (!isVpsFfmpegEnabled) {
-        throw new ApiError(400, 'Local FFmpeg processing is disabled on this environment. Use direct signed upload.');
+        throw new ApiError_1.ApiError(400, 'Local FFmpeg processing is disabled on this environment. Use direct signed upload.');
     }
     if (!req.file) {
-        throw new ApiError(400, 'No video file provided');
+        throw new ApiError_1.ApiError(400, 'No video file provided');
     }
     const { title = 'Behind the Scenes', customer_name = 'Tikkay Shikkay', description = '' } = req.body;
     // 1. Create initial processing document in MongoDB
-    const videoDoc = await VideoTestimonial.create({
+    const videoDoc = await gallery_model_1.VideoTestimonial.create({
         title,
         customer_name,
         description,
@@ -214,25 +221,25 @@ export const uploadVideoVPS = asyncHandler(async (req, res) => {
         display_order: 0,
     });
     // 2. Queue in-process FFmpeg transcode
-    videoQueue.add(() => processVideoJob({
+    videoWorker_service_1.videoQueue.add(() => (0, videoWorker_service_1.processVideoJob)({
         videoId: videoDoc._id.toString(),
         rawFilePath: req.file.path,
         originalFileName: req.file.originalname,
     }));
     // 3. Immediate 202 Accepted response
-    res.status(202).json(new ApiResponse(202, {
+    res.status(202).json(new ApiResponse_1.ApiResponse(202, {
         id: videoDoc._id,
         title: videoDoc.title,
         status: videoDoc.status,
         message: 'Video upload received and queued for compression.',
     }, 'Video queued for processing'));
 });
-export const uploadFile = asyncHandler(async (req, res) => {
+exports.uploadFile = (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     if (!req.file) {
-        throw new ApiError(400, 'No file uploaded');
+        throw new ApiError_1.ApiError(400, 'No file uploaded');
     }
     const file = req.file;
-    res.status(200).json(new ApiResponse(200, {
+    res.status(200).json(new ApiResponse_1.ApiResponse(200, {
         url: file.path,
         publicId: file.filename,
         format: file.format || file.mimetype.split('/')[1],

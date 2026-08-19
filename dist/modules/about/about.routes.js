@@ -1,37 +1,39 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference types="express" />
-import { Router } from 'express';
-import { verifyAdmin, protect } from '../../middleware/auth.middleware';
-import { getAboutPageData, getFounder, updateFounder, getPageConfig, updatePageConfig, stats, milestones, journeyPosts, } from './about.controller';
-const router = Router();
-router.route('/page-data').get(getAboutPageData);
+const express_1 = require("express");
+const auth_middleware_1 = require("../../middleware/auth.middleware");
+const about_controller_1 = require("./about.controller");
+const router = (0, express_1.Router)();
+router.route('/page-data').get(about_controller_1.getAboutPageData);
 router.route('/page-config')
-    .get(protect, verifyAdmin, getPageConfig)
-    .patch(protect, verifyAdmin, updatePageConfig);
+    .get(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, about_controller_1.getPageConfig)
+    .patch(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, about_controller_1.updatePageConfig);
 router.route('/founder')
-    .get(protect, verifyAdmin, getFounder)
-    .patch(protect, verifyAdmin, updateFounder);
+    .get(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, about_controller_1.getFounder)
+    .patch(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, about_controller_1.updateFounder);
 router.route('/stats')
-    .get(stats.getAll)
-    .put(protect, verifyAdmin, stats.saveAll)
-    .post(protect, verifyAdmin, stats.create);
+    .get(about_controller_1.stats.getAll)
+    .put(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, about_controller_1.stats.saveAll)
+    .post(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, about_controller_1.stats.create);
 router.route('/stats/:id')
-    .get(stats.getById)
-    .patch(protect, verifyAdmin, stats.update)
-    .delete(protect, verifyAdmin, stats.delete);
+    .get(about_controller_1.stats.getById)
+    .patch(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, about_controller_1.stats.update)
+    .delete(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, about_controller_1.stats.delete);
 router.route('/milestones')
-    .get(milestones.getAll)
-    .put(protect, verifyAdmin, milestones.saveAll)
-    .post(protect, verifyAdmin, milestones.create);
+    .get(about_controller_1.milestones.getAll)
+    .put(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, about_controller_1.milestones.saveAll)
+    .post(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, about_controller_1.milestones.create);
 router.route('/milestones/:id')
-    .get(milestones.getById)
-    .patch(protect, verifyAdmin, milestones.update)
-    .delete(protect, verifyAdmin, milestones.delete);
+    .get(about_controller_1.milestones.getById)
+    .patch(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, about_controller_1.milestones.update)
+    .delete(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, about_controller_1.milestones.delete);
 router.route('/journey-posts')
-    .get(journeyPosts.getAll)
-    .post(protect, verifyAdmin, journeyPosts.create);
+    .get(about_controller_1.journeyPosts.getAll)
+    .post(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, about_controller_1.journeyPosts.create);
 router.route('/journey-posts/:id')
-    .get(journeyPosts.getById)
-    .patch(protect, verifyAdmin, journeyPosts.update)
-    .delete(protect, verifyAdmin, journeyPosts.delete);
-export default router;
+    .get(about_controller_1.journeyPosts.getById)
+    .patch(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, about_controller_1.journeyPosts.update)
+    .delete(auth_middleware_1.protect, auth_middleware_1.verifyAdmin, about_controller_1.journeyPosts.delete);
+exports.default = router;
 //# sourceMappingURL=about.routes.js.map

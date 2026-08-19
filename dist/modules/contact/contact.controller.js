@@ -1,21 +1,24 @@
-import { asyncHandler } from '../../utils/asyncHandler';
-import { ApiError } from '../../utils/ApiError';
-import { ApiResponse } from '../../utils/ApiResponse';
-import { ContactMethod, OpeningDay, ContactPageConfig, ContactSubmission, } from './contact.model';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.updatePageConfig = exports.getPageConfig = exports.openingDays = exports.contactMethods = exports.deleteSubmission = exports.markSubmissionRead = exports.getSubmissions = exports.submitContactForm = exports.getContactPageData = void 0;
+const asyncHandler_1 = require("../../utils/asyncHandler");
+const ApiError_1 = require("../../utils/ApiError");
+const ApiResponse_1 = require("../../utils/ApiResponse");
+const contact_model_1 = require("./contact.model");
 const PAGE_CONFIG_ID = 'contact-page-config';
 const getOrCreatePageConfig = async () => {
-    let config = await ContactPageConfig.findById(PAGE_CONFIG_ID);
+    let config = await contact_model_1.ContactPageConfig.findById(PAGE_CONFIG_ID);
     if (!config) {
-        config = new ContactPageConfig({ _id: PAGE_CONFIG_ID });
+        config = new contact_model_1.ContactPageConfig({ _id: PAGE_CONFIG_ID });
         await config.save();
     }
     return config;
 };
-export const getContactPageData = asyncHandler(async (_req, res) => {
+exports.getContactPageData = (0, asyncHandler_1.asyncHandler)(async (_req, res) => {
     const [pageConfig, methods, openingHours] = await Promise.all([
         getOrCreatePageConfig(),
-        ContactMethod.find().sort({ display_order: 1 }),
-        OpeningDay.find().sort({ display_order: 1 }),
+        contact_model_1.ContactMethod.find().sort({ display_order: 1 }),
+        contact_model_1.OpeningDay.find().sort({ display_order: 1 }),
     ]);
     const pageData = {
         hero: pageConfig.hero,
@@ -28,77 +31,77 @@ export const getContactPageData = asyncHandler(async (_req, res) => {
     };
     res
         .status(200)
-        .json(new ApiResponse(200, pageData, 'Contact page data fetched successfully'));
+        .json(new ApiResponse_1.ApiResponse(200, pageData, 'Contact page data fetched successfully'));
 });
-export const submitContactForm = asyncHandler(async (req, res) => {
-    const submission = await ContactSubmission.create(req.body);
+exports.submitContactForm = (0, asyncHandler_1.asyncHandler)(async (req, res) => {
+    const submission = await contact_model_1.ContactSubmission.create(req.body);
     res
         .status(201)
-        .json(new ApiResponse(201, submission, 'Contact form submitted successfully. We will get back to you soon!'));
+        .json(new ApiResponse_1.ApiResponse(201, submission, 'Contact form submitted successfully. We will get back to you soon!'));
 });
-export const getSubmissions = asyncHandler(async (_req, res) => {
-    const submissions = await ContactSubmission.find().sort({ createdAt: -1, is_read: 1 });
+exports.getSubmissions = (0, asyncHandler_1.asyncHandler)(async (_req, res) => {
+    const submissions = await contact_model_1.ContactSubmission.find().sort({ createdAt: -1, is_read: 1 });
     res
         .status(200)
-        .json(new ApiResponse(200, submissions, 'Contact submissions fetched successfully'));
+        .json(new ApiResponse_1.ApiResponse(200, submissions, 'Contact submissions fetched successfully'));
 });
-export const markSubmissionRead = asyncHandler(async (req, res) => {
+exports.markSubmissionRead = (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const { id } = req.params;
-    const submission = await ContactSubmission.findByIdAndUpdate(id, { is_read: true }, { new: true });
+    const submission = await contact_model_1.ContactSubmission.findByIdAndUpdate(id, { is_read: true }, { new: true });
     if (!submission) {
-        throw new ApiError(404, 'Submission not found');
+        throw new ApiError_1.ApiError(404, 'Submission not found');
     }
     res
         .status(200)
-        .json(new ApiResponse(200, submission, 'Submission marked as read'));
+        .json(new ApiResponse_1.ApiResponse(200, submission, 'Submission marked as read'));
 });
-export const deleteSubmission = asyncHandler(async (req, res) => {
+exports.deleteSubmission = (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const { id } = req.params;
-    const submission = await ContactSubmission.findByIdAndDelete(id);
+    const submission = await contact_model_1.ContactSubmission.findByIdAndDelete(id);
     if (!submission) {
-        throw new ApiError(404, 'Submission not found');
+        throw new ApiError_1.ApiError(404, 'Submission not found');
     }
     res
         .status(200)
-        .json(new ApiResponse(200, {}, 'Submission deleted successfully'));
+        .json(new ApiResponse_1.ApiResponse(200, {}, 'Submission deleted successfully'));
 });
 const createGenericCrud = (Model, name) => ({
-    getAll: asyncHandler(async (_req, res) => {
+    getAll: (0, asyncHandler_1.asyncHandler)(async (_req, res) => {
         const items = await Model.find().sort({ display_order: 1 });
-        res.status(200).json(new ApiResponse(200, items, `${name} fetched successfully`));
+        res.status(200).json(new ApiResponse_1.ApiResponse(200, items, `${name} fetched successfully`));
     }),
-    create: asyncHandler(async (req, res) => {
+    create: (0, asyncHandler_1.asyncHandler)(async (req, res) => {
         const item = await Model.create(req.body);
-        res.status(201).json(new ApiResponse(201, item, `${name} created successfully`));
+        res.status(201).json(new ApiResponse_1.ApiResponse(201, item, `${name} created successfully`));
     }),
-    getById: asyncHandler(async (req, res) => {
+    getById: (0, asyncHandler_1.asyncHandler)(async (req, res) => {
         const item = await Model.findById(req.params.id);
         if (!item)
-            throw new ApiError(404, `${name} not found`);
-        res.status(200).json(new ApiResponse(200, item, `${name} fetched successfully`));
+            throw new ApiError_1.ApiError(404, `${name} not found`);
+        res.status(200).json(new ApiResponse_1.ApiResponse(200, item, `${name} fetched successfully`));
     }),
-    update: asyncHandler(async (req, res) => {
+    update: (0, asyncHandler_1.asyncHandler)(async (req, res) => {
         const item = await Model.findByIdAndUpdate(req.params.id, req.body, {
             new: true, runValidators: true,
         });
         if (!item)
-            throw new ApiError(404, `${name} not found`);
-        res.status(200).json(new ApiResponse(200, item, `${name} updated successfully`));
+            throw new ApiError_1.ApiError(404, `${name} not found`);
+        res.status(200).json(new ApiResponse_1.ApiResponse(200, item, `${name} updated successfully`));
     }),
-    delete: asyncHandler(async (req, res) => {
+    delete: (0, asyncHandler_1.asyncHandler)(async (req, res) => {
         const item = await Model.findByIdAndDelete(req.params.id);
         if (!item)
-            throw new ApiError(404, `${name} not found`);
-        res.status(200).json(new ApiResponse(200, {}, `${name} deleted successfully`));
+            throw new ApiError_1.ApiError(404, `${name} not found`);
+        res.status(200).json(new ApiResponse_1.ApiResponse(200, {}, `${name} deleted successfully`));
     }),
 });
-const contactMethodsCRUD = createGenericCrud(ContactMethod, 'Contact Method');
-const openingDaysCRUD = createGenericCrud(OpeningDay, 'Opening Day');
-export const contactMethods = {
+const contactMethodsCRUD = createGenericCrud(contact_model_1.ContactMethod, 'Contact Method');
+const openingDaysCRUD = createGenericCrud(contact_model_1.OpeningDay, 'Opening Day');
+exports.contactMethods = {
     ...contactMethodsCRUD,
-    saveAll: asyncHandler(async (req, res) => {
+    saveAll: (0, asyncHandler_1.asyncHandler)(async (req, res) => {
         const rawMethods = Array.isArray(req.body) ? req.body : req.body.methods || [];
-        await ContactMethod.deleteMany({});
+        await contact_model_1.ContactMethod.deleteMany({});
         const itemsToInsert = rawMethods.map((m, idx) => ({
             icon: m.icon || 'phone',
             accent: m.accent || 'orange',
@@ -108,39 +111,39 @@ export const contactMethods = {
             href: m.href || '#',
             display_order: idx + 1,
         }));
-        const created = await ContactMethod.insertMany(itemsToInsert);
-        res.status(200).json(new ApiResponse(200, created, 'Contact methods saved successfully'));
+        const created = await contact_model_1.ContactMethod.insertMany(itemsToInsert);
+        res.status(200).json(new ApiResponse_1.ApiResponse(200, created, 'Contact methods saved successfully'));
     }),
 };
-export const openingDays = {
+exports.openingDays = {
     ...openingDaysCRUD,
-    saveAll: asyncHandler(async (req, res) => {
+    saveAll: (0, asyncHandler_1.asyncHandler)(async (req, res) => {
         const rawDays = Array.isArray(req.body) ? req.body : req.body.openingHours || [];
-        await OpeningDay.deleteMany({});
+        await contact_model_1.OpeningDay.deleteMany({});
         const itemsToInsert = rawDays.map((d, idx) => ({
             day: d.day || 'Monday',
             hours: d.hours || '',
             isClosed: Boolean(d.isClosed),
             display_order: idx + 1,
         }));
-        const created = await OpeningDay.insertMany(itemsToInsert);
-        res.status(200).json(new ApiResponse(200, created, 'Opening hours saved successfully'));
+        const created = await contact_model_1.OpeningDay.insertMany(itemsToInsert);
+        res.status(200).json(new ApiResponse_1.ApiResponse(200, created, 'Opening hours saved successfully'));
     }),
 };
-export const getPageConfig = asyncHandler(async (_req, res) => {
+exports.getPageConfig = (0, asyncHandler_1.asyncHandler)(async (_req, res) => {
     const config = await getOrCreatePageConfig();
-    res.status(200).json(new ApiResponse(200, config, 'Contact page config fetched'));
+    res.status(200).json(new ApiResponse_1.ApiResponse(200, config, 'Contact page config fetched'));
 });
-export const updatePageConfig = asyncHandler(async (req, res) => {
-    let config = await ContactPageConfig.findById(PAGE_CONFIG_ID);
+exports.updatePageConfig = (0, asyncHandler_1.asyncHandler)(async (req, res) => {
+    let config = await contact_model_1.ContactPageConfig.findById(PAGE_CONFIG_ID);
     if (!config) {
-        config = new ContactPageConfig({ _id: PAGE_CONFIG_ID, ...req.body });
+        config = new contact_model_1.ContactPageConfig({ _id: PAGE_CONFIG_ID, ...req.body });
         await config.save();
     }
     else {
         Object.assign(config, req.body);
         await config.save();
     }
-    res.status(200).json(new ApiResponse(200, config, 'Contact page config updated successfully'));
+    res.status(200).json(new ApiResponse_1.ApiResponse(200, config, 'Contact page config updated successfully'));
 });
 //# sourceMappingURL=contact.controller.js.map

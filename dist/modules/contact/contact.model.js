@@ -1,7 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ContactSubmission = exports.ContactPageConfig = exports.OpeningDay = exports.ContactMethod = void 0;
 /// <reference types="node" />
 /// <reference types="mongoose" />
-import { Schema, model } from 'mongoose';
-const contactMethodSchema = new Schema({
+const mongoose_1 = require("mongoose");
+const contactMethodSchema = new mongoose_1.Schema({
     icon: { type: String, enum: ['whatsapp', 'phone', 'map-pin'], required: true },
     accent: { type: String, enum: ['whatsapp', 'orange', 'peach', 'gold'], required: true },
     title: { type: String, required: true },
@@ -10,13 +13,13 @@ const contactMethodSchema = new Schema({
     href: { type: String, required: true },
     display_order: { type: Number, default: 0 },
 }, { timestamps: true });
-const openingDaySchema = new Schema({
+const openingDaySchema = new mongoose_1.Schema({
     day: { type: String, required: true },
     hours: { type: String, default: '' },
     isClosed: { type: Boolean, default: false },
     display_order: { type: Number, default: 0 },
 }, { timestamps: true });
-const contactPageConfigSchema = new Schema({
+const contactPageConfigSchema = new mongoose_1.Schema({
     _id: { type: String },
     hero: {
         label: { type: String, default: 'Get In Touch' },
@@ -56,7 +59,7 @@ const contactPageConfigSchema = new Schema({
         portalLabel: { type: String, default: 'Existing Franchise Portal' },
     },
 }, { timestamps: true });
-const contactSubmissionSchema = new Schema({
+const contactSubmissionSchema = new mongoose_1.Schema({
     name: { type: String, required: true, trim: true },
     email: { type: String, required: true, lowercase: true, trim: true },
     phone: { type: String, default: '' },
@@ -65,8 +68,8 @@ const contactSubmissionSchema = new Schema({
     is_read: { type: Boolean, default: false, index: true },
     created_at: { type: String, default: () => new Date().toISOString() },
 }, { timestamps: true });
-export const ContactMethod = model('ContactMethod', contactMethodSchema);
-export const OpeningDay = model('OpeningDay', openingDaySchema);
-export const ContactPageConfig = model('ContactPageConfig', contactPageConfigSchema);
-export const ContactSubmission = model('ContactSubmission', contactSubmissionSchema);
+exports.ContactMethod = (0, mongoose_1.model)('ContactMethod', contactMethodSchema);
+exports.OpeningDay = (0, mongoose_1.model)('OpeningDay', openingDaySchema);
+exports.ContactPageConfig = (0, mongoose_1.model)('ContactPageConfig', contactPageConfigSchema);
+exports.ContactSubmission = (0, mongoose_1.model)('ContactSubmission', contactSubmissionSchema);
 //# sourceMappingURL=contact.model.js.map

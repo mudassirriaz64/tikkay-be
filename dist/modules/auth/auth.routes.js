@@ -1,15 +1,17 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference types="express" />
-import { Router } from 'express';
-import { validate } from '../../middleware/validate.middleware';
-import { protect } from '../../middleware/auth.middleware';
-import { register, login, logout, refreshAccessToken, changeCurrentPassword, getCurrentUser, } from './auth.controller';
-import { registerSchema, loginSchema, changePasswordSchema, } from './auth.validation';
-const router = Router();
-router.route('/register').post(validate(registerSchema), register);
-router.route('/login').post(validate(loginSchema), login);
-router.route('/logout').post(protect, logout);
-router.route('/refresh-token').post(refreshAccessToken);
-router.route('/change-password').post(protect, validate(changePasswordSchema), changeCurrentPassword);
-router.route('/me').get(protect, getCurrentUser);
-export default router;
+const express_1 = require("express");
+const validate_middleware_1 = require("../../middleware/validate.middleware");
+const auth_middleware_1 = require("../../middleware/auth.middleware");
+const auth_controller_1 = require("./auth.controller");
+const auth_validation_1 = require("./auth.validation");
+const router = (0, express_1.Router)();
+router.route('/register').post((0, validate_middleware_1.validate)(auth_validation_1.registerSchema), auth_controller_1.register);
+router.route('/login').post((0, validate_middleware_1.validate)(auth_validation_1.loginSchema), auth_controller_1.login);
+router.route('/logout').post(auth_middleware_1.protect, auth_controller_1.logout);
+router.route('/refresh-token').post(auth_controller_1.refreshAccessToken);
+router.route('/change-password').post(auth_middleware_1.protect, (0, validate_middleware_1.validate)(auth_validation_1.changePasswordSchema), auth_controller_1.changeCurrentPassword);
+router.route('/me').get(auth_middleware_1.protect, auth_controller_1.getCurrentUser);
+exports.default = router;
 //# sourceMappingURL=auth.routes.js.map
