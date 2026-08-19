@@ -16,4 +16,5 @@ export type AdminTabId =
   | "customers"
   | "catering"
   | "blog"
-  | "careers";
+  | "careers"
+  | "franchise";

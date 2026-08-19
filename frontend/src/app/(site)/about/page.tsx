@@ -7,6 +7,7 @@ import { FounderSection } from "@/components/sections/FounderSection/FounderSect
 import { StatsBand } from "@/components/sections/StatsBand/StatsBand";
 import { TimelineVertical } from "@/components/sections/Timeline/TimelineVertical";
 import { ProcessGallery } from "@/components/sections/ProcessGallery/ProcessGallery";
+import { FranchiseSection } from "@/components/sections/Franchise";
 import { CareersCTA } from "@/components/sections/CareersCTA/CareersCTA";
 
 export const metadata = {
@@ -41,7 +42,10 @@ export default async function AboutPage() {
       {/* 6. Behind the Scenes Process Gallery */}
       <ProcessGallery items={galleryItems} />
 
-      {/* 7. Careers CTA Banner */}
+      {/* 7. Franchise & National Expansion Section */}
+      <FranchiseSection />
+
+      {/* 8. Careers CTA Banner */}
       <CareersCTA />
     </div>
   );

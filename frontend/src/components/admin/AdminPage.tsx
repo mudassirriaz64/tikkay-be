@@ -17,6 +17,7 @@ import { CustomersModule } from "./modules/CustomersModule";
 import { CateringModule } from "./modules/CateringModule";
 import { BlogModule } from "./modules/BlogModule";
 import { CareersModule } from "./modules/CareersModule";
+import { FranchiseModule } from "./modules/FranchiseModule";
 import { contactService } from "@/lib/api";
 
 export function AdminPage() {
@@ -75,6 +76,7 @@ export function AdminPage() {
       {activeTab === "catering" && <CateringModule />}
       {activeTab === "blog" && <BlogModule />}
       {activeTab === "careers" && <CareersModule />}
+      {activeTab === "franchise" && <FranchiseModule />}
     </AdminShell>
   );
 }

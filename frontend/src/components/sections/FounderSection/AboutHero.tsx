@@ -32,7 +32,6 @@ export function AboutHero() {
             ".about-hero-scrim",
             ".about-hero-eyebrow",
             ".about-hero-line",
-            ".about-hero-subtitle",
           ],
           { opacity: 1, y: 0, yPercent: 0 }
         );
@@ -58,12 +57,6 @@ export function AboutHero() {
           { yPercent: 115 },
           { yPercent: 0, duration: 1.1, stagger: 0.16 },
           "-=0.35"
-        )
-        .fromTo(
-          ".about-hero-subtitle",
-          { opacity: 0, y: 20 },
-          { opacity: 1, y: 0, duration: 0.8 },
-          "-=0.7"
         );
 
       gsap.to(".about-hero-smoke-a", {
