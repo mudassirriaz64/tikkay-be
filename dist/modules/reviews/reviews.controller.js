@@ -13,16 +13,16 @@ const getOrCreatePageConfig = async () => {
     return config;
 };
 export const getReviewsPageData = asyncHandler(async (_req, res) => {
-    const [pageConfig, statistics, approvedReviews, videoReviews, galleryImages] = await Promise.all([
+    const [pageConfig, statistics, allReviews, videoReviews, galleryImages] = await Promise.all([
         getOrCreatePageConfig(),
         Statistic.find().sort({ display_order: 1 }),
-        CustomerReview.find({ is_approved: true }).sort({ display_order: 1, createdAt: -1 }),
+        CustomerReview.find().sort({ display_order: 1, createdAt: -1 }),
         VideoReview.find().sort({ display_order: 1 }),
         GalleryImage.find().sort({ createdAt: -1 }).limit(12),
     ]);
-    const featured = approvedReviews.find((r) => r.display_section === 'featured') || approvedReviews[0];
-    const highlights = approvedReviews.filter((r) => r.display_section === 'highlights').slice(0, 3);
-    const reviews = approvedReviews.filter((r) => r !== featured && !highlights.includes(r));
+    const featured = allReviews.find((r) => r.display_section === 'featured') || allReviews[0];
+    const highlights = allReviews.filter((r) => r.display_section === 'highlights').slice(0, 3);
+    const reviews = allReviews;
     const pageData = {
         hero: pageConfig.hero,
         statistics,
@@ -47,14 +47,15 @@ export const getPendingReviews = asyncHandler(async (_req, res) => {
         .json(new ApiResponse(200, reviews, 'Pending reviews fetched successfully'));
 });
 export const createReview = asyncHandler(async (req, res) => {
+    const isApproved = req.body.is_approved !== undefined ? Boolean(req.body.is_approved) : true;
     const review = await CustomerReview.create({
         ...req.body,
         user_id: req.user?._id ? new Types.ObjectId(req.user._id) : undefined,
-        is_approved: false,
+        is_approved: isApproved,
     });
     res
         .status(201)
-        .json(new ApiResponse(201, review, 'Review submitted for approval'));
+        .json(new ApiResponse(201, review, 'Review submitted successfully'));
 });
 export const approveReview = asyncHandler(async (req, res) => {
     const { id } = req.params;

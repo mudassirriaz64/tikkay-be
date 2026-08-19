@@ -20,6 +20,8 @@ export declare const CORS_OPTIONS: {
     methods: string[];
     allowedHeaders: string[];
     exposedHeaders: string[];
+    optionsSuccessStatus: number;
+    preflightContinue: boolean;
 };
 export declare const ROLES: {
     readonly ADMIN: "admin";

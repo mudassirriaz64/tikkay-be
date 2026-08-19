@@ -22,28 +22,42 @@ export const config = {
 
 export const CORS_OPTIONS = {
   origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
-    // Allow requests with no origin (e.g. mobile apps, curl, server-to-server)
+    // Allow requests with no origin (e.g. mobile apps, curl, server-to-server, SSR)
     if (!origin) return callback(null, true);
 
-    const allowedOrigins = (config.CLIENT_URL || '')
+    const clientUrls = (config.CLIENT_URL || '')
       .split(',')
       .map((url) => url.trim().replace(/\/$/, ''))
       .filter(Boolean);
 
     const isAllowed =
-      allowedOrigins.includes(origin) ||
+      clientUrls.includes(origin) ||
+      origin === 'https://tikkay-shikkay.vercel.app' ||
       origin.endsWith('.vercel.app') ||
-      origin.includes('localhost');
+      origin.includes('localhost') ||
+      origin.includes('127.0.0.1');
 
     if (isAllowed) {
       return callback(null, true);
     }
-    return callback(new Error(`Origin ${origin} not allowed by CORS`));
+    
+    // Instead of throwing an error which crashes preflights with 500/no headers, reject gracefully
+    return callback(null, false);
   },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  exposedHeaders: ['Content-Range', 'X-Content-Range'],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'],
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'X-Requested-With',
+    'Accept',
+    'Origin',
+    'Cookie',
+    'Set-Cookie',
+  ],
+  exposedHeaders: ['Set-Cookie', 'Content-Range', 'X-Content-Range'],
+  optionsSuccessStatus: 204,
+  preflightContinue: false,
 };
 
 export const ROLES = {
