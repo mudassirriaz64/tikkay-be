@@ -1,5 +1,10 @@
-import PQueue from 'p-queue';
-export declare const videoQueue: PQueue<import("p-queue").PriorityQueue, import("p-queue").QueueAddOptions>;
+declare class SimpleQueue {
+    private queue;
+    private isProcessing;
+    add<T>(task: () => Promise<T>): Promise<T>;
+    private process;
+}
+export declare const videoQueue: SimpleQueue;
 export interface VideoTranscodeJob {
     videoId: string;
     rawFilePath: string;
@@ -7,4 +12,5 @@ export interface VideoTranscodeJob {
 }
 export declare function formatDuration(seconds: number): string;
 export declare function processVideoJob(job: VideoTranscodeJob): Promise<void>;
+export {};
 //# sourceMappingURL=videoWorker.service.d.ts.map

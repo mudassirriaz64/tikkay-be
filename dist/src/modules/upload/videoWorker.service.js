@@ -11,15 +11,52 @@ const fs_1 = __importDefault(require("fs"));
 const os_1 = __importDefault(require("os"));
 const fluent_ffmpeg_1 = __importDefault(require("fluent-ffmpeg"));
 const ffmpeg_static_1 = __importDefault(require("ffmpeg-static"));
-const p_queue_1 = __importDefault(require("p-queue"));
 const cloudinary_1 = require("cloudinary");
 const gallery_model_1 = require("../gallery/gallery.model");
 // Configure ffmpeg static binary path if available
 if (ffmpeg_static_1.default) {
     fluent_ffmpeg_1.default.setFfmpegPath(ffmpeg_static_1.default);
 }
-// Single-concurrency queue so background transcode never starves the server CPU
-exports.videoQueue = new p_queue_1.default({ concurrency: 1 });
+// Lightweight in-memory queue with concurrency: 1 (CommonJS safe)
+class SimpleQueue {
+    constructor() {
+        this.queue = [];
+        this.isProcessing = false;
+    }
+    add(task) {
+        return new Promise((resolve, reject) => {
+            this.queue.push(async () => {
+                try {
+                    const res = await task();
+                    resolve(res);
+                }
+                catch (err) {
+                    reject(err);
+                }
+            });
+            void this.process();
+        });
+    }
+    async process() {
+        if (this.isProcessing || this.queue.length === 0)
+            return;
+        this.isProcessing = true;
+        const task = this.queue.shift();
+        if (task) {
+            try {
+                await task();
+            }
+            catch (err) {
+                console.error('Queue task error:', err);
+            }
+        }
+        this.isProcessing = false;
+        if (this.queue.length > 0) {
+            void this.process();
+        }
+    }
+}
+exports.videoQueue = new SimpleQueue();
 function formatDuration(seconds) {
     const m = Math.floor(seconds / 60);
     const s = Math.floor(seconds % 60);

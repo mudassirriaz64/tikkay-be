@@ -3,7 +3,6 @@ import fs from 'fs';
 import os from 'os';
 import ffmpeg from 'fluent-ffmpeg';
 import ffmpegStatic from 'ffmpeg-static';
-import PQueue from 'p-queue';
 import { v2 as cloudinary } from 'cloudinary';
 import { VideoTestimonial } from '../gallery/gallery.model';
 
@@ -12,8 +11,44 @@ if (ffmpegStatic) {
   ffmpeg.setFfmpegPath(ffmpegStatic);
 }
 
-// Single-concurrency queue so background transcode never starves the server CPU
-export const videoQueue = new PQueue({ concurrency: 1 });
+// Lightweight in-memory queue with concurrency: 1 (CommonJS safe)
+class SimpleQueue {
+  private queue: (() => Promise<unknown>)[] = [];
+  private isProcessing = false;
+
+  add<T>(task: () => Promise<T>): Promise<T> {
+    return new Promise((resolve, reject) => {
+      this.queue.push(async () => {
+        try {
+          const res = await task();
+          resolve(res);
+        } catch (err) {
+          reject(err);
+        }
+      });
+      void this.process();
+    });
+  }
+
+  private async process(): Promise<void> {
+    if (this.isProcessing || this.queue.length === 0) return;
+    this.isProcessing = true;
+    const task = this.queue.shift();
+    if (task) {
+      try {
+        await task();
+      } catch (err) {
+        console.error('Queue task error:', err);
+      }
+    }
+    this.isProcessing = false;
+    if (this.queue.length > 0) {
+      void this.process();
+    }
+  }
+}
+
+export const videoQueue = new SimpleQueue();
 
 export interface VideoTranscodeJob {
   videoId: string;
