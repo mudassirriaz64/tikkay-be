@@ -29,7 +29,16 @@ export default async function handler(req: Request, res: Response) {
     return res.status(204).end();
   }
 
-  await connectDB();
+  try {
+    await connectDB();
+  } catch (err: any) {
+    console.error('MongoDB connection error in serverless handler:', err?.message, err?.stack || err);
+    return res.status(503).json({
+      success: false,
+      message: 'Service temporarily unavailable - database connection failed',
+    });
+  }
+
   return app(req, res);
 }
 
