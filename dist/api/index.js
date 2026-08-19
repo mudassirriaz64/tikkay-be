@@ -25,7 +25,16 @@ async function handler(req, res) {
     if (req.method === 'OPTIONS') {
         return res.status(204).end();
     }
-    await (0, db_1.connectDB)();
+    try {
+        await (0, db_1.connectDB)();
+    }
+    catch (err) {
+        console.error('MongoDB connection error in serverless handler:', err?.message, err?.stack || err);
+        return res.status(503).json({
+            success: false,
+            message: 'Service temporarily unavailable - database connection failed',
+        });
+    }
     return (0, app_1.default)(req, res);
 }
 //# sourceMappingURL=index.js.map

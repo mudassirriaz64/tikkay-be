@@ -85,6 +85,50 @@ export declare const changePasswordSchema: z.ZodObject<{
         newPassword: string;
     };
 }>;
+export declare const forgotPasswordSchema: z.ZodObject<{
+    body: z.ZodObject<{
+        email: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        email: string;
+    }, {
+        email: string;
+    }>;
+}, "strip", z.ZodTypeAny, {
+    body: {
+        email: string;
+    };
+}, {
+    body: {
+        email: string;
+    };
+}>;
+export declare const resetPasswordSchema: z.ZodObject<{
+    body: z.ZodObject<{
+        email: z.ZodString;
+        otp: z.ZodString;
+        newPassword: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        email: string;
+        newPassword: string;
+        otp: string;
+    }, {
+        email: string;
+        newPassword: string;
+        otp: string;
+    }>;
+}, "strip", z.ZodTypeAny, {
+    body: {
+        email: string;
+        newPassword: string;
+        otp: string;
+    };
+}, {
+    body: {
+        email: string;
+        newPassword: string;
+        otp: string;
+    };
+}>;
 export type RegisterInput = z.infer<typeof registerSchema>['body'];
 export type LoginInput = z.infer<typeof loginSchema>['body'];
 //# sourceMappingURL=auth.validation.d.ts.map

@@ -6,6 +6,7 @@ const asyncHandler_1 = require("../../utils/asyncHandler");
 const ApiError_1 = require("../../utils/ApiError");
 const ApiResponse_1 = require("../../utils/ApiResponse");
 const gallery_model_1 = require("./gallery.model");
+const config_1 = require("../../config");
 const PAGE_CONFIG_ID = 'gallery-page-config';
 const getOrCreatePageConfig = async () => {
     let config = await gallery_model_1.GalleryPageConfig.findById(PAGE_CONFIG_ID);
@@ -16,7 +17,7 @@ const getOrCreatePageConfig = async () => {
     return config;
 };
 exports.getGalleryPageData = (0, asyncHandler_1.asyncHandler)(async function (_req, res) {
-    const [pageConfig, videos, instagram, googleReviews, stories, kitchen, journey, gallery] = await Promise.all([
+    const [pageConfig, videos, dbInstagram, dbGoogleReviews, stories, kitchen, journey, gallery] = await Promise.all([
         getOrCreatePageConfig(),
         gallery_model_1.VideoTestimonial.find().sort({ display_order: 1 }),
         gallery_model_1.InstagramPost.find().sort({ display_order: 1 }),
@@ -26,12 +27,80 @@ exports.getGalleryPageData = (0, asyncHandler_1.asyncHandler)(async function (_r
         gallery_model_1.JourneyMilestone.find().sort({ year: 1, display_order: 1 }),
         gallery_model_1.GalleryImage.find().sort({ display_order: 1, createdAt: -1 }),
     ]);
+    let liveGoogleReviews = dbGoogleReviews;
+    let liveInstagram = dbInstagram;
+    // 1. Live Google Places API Sync (If API Key & Place ID are pasted into .env)
+    if (config_1.config.GOOGLE_PLACES_API_KEY && config_1.config.GOOGLE_PLACE_ID) {
+        try {
+            const response = await fetch(`https://maps.googleapis.com/maps/api/place/details/json?place_id=${config_1.config.GOOGLE_PLACE_ID}&fields=reviews,rating,user_ratings_total&key=${config_1.config.GOOGLE_PLACES_API_KEY}`);
+            if (response.ok) {
+                const placeData = await response.json();
+                if (placeData?.result?.reviews?.length > 0) {
+                    liveGoogleReviews = placeData.result.reviews.map((r, idx) => ({
+                        id: `google-${r.time || idx}`,
+                        author_name: r.author_name || 'Google Reviewer',
+                        rating: r.rating || 5,
+                        relative_time: r.relative_time_description || 'Recently',
+                        text: r.text || '',
+                        author_photo_url: r.profile_photo_url || '/images/gallery/customer-1.jpg',
+                        display_order: idx,
+                    }));
+                }
+            }
+        }
+        catch (gErr) {
+            console.warn('[Google Places Sync Warning]: Using database fallback.', gErr);
+        }
+    }
+    // 2. Live Instagram Feed Sync (Option A: Behold URL or Option B: Meta Graph API Token)
+    if (config_1.config.BEHOLD_FEED_URL) {
+        try {
+            const igRes = await fetch(config_1.config.BEHOLD_FEED_URL);
+            if (igRes.ok) {
+                const igData = await igRes.json();
+                if (Array.isArray(igData) && igData.length > 0) {
+                    liveInstagram = igData.slice(0, 12).map((item, idx) => ({
+                        id: item.id || `ig-${idx}`,
+                        media_url: item.mediaUrl || item.thumbnailUrl || '/images/gallery/grid-1.jpg',
+                        permalink: item.permalink || 'https://instagram.com/tikkayshikkay',
+                        caption: item.caption || 'Charcoal perfection at Tikkay Shikkay',
+                        media_type: item.mediaType || 'IMAGE',
+                        display_order: idx,
+                    }));
+                }
+            }
+        }
+        catch (igErr) {
+            console.warn('[Instagram Behold Sync Warning]: Using database fallback.', igErr);
+        }
+    }
+    else if (config_1.config.INSTAGRAM_ACCESS_TOKEN) {
+        try {
+            const igGraphRes = await fetch(`https://graph.instagram.com/me/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink&access_token=${config_1.config.INSTAGRAM_ACCESS_TOKEN}`);
+            if (igGraphRes.ok) {
+                const graphData = await igGraphRes.json();
+                if (graphData?.data?.length > 0) {
+                    liveInstagram = graphData.data.slice(0, 12).map((item, idx) => ({
+                        id: item.id,
+                        media_url: item.media_url || item.thumbnail_url || '/images/gallery/grid-1.jpg',
+                        permalink: item.permalink || 'https://instagram.com/tikkayshikkay',
+                        caption: item.caption || 'Live from the pitmasters at Tikkay Shikkay',
+                        media_type: item.media_type || 'IMAGE',
+                        display_order: idx,
+                    }));
+                }
+            }
+        }
+        catch (metaErr) {
+            console.warn('[Instagram Graph API Sync Warning]: Using database fallback.', metaErr);
+        }
+    }
     const pageData = {
         hero: pageConfig.hero,
         tabs: pageConfig.tabs,
         videos,
-        instagram,
-        googleReviews,
+        instagram: liveInstagram,
+        googleReviews: liveGoogleReviews,
         stories,
         kitchen,
         journey,

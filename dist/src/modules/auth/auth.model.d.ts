@@ -15,6 +15,8 @@ export interface IUser extends Document {
     loyalty_points?: number;
     birthday?: string;
     whatsapp_opt_in?: boolean;
+    resetPasswordOTP?: string;
+    resetPasswordExpires?: Date;
     isPasswordCorrect(password: string): Promise<boolean>;
     generateAccessToken(): string;
     generateRefreshToken(): string;

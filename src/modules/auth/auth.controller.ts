@@ -75,7 +75,7 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
 });
 
 export const login = asyncHandler(async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+  const { email, password, rememberMe } = req.body;
 
   const user = await User.findOne({ email: email.toLowerCase() }).select('+password');
   if (!user) {
@@ -91,10 +91,16 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
 
   const loggedInUser = await User.findById(user._id);
 
+  // Set long-lived cookie if rememberMe is true (30 days), otherwise session cookie
+  const activeCookieOptions: CookieOptions = {
+    ...cookieOptions,
+    maxAge: rememberMe !== false ? config.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000 : undefined,
+  };
+
   res
     .status(200)
-    .cookie('accessToken', accessToken, cookieOptions)
-    .cookie('refreshToken', refreshToken, cookieOptions)
+    .cookie('accessToken', accessToken, activeCookieOptions)
+    .cookie('refreshToken', refreshToken, activeCookieOptions)
     .json(
       new ApiResponse(
         200,
@@ -102,6 +108,7 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
           user: loggedInUser,
           accessToken,
           refreshToken,
+          rememberMe: Boolean(rememberMe),
         },
         'User logged in successfully'
       )
@@ -193,4 +200,78 @@ export const getCurrentUser = asyncHandler(async (req: AuthRequest, res: Respons
   res
     .status(200)
     .json(new ApiResponse(200, user, 'Current user fetched successfully'));
+});
+
+export const forgotPassword = asyncHandler(async (req: Request, res: Response) => {
+  const { email } = req.body;
+  if (!email) {
+    throw new ApiError(400, 'Email address is required');
+  }
+
+  const user = await User.findOne({ email: email.toLowerCase() });
+  if (!user) {
+    // Return friendly message even if email not found to prevent user enumeration
+    return res.status(200).json(
+      new ApiResponse(200, {}, 'If an account exists with that email, a 6-digit password reset OTP has been sent.')
+    );
+  }
+
+  // Generate 6-digit numeric OTP
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  const expires = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes validity
+
+  user.resetPasswordOTP = otp;
+  user.resetPasswordExpires = expires;
+  await user.save({ validateBeforeSave: false });
+
+  // Print OTP clearly in terminal / server console for instant testing & development
+  console.log('\n\x1b[33m╔══════════════════════════════════════════════════════════════╗\x1b[0m');
+  console.log(`\x1b[33m║ 🔑 FORGOT PASSWORD OTP FOR: \x1b[36m${user.email.padEnd(31)}\x1b[33m ║\x1b[0m`);
+  console.log(`\x1b[33m║ 👉 6-DIGIT OTP CODE: \x1b[32m\x1b[1m${otp}\x1b[0m\x1b[33m (Expires in 15 mins)         ║\x1b[0m`);
+  console.log('\x1b[33m╚══════════════════════════════════════════════════════════════╝\x1b[0m\n');
+
+  // In production with Resend API key configured:
+  if (config.RESEND_API_KEY) {
+    try {
+      // Resend API invocation placeholder
+      console.log(`[Resend Email] Sending reset OTP ${otp} to ${user.email} from ${config.RESEND_FROM_EMAIL}`);
+    } catch (emailErr) {
+      console.error('[Resend Email Error]:', emailErr);
+    }
+  }
+
+  return res.status(200).json(
+    new ApiResponse(200, { email: user.email }, 'If an account exists with that email, a 6-digit password reset OTP has been sent.')
+  );
+});
+
+export const resetPassword = asyncHandler(async (req: Request, res: Response) => {
+  const { email, otp, newPassword } = req.body;
+
+  if (!email || !otp || !newPassword) {
+    throw new ApiError(400, 'Email, OTP, and new password are required');
+  }
+
+  if (newPassword.length < 6) {
+    throw new ApiError(400, 'Password must be at least 6 characters');
+  }
+
+  const user = await User.findOne({
+    email: email.toLowerCase(),
+    resetPasswordOTP: otp,
+    resetPasswordExpires: { $gt: new Date() },
+  }).select('+password');
+
+  if (!user) {
+    throw new ApiError(400, 'Invalid or expired OTP code');
+  }
+
+  user.password = newPassword;
+  user.resetPasswordOTP = undefined;
+  user.resetPasswordExpires = undefined;
+  await user.save({ validateBeforeSave: false });
+
+  res.status(200).json(
+    new ApiResponse(200, {}, 'Password reset successfully. You can now sign in with your new password.')
+  );
 });

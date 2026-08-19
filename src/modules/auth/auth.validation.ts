@@ -26,5 +26,19 @@ export const changePasswordSchema = z.object({
   }),
 });
 
+export const forgotPasswordSchema = z.object({
+  body: z.object({
+    email: z.string().email('Invalid email format'),
+  }),
+});
+
+export const resetPasswordSchema = z.object({
+  body: z.object({
+    email: z.string().email('Invalid email format'),
+    otp: z.string().min(6, 'OTP must be 6 digits').max(6),
+    newPassword: z.string().min(6, 'New password must be at least 6 characters'),
+  }),
+});
+
 export type RegisterInput = z.infer<typeof registerSchema>['body'];
 export type LoginInput = z.infer<typeof loginSchema>['body'];

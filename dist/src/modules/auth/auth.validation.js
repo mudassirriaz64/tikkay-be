@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.changePasswordSchema = exports.loginSchema = exports.registerSchema = void 0;
+exports.resetPasswordSchema = exports.forgotPasswordSchema = exports.changePasswordSchema = exports.loginSchema = exports.registerSchema = void 0;
 /// <reference types="zod" />
 const zod_1 = require("zod");
 exports.registerSchema = zod_1.z.object({
@@ -22,6 +22,18 @@ exports.loginSchema = zod_1.z.object({
 exports.changePasswordSchema = zod_1.z.object({
     body: zod_1.z.object({
         oldPassword: zod_1.z.string().min(1, 'Old password is required'),
+        newPassword: zod_1.z.string().min(6, 'New password must be at least 6 characters'),
+    }),
+});
+exports.forgotPasswordSchema = zod_1.z.object({
+    body: zod_1.z.object({
+        email: zod_1.z.string().email('Invalid email format'),
+    }),
+});
+exports.resetPasswordSchema = zod_1.z.object({
+    body: zod_1.z.object({
+        email: zod_1.z.string().email('Invalid email format'),
+        otp: zod_1.z.string().min(6, 'OTP must be 6 digits').max(6),
         newPassword: zod_1.z.string().min(6, 'New password must be at least 6 characters'),
     }),
 });
