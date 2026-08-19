@@ -208,12 +208,9 @@ export const forgotPassword = asyncHandler(async (req: Request, res: Response) =
     throw new ApiError(400, 'Email address is required');
   }
 
-  const user = await User.findOne({ email: email.toLowerCase() });
+  const user = await User.findOne({ email: email.toLowerCase().trim() });
   if (!user) {
-    // Return friendly message even if email not found to prevent user enumeration
-    return res.status(200).json(
-      new ApiResponse(200, {}, 'If an account exists with that email, a 6-digit password reset OTP has been sent.')
-    );
+    throw new ApiError(404, 'No account found with this email address. Please check and try again.');
   }
 
   // Generate 6-digit numeric OTP
