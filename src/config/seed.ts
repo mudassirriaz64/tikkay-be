@@ -31,6 +31,7 @@ import {
   JourneyPostModel,
   AboutPageConfig,
 } from '../modules/about/about.model';
+import { Order } from '../modules/orders/orders.model';
 import { Types } from 'mongoose';
 
 const DEFAULT_SETTINGS_ID = 'default-settings';
@@ -464,6 +465,106 @@ const seed = async () => {
       { day_number: 30, title: 'Day 30: The Lines Begin', content: 'People are already asking when we will open publicly. The fire is real.', media_type: 'Video', media_url: '/images/reviews/video-1.jpg', display_order: 3 },
     ]);
     success('Journey Posts seeded');
+
+    log('Seeding Sample Orders...');
+    await Order.deleteMany({});
+    await Order.create([
+      {
+        customer_name: 'Hamza Tariq',
+        customer_email: 'hamza@example.com',
+        customer_phone: '+92 300 9876543',
+        customer_address: 'House 42, Block C, Gulberg III, Lahore',
+        items: [
+          { title: 'Bharli Boti (Mutton Stuffed BBQ)', quantity: 2, price: 1450, image_url: '/images/menu/bharli-boti.jpg' },
+          { title: 'Special Roghani Naan', quantity: 4, price: 120, image_url: '/images/menu/roghani-naan.jpg' },
+          { title: 'Mint Zeera Raita', quantity: 2, price: 80, image_url: '/images/menu/raita.jpg' },
+        ],
+        subtotal: 3540,
+        deliveryFee: 150,
+        total: 3690,
+        status: 'preparing',
+        payment_method: 'cash',
+        payment_status: 'pending',
+        order_notes: 'Please keep spices medium and send fresh hot naans.',
+        timeline: [
+          { status: 'placed', label: 'Order Placed', timestamp: new Date(Date.now() - 25 * 60 * 1000).toISOString() },
+          { status: 'preparing', label: 'Pitmaster on the Charcoal Grill', timestamp: new Date(Date.now() - 15 * 60 * 1000).toISOString() },
+        ],
+        placedAt: new Date(Date.now() - 25 * 60 * 1000).toISOString(),
+      },
+      {
+        customer_name: 'Ayesha Siddiqui',
+        customer_email: 'ayesha.s@example.com',
+        customer_phone: '+92 321 4433221',
+        customer_address: 'Apartment 5B, Askari 10, Lahore',
+        items: [
+          { title: 'Grand BBQ Platter (Serves 4)', quantity: 1, price: 3850, image_url: '/images/menu/platter.jpg' },
+          { title: 'Garlic Butter Naan', quantity: 4, price: 150, image_url: '/images/menu/garlic-naan.jpg' },
+          { title: 'Kashmiri Chai / Pink Tea', quantity: 4, price: 220, image_url: '/images/menu/chai.jpg' },
+        ],
+        subtotal: 5330,
+        deliveryFee: 150,
+        total: 5480,
+        status: 'out-for-delivery',
+        payment_method: 'online',
+        payment_status: 'paid',
+        order_notes: 'Ring bell on arrival.',
+        timeline: [
+          { status: 'placed', label: 'Order Placed', timestamp: new Date(Date.now() - 50 * 60 * 1000).toISOString() },
+          { status: 'preparing', label: 'In The Kitchen', timestamp: new Date(Date.now() - 40 * 60 * 1000).toISOString() },
+          { status: 'ready', label: 'Packed Hot & Ready', timestamp: new Date(Date.now() - 20 * 60 * 1000).toISOString() },
+          { status: 'out-for-delivery', label: 'Rider on the Way', timestamp: new Date(Date.now() - 10 * 60 * 1000).toISOString() },
+        ],
+        placedAt: new Date(Date.now() - 50 * 60 * 1000).toISOString(),
+      },
+      {
+        customer_name: 'Usman Ali',
+        customer_email: 'usman.ali@example.com',
+        customer_phone: '+92 333 7788990',
+        customer_address: 'Office 201, IT Tower, Hali Road, Lahore',
+        items: [
+          { title: 'Chicken Malai Boti Skewer', quantity: 3, price: 850, image_url: '/images/menu/malai-boti.jpg' },
+          { title: 'Smoked Seekh Kebab (Beef)', quantity: 2, price: 790, image_url: '/images/menu/seekh-kebab.jpg' },
+          { title: 'Special Roghani Naan', quantity: 5, price: 120, image_url: '/images/menu/roghani-naan.jpg' },
+        ],
+        subtotal: 4730,
+        deliveryFee: 0,
+        total: 4730,
+        status: 'delivered',
+        payment_method: 'card',
+        payment_status: 'paid',
+        order_notes: 'Office lunch celebration',
+        timeline: [
+          { status: 'placed', label: 'Order Placed', timestamp: new Date(Date.now() - 120 * 60 * 1000).toISOString() },
+          { status: 'preparing', label: 'In The Kitchen', timestamp: new Date(Date.now() - 105 * 60 * 1000).toISOString() },
+          { status: 'ready', label: 'Packed & Dispatched', timestamp: new Date(Date.now() - 75 * 60 * 1000).toISOString() },
+          { status: 'delivered', label: 'Delivered', timestamp: new Date(Date.now() - 45 * 60 * 1000).toISOString() },
+        ],
+        placedAt: new Date(Date.now() - 120 * 60 * 1000).toISOString(),
+      },
+      {
+        customer_name: 'Fatima Noor',
+        customer_email: 'fatima.noor@example.com',
+        customer_phone: '+92 301 5566778',
+        customer_address: 'House 19, Street 4, DHA Phase 5, Lahore',
+        items: [
+          { title: 'Reshmi Tikka Sizzler', quantity: 2, price: 950, image_url: '/images/menu/reshmi-tikka.jpg' },
+          { title: 'Garlic Butter Naan', quantity: 3, price: 150, image_url: '/images/menu/garlic-naan.jpg' },
+        ],
+        subtotal: 2350,
+        deliveryFee: 150,
+        total: 2500,
+        status: 'placed',
+        payment_method: 'cash',
+        payment_status: 'pending',
+        order_notes: 'Please add extra green mint chutney.',
+        timeline: [
+          { status: 'placed', label: 'Order Placed', timestamp: new Date(Date.now() - 8 * 60 * 1000).toISOString() },
+        ],
+        placedAt: new Date(Date.now() - 8 * 60 * 1000).toISOString(),
+      },
+    ]);
+    success('Sample Orders seeded');
 
     log('Seeding About Page Config...');
     await AboutPageConfig.create([{ _id: ABOUT_PAGE_CONFIG_ID }]);
